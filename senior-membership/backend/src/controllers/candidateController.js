@@ -218,43 +218,4 @@ export const deleteCandidate = async (req, res) => {
 }
 };
 
-export const updateCandidateApprovalStatus = async (req, res) => {
-  try {
-    const { candidateId } = req.params;
-    const { status, failReasons } = req.body; // Get data from frontend
-
-    // if (!status || !email) {
-    //   return res.status(400).json({ message: "Missing required fields" });
-    // }
-
-    // Process the approval update and send an email
-    const updatedCandidate = await candidateService.approvalStatusUpdate(candidateId, status, failReasons);
-
-    return res.status(200).json({ message: "Approval status updated", candidate: updatedCandidate });
-  } catch (error) {
-    console.error("Error updating candidate status:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const getVerificationDetails = async (req, res) => {
-  try {
-    const { candidateId } = req.params;
-    const details = await candidateService.getCandidateVerificationDetail(candidateId);
-    res.json(details);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching verification details", error });
-  }
-};
-export const updateVerificationDetails = async (req, res) => {
-  try {
-    const { candidateId } = req.params;
-    const { details } = req.body;
-
-    const updatedCandidate = await candidateService.updateCandidateVerificationDetail(candidateId, details);
-    res.json(updatedCandidate);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating verification details", error });
-  }
-};
 

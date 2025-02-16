@@ -2,6 +2,7 @@ import axios from 'axios';
 
 // Base URL for API
 const apiUrl = 'http://localhost:3000/api/candidates';
+const apiApproval = 'http://localhost:3000/api/approval-details';
 
 // POST request to create a new candidate
 export const createCandidate = async (candidateData, heirData) => {
@@ -193,10 +194,11 @@ export const deleteCandidate = async (candidateId) => {
   }
 };
 
-export const updateApprovalStatus = async (candidateId, status, failReasons) => {
+export const updateApprovalStatus = async (candidateId, { status, verificationDetails, failReasons }) => {
   try {
-    const response = await axios.put(`${apiUrl}/${candidateId}/approval-status`, {
+    const response = await axios.put(`${apiApproval}/${candidateId}/approval-status`, {
       status,
+      verificationDetails,
       failReasons, // This is only for sending an email
     });
 
@@ -209,7 +211,7 @@ export const updateApprovalStatus = async (candidateId, status, failReasons) => 
 
 export const getVerificationDetail = async (candidateId) => {
   try {
-    const response = await axios.get(`${apiUrl}/verification/${candidateId}`);
+    const response = await axios.get(`${apiApproval}/verification/${candidateId}`);
 
     return response.data;
   } catch (error) {
@@ -220,7 +222,7 @@ export const getVerificationDetail = async (candidateId) => {
 
 export const saveVerificationDetail = async (candidateId, details) => {
   try {
-    const response = await axios.put(`${apiUrl}/verification/${candidateId}`, {details});
+    const response = await axios.put(`${apiApproval}/verification/${candidateId}`, {details});
 
     return response.data;
   } catch (error) {

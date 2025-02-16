@@ -12,7 +12,7 @@ function CommitteCandidateList() {
 
   const handleRowClick = (candidateId) => {
     console.log("Navigating to:", candidateId); // Debugging log
-    navigate(`/staff_candidateProfile/${candidateId}`,  { state: { context: 'committeeCandidateProfile' } });
+    navigate(`/candidateProfile/${candidateId}`,  { state: { context: 'committeeCandidateProfile' } });
 }
 
   useEffect(() => {

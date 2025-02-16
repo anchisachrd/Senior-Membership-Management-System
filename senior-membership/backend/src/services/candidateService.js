@@ -1,4 +1,10 @@
 import * as candidateModel from "../models/candidateModel.js";
+import * as accountModel from '../models/accountModel.js'
+import * as memberModel from '../models/memberModel.js'
+import * as approvalModel from '../models/approvalModel.js'
+import { query } from "../db.js"            // your Postgres pool.
+import { pool } from "../db.js";
+import { addMember } from "../models/memberModel.js";
 
 export const modifyDocVerificationStatus = async (candidateId) => {
   return await candidateModel.updateDocVerificationStatus(candidateId, "ผ่านการตรวจสอบ");
@@ -29,31 +35,5 @@ export const fetchAllApprovalStatusCandidates = async () => {
 export const removeCandidate = async (candidateId) => {
   return await candidateModel.deleteCandidateById(candidateId);}
 
-export const approvalStatusUpdate = async (candidateId, status,  failReasons) => {
-  try{
-    const updatedCandidate = await candidateModel.updateApprovalStatus(candidateId, status);
-    return updatedCandidate;
-  } catch (error) {
-    console.error("Error updating approval status:", error);
-    throw new Error("Error updating approval status");
-  }
-}
 
-export const getCandidateVerificationDetail = async (candidateId) =>{
-  try{
-    const getDetail = await candidateModel.getCandidateVerificationDetails(candidateId);
-    return getDetail;
-  } catch (error) {
-    console.error("Error get details:", error);
-  }
-}
-
-export const updateCandidateVerificationDetail = async (candidateId, details)=>{
-  try{
-    const updateDetail = await candidateModel.updateCandidateVerificationDetails(candidateId,  JSON.stringify(details) );
-    return updateDetail;
-  } catch (error) {
-    console.error("Error update details:", error);
-  }
-}
 

@@ -15,7 +15,7 @@ function CadidateWaitingList() {
   const navigate = useNavigate();
 
   const handleRowClick = (candidateId) => {
-    navigate(`/staff_candidateProfile/${candidateId}`, {
+    navigate(`/candidateProfile/${candidateId}`, {
       state: { context : 'waitingCandidateProfile' },
     });
   };
