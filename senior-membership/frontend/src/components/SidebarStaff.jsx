@@ -23,7 +23,7 @@ function SidebarStaff() {
     <aside id="sidebar-multi-level-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
       <div class="h-full px-4 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-100">
         <a href="" class="flex items-center mb-5">
-          <img src="public/logo.png"
+          <img src="logo.png"
             class="h-auto max-w-full" alt="Logo" />
         </a>
         {/* side bar กรรมการ */}

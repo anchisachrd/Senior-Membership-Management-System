@@ -62,13 +62,13 @@ function ConfirmModal({
           <div className="flex justify-center space-x-2">
             <button
               onClick={onConfirm}
-              className="text-white  focus:outline-none bg-white rounded-lg border border-lime-200 hover:bg-lime-100 focus:z-10 focus:ring-4 focus:ring-lime-100 dark:focus:ring-lime-600 dark:bg-lime-700 dark:border-lime-500 dark:hover:text-white dark:hover:bg-lime-600 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+              className="text-white bg-lime-800 hover:bg-lime-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg px-5 py-2.5 text-sm"
             >
               ยืนยัน
             </button>
             <button
               onClick={onCancel}
-              className="py-2.5 px-5 ms-3 text-sm font-medium text-white focus:outline-none bg-white rounded-lg border border-red-200 hover:bg-red-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-700 dark:bg-red-800  dark:border-red-600 dark:hover:text-white dark:hover:bg-red-700"
+              className="text-white bg-red-600 hover:bg-red-700 rounded-lg px-5 py-2.5 text-sm"
             >
               ยกเลิก
             </button>

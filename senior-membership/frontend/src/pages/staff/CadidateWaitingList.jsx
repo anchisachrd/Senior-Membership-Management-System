@@ -15,7 +15,7 @@ function CadidateWaitingList() {
   const navigate = useNavigate();
 
   const handleRowClick = (candidateId) => {
-    navigate(`/staff_candidateProfile/${candidateId}`, {
+    navigate(`/candidateProfile/${candidateId}`, {
       state: { context : 'waitingCandidateProfile' },
     });
   };
@@ -136,33 +136,33 @@ function CadidateWaitingList() {
 
         <div class="relative overflow-hidden shadow-xl sm:rounded-lg ">
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-700 ">
+            <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
               <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   No.
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   รหัสผู้สมัคร
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   ชื่อผู้สมัคร
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   เลขบัตรประชาชน
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   เบอร์โทรศัพท์
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   ได้รับสิทธิ์ก่อน
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   ตรวจสอบเอกสาร
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   อนุมัติการเป็นสมาชิก
                 </th>
-                <th scope="col" class="px-6 py-3"></th>
+                <th scope="col" class="text-center align-middle py-4 px-4"></th>
               </tr>
             </thead>
 
@@ -174,21 +174,21 @@ function CadidateWaitingList() {
                     onClick={() => handleRowClick(candidate.candidate_id)}
                     className="cursor-pointer bg-white border-b hover:bg-gray-50 text-gray-900"
                   >
-                    <td className="px-8 py-4 font-medium">{index + 1}</td>
-                    <td className="px-6 py-4">{candidate.candidate_id}</td>
-                    <td className="px-6 py-4">
+                    <td className="text-center align-middle py-4 px-4 font-medium">{index + 1}</td>
+                    <td className="text-center align-middle py-4 px-4">{candidate.candidate_id}</td>
+                    <td className="text-center align-middle py-4 px-4">
                       {candidate.first_name} {candidate.last_name}
                     </td>
-                    <td className="px-6 py-4">{candidate.national_id}</td>
-                    <td className="px-6 py-4">{candidate.phone}</td>
-                    <td className="px-14 py-4">
+                    <td className="text-center align-middle py-4 px-4">{candidate.national_id}</td>
+                    <td className="text-center align-middle py-4 px-4">{candidate.phone}</td>
+                    <td className="text-center align-middle">
                       {candidate.priority ? <FaCheck /> : "-"}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="text-center align-middle py-4 px-4">
                       {candidate.doc_verification_status}
                     </td>
-                    <td className="px-6 py-4">{candidate.approval_status}</td>
-                    <td className="px-6 py-4 space-x-4">
+                    <td className="text-center align-middle py-4 px-4">{candidate.approval_status}</td>
+                    <td className="text-center align-middle py-4 px-4 space-x-4">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -221,7 +221,7 @@ function CadidateWaitingList() {
                 <tr>
                   <td
                     colSpan="8"
-                    className="px-6 py-4 text-center text-gray-600"
+                    className="text-center align-middle py-3 px-4 text-center text-gray-600"
                   >
                     ไม่มีข้อมูลผู้สมัครที่ผ่านการตรวจสอบ
                   </td>

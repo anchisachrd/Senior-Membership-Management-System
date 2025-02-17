@@ -160,8 +160,8 @@ function FormPage({ setStep }) {
                         type="button"
                         onClick={handleSubmit}
                         disabled={!isChecked}
-                        class={`focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 me-9 mb-2 ${isChecked
-                            ? 'bg-lime-700 hover:bg-lime-800 focus:ring-4 focus:ring-lime-300 dark:bg-lime-600 dark:hover:bg-lime-700 dark:focus:ring-lime-800'
+                        class={`focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 me-9 mb-2 disabled:cursor-not-allowed ${isChecked
+                            ? 'bg-lime-800 hover:bg-lime-700'
                             : 'bg-gray-400 cursor-not-allowed'
                             }`}
                     >

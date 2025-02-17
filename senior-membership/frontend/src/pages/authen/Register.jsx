@@ -32,6 +32,14 @@ const provinces = [
   "อุทัยธานี", "อุบลราชธานี"
 ];
 
+const jobs = [
+  'ข้าราชการ', 'พนักงานราชการ', 'พนักงานกระทรวง', 'ลูกจ้างชั่วคราว', 'อื่นๆ'
+];
+
+const relationships = [
+  'บุตร', 'คู่สมรส', 'บิดา', 'มารดา', 'พี่น้องร่วมบิดามารดาเดียวกัน' 
+];
+
 
 // =============== STEP 1: Candidate Page ===============
 function RegisterPage1({ values, errors, touched, setFieldValue }) {
@@ -208,9 +216,11 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                   }`}
               >
                 <option value="" hidden>เลือกอาชีพ</option>
-                <option value="อาชีพ1">อาชีพ 1</option>
-                <option value="อาชีพ2">อาชีพ 2</option>
-                <option value="อาชีพ3">อาชีพ 3</option>
+                {jobs.map((job) => (
+                  <option key={job} value={job}>
+                    {job}
+                  </option>
+                ))}
               </Field>
               <ErrorMessage name="candidate_occupation" component="div" className="text-red-600 text-sm mt-1" />
             </div>
@@ -662,8 +672,11 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                   }`}
               >
                 <option value="">เลือกอาชีพ</option>
-                <option value="อาชีพ1">อาชีพ 1</option>
-                <option value="อาชีพ2">อาชีพ 2</option>
+                {jobs.map((job) => (
+                  <option key={job} value={job}>
+                    {job}
+                  </option>
+                ))}
               </Field>
               <ErrorMessage name="heir_occupation" component="div" className="text-red-600 text-sm mt-1" />
             </div>
@@ -686,9 +699,11 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                   }`}
               >
                 <option value="">เลือกความเกี่ยวข้อง</option>
-                <option value="1">สามี/ภรรยา</option>
-                <option value="2">ลูก</option>
-                <option value="3">อื่นๆ</option>
+                {relationships.map((relationship) => (
+                  <option key={relationship} value={relationship}>
+                    {relationship}
+                  </option>
+                ))}
               </Field>
               <ErrorMessage name="heir_relationship" component="div" className="text-red-600 text-sm mt-1" />
             </div>

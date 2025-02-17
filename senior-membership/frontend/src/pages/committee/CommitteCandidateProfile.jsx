@@ -378,7 +378,7 @@ function Information_heir() {
 
           <div class="grid gap-6 mb-4 md:grid-cols-2">
 
-            <div >
+            <div>
               <label for="road_member" class="block mb-2 text-sm font-medium text-gray-900 ">ถนน</label>
               <input type="text" id="road_member" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5" placeholder="กรอกถนน" />
             </div>
