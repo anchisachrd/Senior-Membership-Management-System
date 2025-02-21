@@ -23,7 +23,7 @@ function Login() {
 const handleLogin = async (values, { setSubmitting, setErrors }) => {
  
   try {
-    // Replace with your backend API URL
+    // Replace with  backend API URL
     const response = await fetch("http://localhost:3000/api/login", {
       method: "POST",
       headers: {

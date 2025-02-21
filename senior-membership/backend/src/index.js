@@ -10,7 +10,6 @@ import slipRoutes from "./routes/slipRoutes.js"; // <--- Import slipRoutes
 
 
 
-
 const app = express();
 const port = 3000;
 

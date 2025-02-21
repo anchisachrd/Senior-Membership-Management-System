@@ -210,7 +210,7 @@ function CommitteeVerification({ candidateId }) {
             <button
               type="button"
               onClick={handleClearAll}
-              className="text-white bg-red-600 hover:bg-red-700 rounded-lg px-4 py-2"
+              className="text-white bg-red-600 hover:bg-red-700 rounded-lg px-5 py-2.5"
             >
               ล้างการตรวจสอบ
             </button>
@@ -221,7 +221,7 @@ function CommitteeVerification({ candidateId }) {
           <button
             type="button"
             onClick={handleDelete}
-            className="text-white bg-red-600 hover:bg-red-700 rounded-lg px-4 py-2"
+            className="text-white bg-red-600 hover:bg-red-700 rounded-lg px-5 py-2.5"
           >
             ลบข้อมูล
           </button>

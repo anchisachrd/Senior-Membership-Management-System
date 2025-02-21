@@ -2,7 +2,7 @@ import * as candidateModel from "../models/candidateModel.js";
 import * as accountModel from '../models/accountModel.js'
 import * as memberModel from '../models/memberModel.js'
 import * as approvalModel from '../models/approvalModel.js'
-import { query } from "../db.js"            // your Postgres pool.
+import { query } from "../db.js"           
 import { pool } from "../db.js";
 import { addMember } from "../models/memberModel.js";
 
@@ -34,6 +34,5 @@ export const fetchAllApprovalStatusCandidates = async () => {
 
 export const removeCandidate = async (candidateId) => {
   return await candidateModel.deleteCandidateById(candidateId);}
-
 
 

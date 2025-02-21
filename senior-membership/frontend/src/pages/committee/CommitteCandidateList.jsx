@@ -88,28 +88,28 @@ function CommitteCandidateList() {
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
               <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   No.
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   รหัสผู้สมัคร
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   ชื่อผู้สมัคร
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   เลขบัตรประชาชน
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   เบอร์โทรศัพท์
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   ได้รับสิทธิ์ก่อน
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   ตรวจสอบเอกสาร
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="text-center align-middle py-4 px-4">
                   อนุมัติการเป็นสมาชิก
                 </th>
               </tr>
@@ -123,27 +123,27 @@ function CommitteCandidateList() {
                     onClick={() => handleRowClick(candidate.candidate_id)}
                     className="cursor-pointer bg-white border-b hover:bg-gray-50 text-gray-900"
                   >
-                    <th scope="row" className="px-8 py-4 font-medium">
+                    <th scope="row" className="text-center align-middle py-4 px-4 font-medium">
                       {index + 1}
                     </th>
-                    <td className="px-6 py-4">{candidate.candidate_id}</td>
-                    <td className="px-6 py-4">
+                    <td className="text-center align-middle py-4 px-4">{candidate.candidate_id}</td>
+                    <td className="text-center align-middle py-4 px-4">
                       {candidate.first_name} {candidate.last_name}
                     </td>
-                    <td className="px-6 py-4">{candidate.national_id}</td>
-                    <td className="px-6 py-4">{candidate.phone}</td>
-                    <td className="px-14 py-4">
+                    <td className="text-center align-middle py-4 px-4">{candidate.national_id}</td>
+                    <td className="text-center align-middle py-4 px-4">{candidate.phone}</td>
+                    <td className="text-center align-middle py-4 px-4">
                       {candidate.priority ? <FaCheck /> : "-"}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="text-center align-middle py-4 px-4">
                       {candidate.doc_verification_status}
                     </td>
-                    <td className="px-6 py-4">{candidate.approval_status}</td>
+                    <td className="text-center align-middle py-4 px-4">{candidate.approval_status}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="text-center py-4">
+                  <td colSpan="4" className="text-center align-middle py-4">
                     ไม่พบรายชื่อผู้สมัคร
                   </td>
                 </tr>

@@ -8,7 +8,6 @@ import Login from './pages/authen/Login.jsx'
 import LoginStaff from './pages/authen/LoginStaff.jsx'
 import Register from './pages/authen/Register.jsx'
 import CommitteCandidateList from './pages/committee/CommitteCandidateList.jsx'
-import CommitteCandidateProfile from './pages/committee/CommitteCandidateProfile.jsx'
 import DeathReport from './pages/heir/DeathReport.jsx'
 import StaffCandidateList from './pages/staff/StaffCandidateList.jsx'
 import CadidateWaitingList from './pages/staff/CadidateWaitingList.jsx'
@@ -38,7 +37,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
       <Route  element={ <SidebarStaff />}>
         <Route path='/committee_candidateList' element={ <CommitteCandidateList />} />
-        <Route path='/committee_candidateProfile' element={ <CommitteCandidateProfile />} />
+     
 
         <Route path='/staff_candidateList' element={ < StaffCandidateList/>} />
         <Route path='/staff_cadidateWaitingList' element={ < CadidateWaitingList />} />
