@@ -12,6 +12,17 @@ function StaffCandidateList() {
         navigate(`/candidateProfile/${candidateId}`,  { state: { context: 'staffCandidateProfile' } });
     }
 
+     // สำหรับเช็ค role
+      const userRole = localStorage.getItem("userRole")
+    
+      const checkUserRole = async () => {
+        if (userRole != 'staff' || userRole!= 'committee'){
+          navigate('/login')
+        }
+        console.log(userRole)
+      };
+      
+
     useEffect(() => {
       const fetchCandidates = async () => {
           try {
@@ -27,6 +38,7 @@ function StaffCandidateList() {
           }
       };
       fetchCandidates();
+      checkUserRole();
   }, []);
 
     return (

@@ -94,16 +94,21 @@ function CommitteeVerification({ candidateId }) {
     try {
       const overallStatus = isAnyFail ? "ไม่ผ่านการตรวจสอบ" : "ผ่านการตรวจสอบ";
 
-      let failReasons = "";
+      let failReasons = [];
       if (isAnyFail) {
         failReasons = results
           .map((r, i) => (r === "fail" ? qualification[i].failReason : null))
-          .filter(Boolean)
-          .join(", ");
+          .filter(Boolean);
       }
 
-      await saveVerificationDetail(candidateId, results);
-      await updateApprovalStatus(candidateId, overallStatus, failReasons);
+  
+      await updateApprovalStatus(candidateId, {
+             status: overallStatus,
+             verificationDetails: results,
+             failReasons: failReasons,
+           });
+
+
 
       setApprovalStatus(isAnyFail ? "fail" : "pass");
       setIsEditing(false);

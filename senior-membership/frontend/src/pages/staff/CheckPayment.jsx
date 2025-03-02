@@ -1,67 +1,81 @@
-import React from 'react'
+// CheckPayment.jsx (โค้ดสั้น ๆ)
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {getAllSlipHistory} from '../../api/memberApi'
+import axios from 'axios';
 
 function CheckPayment() {
-
   const navigate = useNavigate();
+  const [slips, setSlips] = useState([]);
 
-  const handleRowClick = () => {
-    navigate('/staff_detailCheckPayment');
-  }
+  const userRole = localStorage.getItem("userRole")
+
+  const checkUserRole = async () => {
+    if (userRole != 'staff') {
+      navigate('/login')
+    }
+    console.log(userRole)
+  };
+
+  useEffect(() => {
+    // เรียก API มาดึงรายการ slip ทั้งหมด
+    const fetchSlips = async () => {
+      try {
+        const data = await getAllSlipHistory();
+        setSlips(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchSlips();
+    checkUserRole();
+  }, []);
+
+  const handleRowClick = (historyId) => {
+    // ไปหน้า detail พร้อมส่ง historyId
+    navigate(`/staff_detailCheckPayment/${historyId}`);
+  };
 
   return (
-    <div className='ibm-plex-sans-thai-medium'>
-      <div class="p-12 sm:ml-64">
-        <div class="text-xl text-black mx-3 mt-5 mb-8 font-bold">การตรวจสอบสลิป</div>
+    <div className="ibm-plex-sans-thai-medium">
+      <div className="p-12 sm:ml-64">
+        <div className="text-xl text-black mx-3 mt-5 mb-8 font-bold">การตรวจสอบสลิป</div>
 
-        <div class="relative overflow-hidden shadow-xl sm:rounded-lg ">
-          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
+        <div className="relative overflow-hidden shadow-xl sm:rounded-lg">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
               <tr>
-                <th scope="col" class="px-6 py-3">
-                  No.
-                </th>
-                <th scope="col" class="px-6 py-3">
-                  รหัสผู้สมัคร
-                </th>
-                <th scope="col" class="px-6 py-3">
-                  ชื่อผู้สมัคร
-                </th>
-                <th scope="col" class="px-6 py-3">
-                  รหัสผู้เสียชีวิต
-                </th>
-                
-                <th scope="col" class="px-6 py-3">
-                  สถานะการตรวจสอบสลิป
-                </th>
-
+                <th className="px-6 py-3">No.</th>
+                <th className="px-6 py-3">History ID</th>
+                <th className="px-6 py-3">Member ID</th>
+                <th className="px-6 py-3">สถานะการตรวจสอบ</th>
+                <th className="px-6 py-3">เวลา</th>
               </tr>
             </thead>
-
             <tbody>
-              <tr onClick={handleRowClick} class="cursor-pointer bg-white border-b dark:bg-gray-200 dark:border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-200 text-gray-900">
-                <th scope="row" class="px-8 py-4 font-medium">
-                  1.
-                </th>
-                <td class="px-6 py-4">
-                  0234
-                </td>
-                <td class="px-6 py-4">
-                  ศรุตา จรูญกีรติโรจน์
-                </td>
-                <td class="px-6 py-4">
-                  0999
-                </td>
-                <td class="px-6 py-4">
-                  สลิปโอนเงินถูกต้อง
-                </td>
-              </tr>
+              {slips.map((slip, index) => (
+                <tr
+                  key={slip.history_id}
+                  onClick={() => handleRowClick(slip.history_id)}
+                  className="cursor-pointer bg-white border-b dark:bg-gray-200 dark:border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-200 text-gray-900"
+                >
+                  <td className="px-6 py-4">{index + 1}</td>
+                  <td className="px-6 py-4">{slip.history_id}</td>
+                  <td className="px-6 py-4">{slip.member_id}</td>
+                  <td className={`px-6 py-4 ${
+                    slip.slip_data?.success ? "text-green-600" : "text-red-600"
+                  }`}>
+                    {slip.slip_data?.success ? 'สลิปโอนเงินถูกต้อง' : slip.error_msg}
+                  </td>
+                  <td className="px-6 py-4">{slip.created_at}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default CheckPayment
+export default CheckPayment;

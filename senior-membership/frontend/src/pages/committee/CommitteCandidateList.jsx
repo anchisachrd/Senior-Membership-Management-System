@@ -8,7 +8,15 @@ function CommitteCandidateList() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
 
+   // สำหรับเช็ค role
+   const userRole = localStorage.getItem("userRole")
 
+   const checkUserRole = async () => {
+     if (userRole != 'committee'){
+       navigate('/login')
+     }
+     console.log(userRole)
+   };
 
   const handleRowClick = (candidateId) => {
     console.log("Navigating to:", candidateId); // Debugging log
@@ -28,6 +36,7 @@ function CommitteCandidateList() {
       }
     };
     fetchCandidates();
+    checkUserRole();
   }, []);
 
   return (

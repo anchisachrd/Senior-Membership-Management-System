@@ -710,13 +710,27 @@ function CandidateProfile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
-  const [onConfirmAction, setOnConfirmAction] = useState(() => { });
+  const [onConfirmAction, setOnConfirmAction] = useState(() => {});
   const navigate = useNavigate();
 
   // สำหรับ Modal ตรวจเอกสารไม่ผ่าน
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [failButton, setFailButton] = useState('');
   const [failNote, setFailNote] = useState('');
+
+  // สำหรับเช็ค role
+  const userRole = localStorage.getItem("userRole")
+
+  const checkUserRole = async () => {
+    if (userRole != 'staff' || userRole!= 'committee'){
+      navigate('/login')
+    }
+    console.log(userRole)
+  };
+  
+  useEffect(() => {
+    checkUserRole();
+  }, []);
 
   const toggleModal2 = () => {
     setIsModal2Open(!isModal2Open);
@@ -746,6 +760,8 @@ function CandidateProfile() {
     };
     fetchCandidateAndHeirData();
   }, [id]);
+
+  
 
   // const toggleModal = () => {
   //   setIsModalOpen(!isModalOpen);
