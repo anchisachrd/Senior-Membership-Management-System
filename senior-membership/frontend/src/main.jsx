@@ -22,6 +22,7 @@ import EditInfo from './pages/authen/EditInfo.jsx'
 
 import SidebarStaff from './components/SidebarStaff.jsx'
 import Sidebar from './components/Sidebar.jsx'
+import FinaceReport from './pages/staff/FinaceReport.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/staff_sendNotify' element={ < SendNotify/>} />
         <Route path='/staff_checkPayment' element={ < CheckPayment/>} />
         <Route path='/staff_detailCheckPayment' element={ < DetailCheckPayment/>} />
+        <Route path='/finance-report' element = {<FinaceReport/>}/>
 
       </Route>
       

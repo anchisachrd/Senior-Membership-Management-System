@@ -12,6 +12,7 @@ function SubmitPayment() {
     const [amount, setAmount] = useState("");
     const [slipFile, setSlipFile] = useState(null); // Store uploaded file
     const memberId = 2; // Example memberId 
+    const deathId = 2; 
 
     // Toggle modal state
     const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -25,8 +26,8 @@ function SubmitPayment() {
     
     const handleConfirmSubmit = async () => {
         try {
-            const result = await verifySlip(slipFile, memberId, amount);
-            alert('อัปโหลดสลิปสำเร็จ!');
+            const result = await verifySlip(slipFile, memberId, amount, deathId);
+            alert(result.message);
             console.log(result);
             setIsModalOpen(false);
             navigate('/history');

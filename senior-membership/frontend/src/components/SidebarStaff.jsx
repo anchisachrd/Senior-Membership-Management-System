@@ -5,7 +5,8 @@ import { LuPiggyBank, LuUserRoundCog } from "react-icons/lu";
 import { MdOutlineDashboard } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
 import { FaRegCircleCheck } from "react-icons/fa6";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
+
 
 function SidebarStaff() {
   //const role = 'committee';
@@ -74,10 +75,10 @@ function SidebarStaff() {
             </a>
           </li>
           <li>
-            <a href="#" class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
+            <Link  to="/finance-report" class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
               <LuPiggyBank class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" />
               <span class="ms-3 mt-1 dark:group-hover:text-white">บัญชีชมรม</span>
-            </a>
+            </Link>
           </li>
           <li>
             <a href="#" class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">

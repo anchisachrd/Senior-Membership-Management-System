@@ -5,7 +5,7 @@ import * as heirModel from "../models/heirModel.js";
 import * as addressModel from "../models/addressModel.js";
 import * as documentModel from "../models/documentModel.js";
 import * as candidateModel from "../models/candidateModel.js";
-import * as emailService from "../services/emailService.js"
+import * as emailService from "../utils/emailService.js"
 import bcrypt from "bcrypt"
 import crypto from 'crypto';
 
