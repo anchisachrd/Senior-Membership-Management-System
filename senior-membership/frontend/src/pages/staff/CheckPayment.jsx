@@ -8,6 +8,15 @@ function CheckPayment() {
   const navigate = useNavigate();
   const [slips, setSlips] = useState([]);
 
+  const userRole = localStorage.getItem("userRole")
+
+  const checkUserRole = async () => {
+    if (userRole != 'staff') {
+      navigate('/login')
+    }
+    console.log(userRole)
+  };
+
   useEffect(() => {
     // เรียก API มาดึงรายการ slip ทั้งหมด
     const fetchSlips = async () => {
@@ -19,6 +28,7 @@ function CheckPayment() {
       }
     };
     fetchSlips();
+    checkUserRole();
   }, []);
 
   const handleRowClick = (historyId) => {

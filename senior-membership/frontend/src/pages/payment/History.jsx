@@ -1,9 +1,23 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 
 function History() {
 
   const navigate = useNavigate();
+
+  // สำหรับเช็ค role
+    const userRole = localStorage.getItem("userRole")
+  
+    const checkUserRole = async () => {
+      if (userRole != 'member'){
+        navigate('/login')
+      }
+      console.log(userRole)
+    };
+    
+    useEffect(() => {
+      checkUserRole();
+    }, []);
 
   const handleRowClick = () => {
     navigate('/committee_candidateProfile');

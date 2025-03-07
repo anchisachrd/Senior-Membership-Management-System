@@ -1,6 +1,23 @@
-import React from 'react'
+import React, { useEffect} from 'react'
+import { useNavigate } from "react-router-dom";
 
 function DetailCheckPayment() {
+
+  const navigate = useNavigate();
+  // สำหรับเช็ค role
+  const userRole = localStorage.getItem("userRole")
+
+  const checkUserRole = async () => {
+    if (userRole != 'staff') {
+      navigate('/login')
+    }
+    console.log(userRole)
+  };
+
+  useEffect(() => {
+    checkUserRole();
+  }, []);
+
   return (
     <div className='ibm-plex-sans-thai-medium'>
       <div class="p-12 sm:ml-64">
@@ -12,7 +29,7 @@ function DetailCheckPayment() {
             <div class="p-12">
 
               <img src="slip.jpg" class="w-96 h-auto mx-auto rounded-lg mb-5" />
-              
+
               <div class="flex justify-center items-center mb-2">
                 <div class="inline-flex text-xl text-black font-base bg-lime-500 rounded p-2">
                   <b class="me-2">ผลการตรวจสอบ:</b> สลิปโอนเงินถูกต้อง

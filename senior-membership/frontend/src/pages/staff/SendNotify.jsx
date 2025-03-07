@@ -1,12 +1,28 @@
-import React , { useState } from 'react'
+import React , { useState, useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
 
 function SendNotify() {
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
+
+     // สำหรับเช็ค role
+      const userRole = localStorage.getItem("userRole")
+    
+      const checkUserRole = async () => {
+        if (userRole != 'staff'){
+          navigate('/login')
+        }
+        console.log(userRole)
+      };
+      
+      useEffect(() => {
+        checkUserRole();
+      }, []);
 
 
     return (

@@ -11,6 +11,7 @@ function CadidateWaitingList() {
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
   const [onConfirmAction, setOnConfirmAction] = useState(() => {});
+  const userRole = localStorage.getItem("userRole")
 
   const navigate = useNavigate();
 
@@ -30,7 +31,8 @@ function CadidateWaitingList() {
   };
 
   useEffect(() => {
-    fetchCandidates(); // Fetch initial data 
+    fetchCandidates();
+    checkUserRole(); // Fetch initial data 
   }, []);
 
   const handleSentdata = async (candidateId) => {
@@ -55,7 +57,6 @@ function CadidateWaitingList() {
     }
   };
 
- 
 
   const openModal = (title, description, action) => {
     setModalTitle(title);
@@ -68,6 +69,13 @@ function CadidateWaitingList() {
     setIsModalOpen(false);
   };
 
+  // บังคับเข้าหน้า
+  const checkUserRole = async () => {
+    if (userRole != 'staff'){
+      navigate('/login')
+    }
+  };
+  
  
   return (
     <div className="ibm-plex-sans-thai-medium">

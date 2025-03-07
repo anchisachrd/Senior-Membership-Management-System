@@ -5,7 +5,7 @@ import { MdOutlineMail } from "react-icons/md";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object({
@@ -20,39 +20,49 @@ const validationSchema = Yup.object({
 
 function Login() {
   const navigate = useNavigate();
-const handleLogin = async (values, { setSubmitting, setErrors }) => {
- 
-  try {
-    // Replace with  backend API URL
-    const response = await fetch("http://localhost:3000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values), // Send email and password
-    });
+  const handleLogin = async (values, { setSubmitting, setErrors }) => {
 
-    if (!response.ok) {
-      // Extract error message from the response
-      const errorData = await response.json();
-      throw new Error(errorData.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+    try {
+      // Replace with  backend API URL
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values), // Send email and password
+      });
+
+      if (!response.ok) {
+        // Extract error message from the response
+        const errorData = await response.json();
+        throw new Error(errorData.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+      }
+
+      const data = await response.json();
+      console.log("Login Success:", data);
+      // localStorage.setItem("token", data.token);
+
+      // แปลง token
+      const userInfo = jwtDecode(data.token)
+      localStorage.setItem("userRole", userInfo.userInfo.role);
+
+      alert("เข้าสู่ระบบสำเร็จ!");
+
+      if (userInfo.userInfo.role === 'member'){
+        navigate("/history");
+      } else if (userInfo.userInfo.role === 'heir'){
+        navigate("/deathReport");
+      } 
+     
+
+    } catch (error) {
+      console.error("Login Error:", error.message);
+      // Set API error in Formik errors
+      setErrors({ apiError: error.message });
+    } finally {
+      setSubmitting(false);
     }
-
-    const data = await response.json();
-    console.log("Login Success:", data);
-
-    // Handle success (e.g., store token, redirect user)
-    alert("เข้าสู่ระบบสำเร็จ!");
-    navigate("/register");
-
-  } catch (error) {
-    console.error("Login Error:", error.message);
-    // Set API error in Formik errors
-    setErrors({ apiError: error.message });
-  } finally {
-    setSubmitting(false);
-  }
-};
+  };
 
   return (
     <div>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function FormPage({ setStep }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -196,6 +197,20 @@ function StatusPage() {
 
 function DeathReport() {
     const [step, setStep] = useState(1);
+    const navigate = useNavigate();
+    // สำหรับเช็ค role
+      const userRole = localStorage.getItem("userRole");
+    
+      const checkUserRole = async () => {
+        if (userRole != 'heir') {
+          navigate('/login')
+        }
+        console.log(userRole)
+      };
+    
+      useEffect(() => {
+        checkUserRole();
+      }, []);
 
     return (
         <div class="p-12 sm:ml-64">

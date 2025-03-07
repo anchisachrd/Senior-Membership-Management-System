@@ -1,16 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaCircleCheck, FaRegEye, FaRegFile } from "react-icons/fa6";
-import { CiFileOn } from "react-icons/ci";
-import { FiEye } from "react-icons/fi";
-import { LuFile } from "react-icons/lu";
 import { Link } from "react-router";
 // Import the API helper
 import { createCandidate } from "../../api/candidateApi";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { validationSchemaStep1, validationSchemaStep2 } from "../authen/Validation"
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FileUpload from "../../components/FileUpload";
+import {useNavigate } from 'react-router-dom';
 
 // Define the provinces as a reusable array
 const provinces = [
@@ -968,6 +965,21 @@ function Confirm() {
 function HeirRegister() {
   const [step, setStep] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // สำหรับเช็ค role
+        const userRole = localStorage.getItem("userRole");
+      
+        const checkUserRole = async () => {
+          if (userRole != 'heir') {
+            navigate('/login')
+          }
+          console.log(userRole)
+        };
+      
+        useEffect(() => {
+          checkUserRole();
+        }, []);
 
   const initialValues = {
     // Step 1 Fields

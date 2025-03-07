@@ -39,7 +39,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route  element={ <SidebarStaff />}>
         <Route path='/committee_candidateList' element={ <CommitteCandidateList />} />
      
-
         <Route path='/staff_candidateList' element={ < StaffCandidateList/>} />
         <Route path='/staff_cadidateWaitingList' element={ < CadidateWaitingList />} />
         <Route path='/candidateProfile/:id' element={ < CandidateProfile/>} />
@@ -54,7 +53,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/login' element={ <Login />} />
       <Route path='/staff_login' element={ <LoginStaff />} />
       <Route path='/register' element={ <Register />} />
-
       <Route path='/edit_info' element={ <EditInfo />} />
 
     </Routes>
