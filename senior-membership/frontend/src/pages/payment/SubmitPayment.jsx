@@ -5,49 +5,37 @@ import ConfirmModal from "../../components/ConfirmModal";
 ;
 
 function SubmitPayment() {
-  const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [namePayment, setNamePayment] = useState("");
-  const [bank, setBank] = useState("");
-  const [amount, setAmount] = useState("");
-  const [slipFile, setSlipFile] = useState(null); // Store uploaded file
-  const memberId = 2; // Example memberId 
+    const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [namePayment, setNamePayment] = useState("");
+    const [bank, setBank] = useState("");
+    const [amount, setAmount] = useState("");
+    const [slipFile, setSlipFile] = useState(null); // Store uploaded file
+    const memberId = 2; // Example memberId 
+    const deathId = 2; 
 
-  // Toggle modal state
-  const toggleModal = () => setIsModalOpen(!isModalOpen);
+    // Toggle modal state
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const isFormValid = namePayment !== "" && bank !== "" && amount !== "" && slipFile !== null;
+    const isFormValid = namePayment !== "" && bank !== "" && amount !== "" && slipFile !== null;
 
-  const handleFileChange = (e) => {
-    setSlipFile(e.target.files[0]);
-  };
+    const handleFileChange = (e) => {
+        setSlipFile(e.target.files[0]);
+    };
 
-  const handleConfirmSubmit = async () => {
-    try {
-      const result = await verifySlip(slipFile, memberId, amount);
-      alert('อัปโหลดสลิปสำเร็จ!');
-      console.log(result);
-      setIsModalOpen(false);
-      navigate('/history');
-    } catch (error) {
-      alert('เกิดข้อผิดพลาดในการอัปโหลดสลิป');
-      setIsModalOpen(false);
-    }
-  };
-
-  // สำหรับเช็ค role
-  const userRole = localStorage.getItem("userRole");
-
-  const checkUserRole = async () => {
-    if (userRole != 'member') {
-      navigate('/login')
-    }
-    console.log(userRole)
-  };
-
-  useEffect(() => {
-    checkUserRole();
-  }, []);
+    
+    const handleConfirmSubmit = async () => {
+        try {
+            const result = await verifySlip(slipFile, memberId, amount, deathId);
+            alert(result.message);
+            console.log(result);
+            setIsModalOpen(false);
+            navigate('/history');
+        } catch (error) {
+            alert('เกิดข้อผิดพลาดในการอัปโหลดสลิป');
+            setIsModalOpen(false);
+        }
+    };
 
   return (
     <div className="p-12 sm:ml-64">
@@ -199,23 +187,24 @@ function SubmitPayment() {
               type="button"
               onClick={toggleModal}
               disabled={!isFormValid}
-              className={`focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 me-9 mb-2 ${isFormValid
+              className={`focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 me-9 mb-2 ${
+                isFormValid
                   ? "bg-lime-700 hover:bg-lime-800 focus:ring-4 "
-                  : "bg-gray-400 cursor-not-allowed"
-
-                }`}
+                  : "bg-gray-400 cursor-not-allowed" 
+                  
+              }`}
             >
               แจ้งผลการชำระเงิน
-            </button>
+            </button>         
           </div>
         </div>
       </div>
       <ConfirmModal
-        isOpen={isModalOpen}
-        title="ยืนยันการแจ้งชำระเงิน"
-        description="โปรดตรวจสอบความถูกต้องก่อนกดยืนยัน"
-        onConfirm={handleConfirmSubmit}
-        onCancel={toggleModal}
+       isOpen={isModalOpen}
+       title="ยืนยันการแจ้งชำระเงิน"
+       description="โปรดตรวจสอบความถูกต้องก่อนกดยืนยัน"
+       onConfirm={handleConfirmSubmit} 
+       onCancel={toggleModal} 
       />
     </div>
   );

@@ -36,6 +36,8 @@ function CheckPayment() {
     navigate(`/staff_detailCheckPayment/${historyId}`);
   };
 
+  //FIXME - แก้สีตาราง
+
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">

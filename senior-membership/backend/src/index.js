@@ -2,9 +2,11 @@ import express from 'express'
 import cors from 'cors'
 import candidateRoutes from "./routes/candidateRoute.js"
 import approvalRoutes from "./routes/approvalRoutes.js"
-import authRoutes from "./routes/authRoutes.js" // <-- login
+import bcrypt from "bcrypt"
 import path from 'path';
 import slipRoutes from "./routes/slipRoutes.js"; // <--- Import slipRoutes
+import authRoutes from "./routes/authRoutes.js" // <-- login
+
 
 
 

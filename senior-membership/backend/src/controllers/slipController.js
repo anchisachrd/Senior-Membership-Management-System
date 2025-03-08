@@ -2,68 +2,115 @@
 import fs from 'fs';
 import { slipService } from '../services/slipService.js';
 import * as slipModel from '../models/slipModel.js';
+import { getErrorMessage } from '../utils/erroMessage.js';
 
 // Controller object
 export const slipController = {
-   badErrorCodes: [ 1006, 1007, 1008, 1011, 1013, 1014],
-   notifyErrorCodes: [1005, 1009, 1010,  1012],
-   adminErrorCodes:  [1001, 1002, 1003, 1004],
   verifyAndSaveSlip: async (req, res) => {
     try {
-    
-  
-      const { memberId, amount } = req.body;
-  
-      // 🔥 Debug: เช็คว่า memberId ได้ค่าจริงหรือไม่
-      // console.log('✅ memberId:', memberId);
-      // console.log('✅ amount:', amount);
-  
-      // if (!memberId || isNaN(memberId)) {
-      //   return res.status(400).json({ message: '❌ Invalid memberId' });
-      // }
-  
-      // if (!req.file) {
-      //   return res.status(400).json({ message: '❌ No file provided' });
-      // }
-  
+      const { memberId, deathId } = req.body;
       const filePath = req.file.path;
-      // console.log('✅ File saved at:', filePath);
-  
-      let slipOkData;
-    try {
-      slipOkData = await slipService.verifySlipByFile(filePath, amount);
-      console.log('✅ SlipOK response:', slipOkData);
-    } catch ({ errorCode, errorMessage,  errorResponse }) {  // ✅ Now directly catching structured errors
-      console.log(`❌ SlipOK API Error: Code ${errorCode} | Message: ${errorMessage}`);
 
-      // ✅ Record only relevant bad error codes
-      if (slipController.badErrorCodes.includes(errorCode)) {
-        const failedSlipData = errorResponse || null;
-        console.log('⚠️ Saving Bad Slip to DB...');
-        await slipModel.createSlipHistory(memberId, failedSlipData, filePath, 'fail', errorCode, errorMessage);
+      //TODO - แก้ให้ amount ยังไม่บันทึกถ้า slip ยังไม่ถูกต้อง
+      const amount = 1; // Suppose we fix the amount
+
+      // We'll store these so we can create or update in one place
+      let slipDataForDb = null;      // JSON.stringify(...) later
+      let status = 'pass';           // default if success
+      let errorCode = null;
+      let errorMsg = null;
+
+      // 1) Call SlipOK
+      try {
+        const slipOkData = await slipService.verifySlipByFile(filePath, amount);
+        slipDataForDb = JSON.stringify(slipOkData);
+      } catch (error) {
+        status = 'fail';
+        errorCode = error.errorCode;      // from slipOk’s error
+        // If you have a local mapped message, use it;
+        // otherwise fallback to the slipOk error:
+        errorMsg = getErrorMessage(errorCode) || error.errorMessage;
+        slipDataForDb = JSON.stringify(error.errorResponse || {});
       }
 
-      if (slipController.notifyErrorCodes.includes(errorCode)) {
-        console.log(`⚠️ Notify Member: ${errorCode} - ${errorMessage}`);
+      // 2) Check existing slip for (memberId, deathId)
+      const existingSlip = await slipModel.getSlipHistoryByMemberAndDeath(memberId, deathId);
+
+      // 3) No existing record => just insert
+      if (!existingSlip) {
+        const newSlip = await slipModel.createSlipHistory(
+          memberId,
+          deathId,
+          amount,
+          slipDataForDb,
+          filePath, 
+          status,
+          errorCode,
+          errorMsg
+        );
+        return res.status(200).json({ message: `Slip processed (${status})`, data: newSlip });
       }
 
-      if (slipController.adminErrorCodes.includes(errorCode)) {
-        console.log(`⚠️ Notify Admin: ${errorCode} - ${errorMessage}`);
+      // 4) If there IS an existing record, handle pass/fail logic:
+      if (existingSlip.status === 'pass') {
+        // Already has a successful slip in DB => 
+        // Option A: Disallow any new submission
+        return res.status(400).json({
+          message: 'ส่งสลิปสำเร็จ ไม่สามารถส่งใหม่ได้'
+        });
+
+        // Or Option B: Overwrite with the new slip if you want to allow updates.
       }
 
-      return res.status(400).json({ message: errorMessage });
+      // existingSlip.status === 'fail'
+      // Now check if the new slip is 'pass' or 'fail'
+      if (status === 'fail') {
+        // Compare slipDataForDb to existingSlip.slip_data if you want to see “same slip or not”
+        if (slipDataForDb === existingSlip.slip_data) {
+          // The slip is exactly the same as the last fail
+          return res.status(400).json({
+            message: 'สลิปเดิมถูกส่งมาแล้ว โปรดตรวจสอบก่อนแนบสลิปใหม่'
+          });
+        } else {
+          // It's a different fail slip => update
+          const updatedSlip = await slipModel.updateSlipHistory(
+            memberId,
+            deathId,
+            amount,
+            slipDataForDb,
+            filePath,
+            status,
+            errorCode,
+            errorMsg
+          );
+          return res.status(200).json({
+            message: 'สลิปใหม่ (fail) ถูกอัปเดตสำเร็จ',
+            data: updatedSlip
+          });
+        }
+      } else {
+        // status === 'pass' => user finally uploaded a correct slip
+        const updatedSlip = await slipModel.updateSlipHistory(
+          memberId,
+          deathId,
+          slipDataForDb,
+          filePath,
+          'pass',     // we know it's pass
+          null,       // pass => no errorCode
+          null        // pass => no errorMsg
+        );
+        return res.status(200).json({
+          message: 'อัปโหลดสลิปสมบูรณ์แล้ว',
+          data: updatedSlip
+        });
+      }
+    } catch (error) {
+      console.error('❌ Server Error:', error);
+      return res.status(500).json({
+        errorCode: 5000,
+        message: 'เกิดข้อผิดพลาดในเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง'
+      });
     }
-
-    // ✅ Save verified slip to DB
-    const newHistory = await slipModel.createSlipHistory(memberId, slipOkData, filePath,'pass');
-    console.log('✅ Slip saved in DB:', newHistory);
-
-    return res.status(200).json({ message: 'Slip verified successfully', data: newHistory });
-
-  } catch (error) {
-    console.error('❌ Server Error:', error);
-    return res.status(500).json({ message: 'Server Error', error: error.message });
-  }
   },
 
   getAllSlipHistories: async (req, res) => {
@@ -84,4 +131,24 @@ export const slipController = {
       return res.status(500).json({ message: 'Server Error', error: error.message });
     }
   },
+};
+
+export const getAccountSummary = async (req, res) => {
+  try {
+    const totalPassed = await slipModel.getTotalPassedAmount();
+    return res.status(200).json({ total: totalPassed });
+  } catch (error) {
+    console.error('❌ getAccountSummary Error:', error);
+    return res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+
+export const getAllPassedSlips = async (req, res) => {
+  try {
+    const slips = await slipModel.getAllPassedSlips();
+    return res.status(200).json(slips);
+  } catch (error) {
+    console.error('❌ getAllPassedSlips Error:', error);
+    return res.status(500).json({ message: 'Server Error', error: error.message });
+  }
 };
