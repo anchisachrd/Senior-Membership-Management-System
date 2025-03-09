@@ -8,7 +8,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
-export const loginUserByEmail = async (req, res) => {
+export const loginUserByEmail = async (req, res, next) => {
 
   const { email, password } = req.body;
 
@@ -43,16 +43,28 @@ export const loginUserByEmail = async (req, res) => {
           "role": account.role
         }
       },
-      JWT_SECRET
+      JWT_SECRET,
+      { expiresIn: "1h" }
     )
 
     // 5. Return success response with token
-    return res.json(
-      {
-        message: "Login successful",
-        token: accessToken
-      }
-    );
+    // return res.json(
+    //   {
+    //     message: "Login successful",
+    //     token: accessToken
+    //   }
+    // );
+
+    req.token = accessToken; // ส่ง token ไปยัง middleware ถัดไป
+    req.user = {
+      accountId: account.account_id,
+      email: account.email,
+      role: account.role
+    };
+
+    next(); // ไป middleware ถัดไป
+
+
   } catch (error) {
     console.error("Login error:", error.message);
     return res.status(500).json({ message: "An error occurred during login" });
