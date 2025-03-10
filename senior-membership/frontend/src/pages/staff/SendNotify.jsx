@@ -1,28 +1,42 @@
-import React , { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
+import { verifyUser } from '../../api/verifyApi';
 
 function SendNotify() {
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
 
+    const [userRole, setUserRole] = useState('')
+    const [userEmail, setUserEmail] = useState('')
+
+    useEffect(() => {
+        fetchUserProfile();
+        checkUserRole();
+    }, [userEmail]);
+
+    const checkUserRole = async () => {
+        if (userRole != 'staff') {
+            navigate('/login')
+        }
+    };
+
+    const fetchUserProfile = async () => {
+        try {
+            const data = await verifyUser();
+            setUserRole(data.role)
+            setUserEmail(data.email)
+
+        } catch (error) {
+            console.error('Fetch Protected Data Error:', error);
+        }
+    };
+
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-     // สำหรับเช็ค role
-      const userRole = localStorage.getItem("userRole")
-    
-      const checkUserRole = async () => {
-        if (userRole != 'staff'){
-          navigate('/login')
-        }
-        console.log(userRole)
-      };
-      
-      useEffect(() => {
-        checkUserRole();
-      }, []);
+
 
 
     return (
@@ -103,7 +117,7 @@ function SendNotify() {
                                             <div
                                                 id="dropdownSearch"
                                                 className="z-10 bg-white rounded-lg shadow-sm w-60 dark:bg-gray-300">
-                                                
+
                                                 <ul className="h-48 px-3 py-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSearchButton">
                                                     <li>
                                                         <div className="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-400">
@@ -111,7 +125,7 @@ function SendNotify() {
                                                                 id="checkbox-item-11"
                                                                 type="checkbox"
                                                                 value="member"
-                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:ring-offset-gray-700 dark:focus:ring-offset-gray-300 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
+                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:ring-offset-gray-700 dark:focus:ring-offset-gray-300 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
                                                             <label htmlFor="checkbox-item-11" className="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-900">
                                                                 สมาชิก
                                                             </label>
@@ -124,7 +138,7 @@ function SendNotify() {
                                                                 id="checkbox-item-11"
                                                                 type="checkbox"
                                                                 value="comittee"
-                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:ring-offset-gray-700 dark:focus:ring-offset-gray-300 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
+                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:ring-offset-gray-700 dark:focus:ring-offset-gray-300 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
                                                             <label htmlFor="checkbox-item-11" className="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-900">
                                                                 กรรมการ
                                                             </label>
@@ -137,7 +151,7 @@ function SendNotify() {
                                                                 id="checkbox-item-11"
                                                                 type="checkbox"
                                                                 value="staff"
-                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:ring-offset-gray-700 dark:focus:ring-offset-gray-300 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
+                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:ring-offset-gray-700 dark:focus:ring-offset-gray-300 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
                                                             <label htmlFor="checkbox-item-11" className="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-900">
                                                                 เจ้าหน้าที่
                                                             </label>
@@ -150,14 +164,14 @@ function SendNotify() {
                                                                 id="checkbox-item-11"
                                                                 type="checkbox"
                                                                 value="heir"
-                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:ring-offset-gray-700 dark:focus:ring-offset-gray-300 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"/>
+                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:ring-offset-gray-700 dark:focus:ring-offset-gray-300 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
                                                             <label htmlFor="checkbox-item-11" className="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-900">
                                                                 ทายาท
                                                             </label>
                                                         </div>
                                                     </li>
 
-                                                    
+
 
                                                 </ul>
                                             </div>

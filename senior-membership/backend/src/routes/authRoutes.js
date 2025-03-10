@@ -10,6 +10,8 @@ const router = express.Router();
 
 // router.post("/", authController.loginUserByEmail);
 
+
+// เชื่อม middleware
 router.post("/", authController.loginUserByEmail, (req, res) => {
     res.json({
       message: "Login successful",
@@ -17,11 +19,12 @@ router.post("/", authController.loginUserByEmail, (req, res) => {
     });
   });
 
-// router.get("/profile", authMiddleware.verifyJWT, (req, res) => {
-//     res.json({ message: "Profile data", user: req.user });
-//   });
-router.get('/protected-route', authMiddleware.verifyJWT, (req, res) => {
-    console.log(req.headers);  // ตรวจสอบ Headers ที่รับมา
-    res.json({ message: "Access Granted" });
+
+router.get('/verify', authMiddleware.verifyJWT, (req, res) => {
+    res.json({
+      message: 'You have accessed a protected route!',
+      user: req.user, // นำข้อมูลที่ middleware เก็บมาใช้
+    });
 });
+
 export default router;

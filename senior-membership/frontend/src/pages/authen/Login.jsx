@@ -39,20 +39,22 @@ function Login() {
       }
 
       const data = await response.json();
-      console.log("Login Success:", data);
-      // localStorage.setItem("token", data.token);
+      console.log("Login Success");
+      localStorage.setItem("userToken", data.token);
 
       // แปลง token
       const userInfo = jwtDecode(data.token)
-      localStorage.setItem("userRole", userInfo.userInfo.role);
-
       alert("เข้าสู่ระบบสำเร็จ!");
 
       if (userInfo.userInfo.role === 'member'){
         navigate("/history");
       } else if (userInfo.userInfo.role === 'heir'){
         navigate("/deathReport");
-      } 
+      } else if (userInfo.userInfo.role === 'staff'){
+        navigate("/staff_candidateList");
+      } else if (userInfo.userInfo.role === 'committee'){
+        navigate("/committee_candidateList");
+      }
      
 
     } catch (error) {

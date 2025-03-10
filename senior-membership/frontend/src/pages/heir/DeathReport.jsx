@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { verifyUser } from '../../api/verifyApi';
 
 function FormPage({ setStep }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -199,18 +200,30 @@ function DeathReport() {
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
     // สำหรับเช็ค role
-      const userRole = localStorage.getItem("userRole");
-    
-      const checkUserRole = async () => {
-        if (userRole != 'heir') {
-          navigate('/login')
-        }
-        console.log(userRole)
-      };
-    
-      useEffect(() => {
+    const [userRole, setUserRole] = useState('')
+    const [userEmail, setUserEmail] = useState('')
+
+    useEffect(() => {
+        fetchUserProfile();
         checkUserRole();
-      }, []);
+    }, [userEmail]);
+
+    const checkUserRole = async () => {
+        if (userRole != 'heir') {
+            navigate('/login')
+        }
+    };
+
+    const fetchUserProfile = async () => {
+        try {
+            const data = await verifyUser();
+            setUserRole(data.role)
+            setUserEmail(data.email)
+
+        } catch (error) {
+            console.error('Fetch Protected Data Error:', error);
+        }
+    };
 
     return (
         <div class="p-12 sm:ml-64">

@@ -2,44 +2,60 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCheck } from "react-icons/fa6";
 import { getAllCandidates } from '../../api/candidateApi';
+import { verifyUser } from '../../api/verifyApi';
 
 
 function StaffCandidateList() {
     const [candidates, setCandidates] = useState([]);
     const navigate = useNavigate();
+    const [userRole, setUserRole] = useState('')
+    const [userEmail, setUserEmail] = useState('')
+
 
     const handleRowClick = (candidateId) => {
-        navigate(`/candidateProfile/${candidateId}`,  { state: { context: 'staffCandidateProfile' } });
+        navigate(`/candidateProfile/${candidateId}`, { state: { context: 'staffCandidateProfile' } });
     }
 
-     // สำหรับเช็ค role
-      const userRole = localStorage.getItem("userRole")
-    
-      const checkUserRole = async () => {
-        if (userRole != 'staff' || userRole!= 'committee'){
-          navigate('/login')
+    // สำหรับเช็ค role
+    useEffect(() => {
+        fetchUserProfile();
+        checkUserRole();
+    }, [userEmail]);
+
+    const checkUserRole = async () => {
+        if (userRole != 'staff') {
+            navigate('/login')
         }
-        console.log(userRole)
-      };
-      
+    };
+
+    const fetchUserProfile = async () => {
+        try {
+            const data = await verifyUser();
+            setUserRole(data.role)
+            setUserEmail(data.email)
+
+        } catch (error) {
+            console.error('Fetch Protected Data Error:', error);
+        }
+    };
+
 
     useEffect(() => {
-      const fetchCandidates = async () => {
-          try {
-              const data = await getAllCandidates();
-              console.log("API Response:", data);
+        const fetchCandidates = async () => {
+            try {
+                const data = await getAllCandidates();
+                console.log("API Response:", data);
 
-              //เอาข้อมูลที่เป็นผ่านการตรวจสอบออก เพราะให้ไปโชว์ในแถวคอยแทน
-              const filteredCandidates = data.filter(candidate => candidate.doc_verification_status !== 'ผ่านการตรวจสอบ');
-              setCandidates(filteredCandidates); 
-          } catch (error) {
-              console.error('Error:', error);
-              setCandidates([]); 
-          }
-      };
-      fetchCandidates();
-      checkUserRole();
-  }, []);
+                //เอาข้อมูลที่เป็นผ่านการตรวจสอบออก เพราะให้ไปโชว์ในแถวคอยแทน
+                const filteredCandidates = data.filter(candidate => candidate.doc_verification_status !== 'ผ่านการตรวจสอบ');
+                setCandidates(filteredCandidates);
+            } catch (error) {
+                console.error('Error:', error);
+                setCandidates([]);
+            }
+        };
+        fetchCandidates();
+    }, []);
 
     return (
         <div className='ibm-plex-sans-thai-medium'>
@@ -113,7 +129,7 @@ function StaffCandidateList() {
                                         <td className="text-center align-middle py-4 px-4">{candidate.first_name} {candidate.last_name}</td>
                                         <td className="text-center align-middle py-4 px-4">{candidate.national_id}</td>
                                         <td className="text-center align-middle py-4 px-4">{candidate.phone}</td>
-                                        <td className="text-center align-middle py-4 px-4">{candidate.priority ? <FaCheck /> : '-' }</td>
+                                        <td className="text-center align-middle py-4 px-4">{candidate.priority ? <FaCheck /> : '-'}</td>
                                         <td className="text-center align-middle py-4 px-4">{candidate.doc_verification_status}</td>
                                         <td className="text-center align-middle py-4 px-4">{candidate.approval_status}</td>
 

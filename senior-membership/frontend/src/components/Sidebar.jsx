@@ -14,9 +14,9 @@ function Sidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem("userRole");
+    localStorage.removeItem("userToken");
     alert("ออกจากระบบเรียบร้อยแล้ว");
     navigate("/login");
-    console.log(userRole)
     }
 
   return (

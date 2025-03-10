@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 // หน้าต่าง ๆ 
 import App from './App.jsx'
 import Login from './pages/authen/Login.jsx'
-import LoginStaff from './pages/authen/LoginStaff.jsx'
+// import LoginStaff from './pages/authen/LoginStaff.jsx'
 import Register from './pages/authen/Register.jsx'
 import CommitteCandidateList from './pages/committee/CommitteCandidateList.jsx'
 import DeathReport from './pages/heir/DeathReport.jsx'
@@ -51,7 +51,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       
       {/* หน้าที่ไม่ต้องมี side bar */}
       <Route path='/login' element={ <Login />} />
-      <Route path='/staff_login' element={ <LoginStaff />} />
       <Route path='/register' element={ <Register />} />
       <Route path='/edit_info' element={ <EditInfo />} />
 

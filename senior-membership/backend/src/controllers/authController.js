@@ -48,22 +48,20 @@ export const loginUserByEmail = async (req, res, next) => {
     )
 
     // 5. Return success response with token
-    // return res.json(
-    //   {
-    //     message: "Login successful",
-    //     token: accessToken
-    //   }
-    // );
+    return res.json(
+      {
+        message: "Login successful"
+      }
+    );
 
-    req.token = accessToken; // ส่ง token ไปยัง middleware ถัดไป
+    req.token = accessToken;
     req.user = {
       accountId: account.account_id,
       email: account.email,
       role: account.role
     };
 
-    next(); // ไป middleware ถัดไป
-
+    next();
 
   } catch (error) {
     console.error("Login error:", error.message);
