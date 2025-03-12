@@ -70,3 +70,24 @@ export const loginUserByEmail = async (req, res, next) => {
 
 
 }
+
+export const ChangePassword = async (req, res, next) => {
+  const { accountId, oldPassword, newPassword } = req.body;
+
+  try {
+    const result = await authServices.changePassword(accountId, oldPassword, newPassword);
+
+    if (!result.success) {
+      return res.status(400).json(result); 
+    }
+
+    return res.status(200).json(result); 
+
+  } catch (error) {
+    console.error("Change Password error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน"
+    });
+  }
+};

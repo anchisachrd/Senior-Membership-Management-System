@@ -3,11 +3,13 @@ import * as candidateService from "../services/candidateService.js";
 
 
 
-export const createCandidateData = async (req, res) => {
+export const register = async (req, res) => {
   try {
-    
-    // 2) Build candidateData object from req.body
-    const candidateData = {
+    console.log("✅ Raw Request Body:", req.body);
+    console.log("📂 Uploaded Files:", req.files);
+
+    // ✅ Extract Candidate Data
+    const candidate = {
       title: req.body.candidate_title,
       first_name: req.body.candidate_first_name,
       last_name: req.body.candidate_last_name,
@@ -16,17 +18,6 @@ export const createCandidateData = async (req, res) => {
       phone: req.body.candidate_phone,
       gender: req.body.candidate_gender,
       occupation: req.body.candidate_occupation,
-      account: {
-        email: req.body.candidate_email,
-        password: req.body.candidate_password,
-      },
-      document: {
-
-        house_registration: null,
-        id_card: null,
-        rename_doc: null,
-        med_certification: null,
-      },
       address: {
         house_number: req.body.candidate_house_number,
         moo: req.body.candidate_moo,
@@ -37,91 +28,70 @@ export const createCandidateData = async (req, res) => {
         province: req.body.candidate_province,
         postal_code: req.body.candidate_postal_code,
       },
-    };
-
-    const sameAddress = req.body.sameAddress === "true";
-
-    const heirData = {
-      title: req.body.heir_title,
-      first_name: req.body.heir_first_name,
-      last_name: req.body.heir_last_name,
-      national_id: req.body.heir_national_id,
-      dob: req.body.heir_dob,
-      phone: req.body.heir_phone,
-      gender: req.body.heir_gender,
-      occupation: req.body.heir_occupation,
-      relationship: req.body.heir_relationship,
-      sameAddress,
       account: {
-        email: req.body.heir_email,
-        // password: req.body.heir_password || "AUTO_GENERATED_PASSWORD",
+        email: req.body.candidate_email,
+        password: req.body.candidate_password,
       },
       document: {
-
-        house_registration: null,
-        id_card: null,
-        rename_doc: null,
-      },
-      address: {
-        house_number: req.body.heir_house_number,
-        moo: req.body.heir_moo,
-        soi: req.body.heir_soi,
-        street: req.body.heir_street,
-        subdistrict: req.body.heir_subdistrict,
-        district: req.body.heir_district,
-        province: req.body.heir_province,
-        postal_code: req.body.heir_postal_code,
-      },
+        house_registration: req.files?.candidate_house_registration?.[0]?.path || null,
+        id_card: req.files?.candidate_id_card?.[0]?.path || null,
+        rename_doc: req.files?.candidate_rename_doc?.[0]?.path || null,
+        med_certification: req.files?.candidate_med_certification?.[0]?.path || null,
+      }
     };
 
-        // 2) Now capture file paths from req.files and place them in candidateData / heirData
-        if (req.files?.candidate_house_registration) {
-          candidateData.document.house_registration =
-            "upload/" + req.files.candidate_house_registration[0].filename;
-        }
-        if (req.files?.candidate_id_card) {
-          candidateData.document.id_card =
-            "upload/" + req.files.candidate_id_card[0].filename;
-        }
-        if (req.files?.candidate_rename_doc) {
-          candidateData.document.rename_doc =
-            "upload/" + req.files.candidate_rename_doc[0].filename;
-        }
-        if (req.files?.candidate_med_certification) {
-          candidateData.document.med_certification =
-            "upload/" + req.files.candidate_med_certification[0].filename;
-        }
+    // ✅ Handle Heir Data
     
-        // Heir documents
-        if (req.files?.heir_house_registration) {
-          heirData.document.house_registration =
-            "upload/" + req.files.heir_house_registration[0].filename;
-        }
-        if (req.files?.heir_id_card) {
-          heirData.document.id_card =
-            "upload/" + req.files.heir_id_card[0].filename;
-        }
-        if (req.files?.heir_rename_doc) {
-          heirData.document.rename_doc =
-            "upload/" + req.files.heir_rename_doc[0].filename;
-        }
+let heir = null;
+if (req.body.heir_title) {
+  const sameAddress = req.body.sameAddress === "true";
+  heir = {
+    title: req.body.heir_title,
+    first_name: req.body.heir_first_name,
+    last_name: req.body.heir_last_name,
+    national_id: req.body.heir_national_id,
+    dob: req.body.heir_dob,
+    phone: req.body.heir_phone,
+    gender: req.body.heir_gender,
+    occupation: req.body.heir_occupation,
+    relationship: req.body.heir_relationship,
+    // Pass sameAddress along so the service can use it
+    sameAddress, 
+    address: sameAddress
+      ? candidate.address // Use candidate's address object
+      : {
+          house_number: req.body.heir_house_number,
+          moo: req.body.heir_moo,
+          soi: req.body.heir_soi,
+          street: req.body.heir_street,
+          subdistrict: req.body.heir_subdistrict,
+          district: req.body.heir_district,
+          province: req.body.heir_province,
+          postal_code: req.body.heir_postal_code,
+        },
+    account: {
+      email: req.body.heir_email || "",
+    },
+    document: {
+      house_registration: req.files?.heir_house_registration?.[0]?.path || null,
+      id_card: req.files?.heir_id_card?.[0]?.path || null,
+      rename_doc: req.files?.heir_rename_doc?.[0]?.path || null,
+    }
+  };
+}
 
-    const result = await registerService.createCandidate(candidateData, heirData, req.files);
-
-    return res.status(201).json({
-      success: true,
-      data: result,
-      message: "Candidate (and Heir) registered successfully",
-    });
+    // ✅ Pass Data to Service
+    const result = await registerService.registerCandidateAndHeir(candidate, heir);
+    res.status(201).json({ message: "Registration successful", result });
   } catch (error) {
-    console.error("Error creating candidate:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    console.error("❌ Registration error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+
+
 
 export const getCandidates = async (req, res) => {
   try {

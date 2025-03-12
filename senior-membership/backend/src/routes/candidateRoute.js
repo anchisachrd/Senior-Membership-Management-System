@@ -9,17 +9,17 @@ const router = express.Router();
 
 
 // route อัปโหลด "เอกสารผู้สมัคร"
-router.post('/', uploadRegisterDocs, candidateController.createCandidateData);
+router.post("/register", uploadRegisterDocs, candidateController.register);
 
-router.get('/verified', candidateController.getVerifiedCandidates); 
-router.get('/candidate-list', candidateController.getWaitingApproveCandidates);
-router.get('/:id', candidateController.getCandidateandHeirById);
-router.put('/:id/verify', candidateController.updateDocStatus);
-router.put('/send-to-committee/:candidateId', candidateController.sendToCommittee);
+// router.get('/verified', candidateController.getVerifiedCandidates); 
+// router.get('/candidate-list', candidateController.getWaitingApproveCandidates);
+// router.get('/:id', candidateController.getCandidateandHeirById);
+// router.put('/:id/verify', candidateController.updateDocStatus);
+// router.put('/send-to-committee/:candidateId', candidateController.sendToCommittee);
 
-router.post("/", candidateController.createCandidateData);
-router.get('/', candidateController.getCandidates);
-router.delete('/:candidateId', candidateController.deleteCandidate);
+// router.post("/", candidateController.createCandidateData);
+// router.get('/', candidateController.getCandidates);
+// router.delete('/:candidateId', candidateController.deleteCandidate);
 
 
 

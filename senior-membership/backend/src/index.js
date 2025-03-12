@@ -24,7 +24,7 @@ app.use('/api/approval-details', approvalRoutes);
 // ✅ เพิ่ม slipRoutes ใน app.js
 app.use('/api/members', slipRoutes);
 // Login
-app.use('/api/login', authRoutes);
+app.use('/api/auth', authRoutes);
 
 // Optional: Serve files from the upload folder (if you want direct access to them)
 

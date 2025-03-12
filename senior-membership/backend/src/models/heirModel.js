@@ -1,15 +1,19 @@
 import { query } from '../db.js';  // Assuming you have a db.js file for the database connection
 
 // Create a new heir
-export const createHeir = async (heirData) => {
-    const { title, first_name, last_name, national_id, dob, phone, gender, occupation, relationship, address_id,account_id } = heirData;
-    const { rows } = await query(
-        `INSERT INTO heirs (title, first_name, last_name, national_id, dob, phone, gender, occupation, relationship, address_id, account_id)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING heir_id`,
-        [title, first_name, last_name, national_id, dob, phone, gender, occupation, relationship, address_id, account_id]
+export const createHeir = async (person_id, candidate_id, relationship, address_id, account_id) => {
+    const result = await query(
+      `INSERT INTO heirs (person_id, candidate_id, relationship, address_id, account_id) 
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [person_id, candidate_id, relationship, address_id, account_id ]
     );
-    return rows[0].heir_id;
-};
+    return result.rows[0];
+  };
+
+
+
+
+
 
 // Get heir by national ID
 export const getHeirByNationalId = async (national_id) => {

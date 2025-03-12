@@ -102,12 +102,11 @@ export const createCandidate = async (candidateData, heirData) => {
     //--------------------------------------------
     // 4) Send to Backend
     //--------------------------------------------
-    const response = await axios.post(apiUrl, formData, {
+    const response = await axios.post(apiUrl + "/register", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-
 
 
 
@@ -194,9 +193,9 @@ export const deleteCandidate = async (candidateId) => {
   }
 };
 
-export const updateApprovalStatus = async (candidateId, { status, verificationDetails, failReasons }) => {
+export const updateApprovalStatus = async (candidateId, committeeId, { status, verificationDetails, failReasons }) => {
   try {
-    const response = await axios.put(`${apiApproval}/${candidateId}/approval-status`, {
+    const response = await axios.put(`${apiApproval}/${candidateId}/committees/${committeeId}/approval-status`, {
       status,
       verificationDetails,
       failReasons, // This is only for sending an email

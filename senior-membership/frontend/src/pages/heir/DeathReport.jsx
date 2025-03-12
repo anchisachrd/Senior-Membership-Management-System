@@ -3,18 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { verifyUser } from '../../api/verifyApi';
 
 function FormPage({ setStep }) {
-    const [isChecked, setIsChecked] = useState(false);
+    // const [isChecked, setIsChecked] = useState(false);
 
-    const handleCheckboxChange = (e) => {
-        setIsChecked(e.target.checked);
-    };
+    // const handleCheckboxChange = (e) => {
+    //     setIsChecked(e.target.checked);
+    // };
 
-    const handleSubmit = () => {
-        if (isChecked) {
-            alert('แบบฟอร์มเสร็จสิ้น!');
-            setStep(2);
-        }
-    };
+    // const handleSubmit = () => {
+    //     if (isChecked) {
+    //         alert('แบบฟอร์มเสร็จสิ้น!');
+    //         setStep(2);
+    //     }
+    // };
 
     return (
         <div>
@@ -144,8 +144,8 @@ function FormPage({ setStep }) {
                             id="default-checkbox"
                             type="checkbox"
                             value=""
-                            checked={isChecked}
-                            onChange={handleCheckboxChange}
+                            // checked={isChecked}
+                            // onChange={handleCheckboxChange}
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                         />
                         <label
@@ -160,9 +160,9 @@ function FormPage({ setStep }) {
                 <div class="relative mt-14 flex justify-center items-center">
                     <button
                         type="button"
-                        onClick={handleSubmit}
-                        disabled={!isChecked}
-                        class={`focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 me-9 mb-2 disabled:cursor-not-allowed ${isChecked
+                        // onClick={handleSubmit}
+                        // disabled={!isChecked}
+                        class={`focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 me-9 mb-2 disabled:cursor-not-allowed 
                             ? 'bg-lime-800 hover:bg-lime-700'
                             : 'bg-gray-400 cursor-not-allowed'
                             }`}
