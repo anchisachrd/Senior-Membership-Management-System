@@ -1,18 +1,15 @@
 import { query } from "../db.js";
 
 // Create a document
-export const createDocument = async (documentData) => {
-  const { doc_path, doc_type, candidate_id, heir_id } = documentData;
-
-  const { rows } = await query(
-    `INSERT INTO documents (doc_path, doc_type, candidate_id, heir_id)
-       VALUES ($1, $2, $3, $4)
-       RETURNING document_id`,
-    [doc_path, doc_type, candidate_id, heir_id]
+export const uploadDocument = async (doc_path, doc_type, entity_id, entity_type) => {
+  const result = await query(
+    `INSERT INTO documents (doc_path, doc_type, entity_id, entity_type) 
+     VALUES ($1, $2, $3, $4) RETURNING *`,
+    [doc_path, doc_type, entity_id, entity_type]
   );
-
-  return rows[0].document_id;
+  return result.rows[0];
 };
+
 
 // Get a document by ID
 export const getDocumentById = async (documentId) => {

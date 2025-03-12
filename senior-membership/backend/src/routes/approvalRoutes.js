@@ -4,9 +4,16 @@ import * as approvalController from '../controllers/approvalController.js'
 import express from 'express';
 const router = express.Router();
 
-router.get("/verification/:candidateId",  approvalController.getVerificationDetails);
-router.put("/:candidateId/approval-status", approvalController.updateCandidateApprovalStatus);
+//ไว้ดูเอกสาร
+router.get("/:candidateId/committees/:committeeId",  approvalController.getVerificationDetail);
+router.get("/candidates/:committeeId", approvalController.getCandidatesForCommittee)
+router.get("/summary/:candidateId", approvalController.getCandidateApprovalSummary)
 
+// router.put("/:candidateId/approval-status", approvalController.updateCandidateApprovalStatus);
+router.put(
+  "/:candidateId/committees/:committeeId/approval-status", 
+  approvalController.updateCandidateApprovalStatus
+);
 
 
 

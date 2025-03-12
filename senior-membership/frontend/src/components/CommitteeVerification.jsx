@@ -27,40 +27,22 @@ function CommitteeVerification({ candidateId }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
+    console.log("Updated Results:", results);
+  }, [results]);
+  
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getVerificationDetail(candidateId);
         console.log("Full fetch response:", data);
-
-        if (Array.isArray(data)) {
-          setResults(data);
-          const isAllEmpty = data.every((v) => v === "");
-          if (isAllEmpty) {
-            setApprovalStatus("new");
-            setIsEditing(true);
-          } else {
-            const isAnyFail = data.some((v) => v === "fail");
-            setApprovalStatus(isAnyFail ? "fail" : "pass");
-            setIsEditing(false);
-          }
-        } else if (data && data.details) {
-          const parsedDetails =
-            typeof data.details === "string"
-              ? JSON.parse(data.details)
-              : data.details;
-
-          setResults(parsedDetails);
-
-          const isAllEmpty = parsedDetails.every((v) => v === "");
-          if (isAllEmpty) {
-            setApprovalStatus("new");
-            setIsEditing(true);
-          } else {
-            const isAnyFail = parsedDetails.some((v) => v === "fail");
-            setApprovalStatus(isAnyFail ? "fail" : "pass");
-            setIsEditing(false);
-          }
+  
+        if (data && data.verificationDetails) {
+          setResults(data.verificationDetails);
+          setApprovalStatus(data.approvalStatus || "new"); // ✅ Use backend-approved status
+          setIsEditing(data.approvalStatus === "new"); // Only allow editing if it's new
         } else {
+          setResults(qualification.map(() => ""));
           setApprovalStatus("new");
           setIsEditing(true);
         }
@@ -68,17 +50,27 @@ function CommitteeVerification({ candidateId }) {
         console.error("Error fetching verification details:", error);
       }
     };
+  
     fetchData();
   }, [candidateId]);
+  
 
   const isAllSelected = results.every((v) => v !== "");
-  const isAnyFail = results.some((v) => v === "fail");
+ 
 
   const handleRadioChange = (index, value) => {
     if (!isEditing) return;
+    
     setResults((prev) => {
       const copy = [...prev];
-      copy[index] = value;
+      
+      // Update the specific index with structured data
+      copy[index] = {
+        status: value,  // Update status (pass/fail)
+        reason: value === "fail" ? qualification[index].failReason : null, // Add reason if failed
+        comment: value === "fail" ? "" : null, // Placeholder for comment (optional)
+      };
+      
       return copy;
     });
   };
@@ -92,28 +84,15 @@ function CommitteeVerification({ candidateId }) {
     setIsSaveModalOpen(false); // Close modal
 
     try {
-      const overallStatus = isAnyFail ? "ไม่ผ่านการตรวจสอบ" : "ผ่านการตรวจสอบ";
-
-      let failReasons = [];
-      if (isAnyFail) {
-        failReasons = results
-          .map((r, i) => (r === "fail" ? qualification[i].failReason : null))
-          .filter(Boolean);
-      }
-
+      const response = await updateApprovalStatus(candidateId, {
+        verificationDetails: results, // Send results only, backend calculates status
+      });
   
-      await updateApprovalStatus(candidateId, {
-             status: overallStatus,
-             verificationDetails: results,
-             failReasons: failReasons,
-           });
-
-
-
-      setApprovalStatus(isAnyFail ? "fail" : "pass");
+      // ✅ Use the computed `approvalStatus` from backend response
+      setApprovalStatus(response.approvalStatus);
       setIsEditing(false);
-
-      alert(`เปลี่ยนสถานะสมาชิกเป็น ${overallStatus}`);
+  
+      alert(`เปลี่ยนสถานะสมาชิกเป็น ${response.approvalStatus}`);
     } catch (error) {
       console.error("Error updating approval status:", error);
       alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
@@ -168,7 +147,7 @@ function CommitteeVerification({ candidateId }) {
                   value="pass"
                   name={`topic_${index}`}
                   disabled={!isEditing}
-                  checked={results[index] === "pass"}
+                  checked={results[index]?.status === "pass"} 
                   onChange={() => handleRadioChange(index, "pass")}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
                 />
@@ -182,7 +161,7 @@ function CommitteeVerification({ candidateId }) {
                   value="fail"
                   name={`topic_${index}`}
                   disabled={!isEditing}
-                  checked={results[index] === "fail"}
+                  checked={results[index]?.status === "fail"}
                   onChange={() => handleRadioChange(index, "fail")}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
                 />

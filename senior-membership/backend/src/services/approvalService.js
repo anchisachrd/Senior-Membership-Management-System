@@ -5,56 +5,63 @@ import * as memberModel from '../models/memberModel.js'
 import { query } from "../db.js"            // your Postgres pool.
 import { pool } from "../db.js";
 
-export const approvalStatusUpdate = async (candidateId, status,  failReasons, verificationDetails) => {
-   const client = await pool.connect();
-  try{
+export const approvalStatusUpdate = async (
+  candidateId,
+  committeeId,
+  verificationDetails
+) => {
+  const client = await pool.connect();
+  try {
     await client.query("BEGIN");
 
-    await candidateModel.updateApprovalStatus(candidateId, status);
-    await approvalModel.createApprovalDetails(candidateId)
-    await approvalModel.updateVerificationDetails(candidateId, verificationDetails);
+    // ✅ Automatically compute approval status
+    const hasFail = verificationDetails.some(detail => detail.status === "fail");
+    const approvalStatus = hasFail ? "ไม่ผ่านการตรวจสอบ" : "ผ่านการตรวจสอบ";
+
+
+    // Check if record exists
+    const exist = await approvalModel.findOneApproval(candidateId, committeeId);
     
-    if(status === 'ผ่านการตรวจสอบ'){
-
-        await approvalModel.saveFailReasons(candidateId, []);
-    //   const accountId = await candidateModel.getAccountByCandidateId(candidateId);
-    //   const candidatEmail = await accountModel.getEmailById(accountId);
-
-    //   await approvalModel.createApprovalDetails(candidateId)
-    //   await memberModel.addMember(candidateId)
-    //   await accountModel.updateRole(accountId)
-    //   await accountModel.activateAccount(accountId)
-
-    }else if(status === 'ไม่ผ่านการตรวจสอบ'){
-      await approvalModel.saveFailReasons(candidateId, failReasons);
+    if (!exist) {
+      console.log("Creating new approval record...");
+      await approvalModel.createApprovalRecord(candidateId, committeeId, {
+        verificationDetails,
+        approvalStatus
+      });
+    } else {
+      console.log("Updating existing approval record...");
+      await approvalModel.updateApprovalRecord(candidateId, committeeId, {
+        verificationDetails,
+        approvalStatus
+      });
     }
 
-    // สิ่งที่ต้องทำ
-    //
-    // ย้าย verification detail, failreason ไปที่ approval_detail
-    // แก้ committee verification เยอะ
-    // แก้ verification_detail to []
-  
-
     await client.query("COMMIT");
-    return { success: true, message: "Approval details updated in one go" };
+    console.log("✅ Approval status successfully updated:", approvalStatus);
 
+    return { success: true, message: "Approval details updated", approvalStatus };
   } catch (error) {
     await client.query("ROLLBACK");
+    console.error("❌ ERROR in approvalStatusUpdate:", error);
     throw error;
-  }finally {
+  } finally {
     client.release();
   }
-}
+};
 
-export const getVerificationDetail = async (candidateId) =>{
-  try{
-    const getDetail = await approvalModel.getVerificationDetails(candidateId);
-    return getDetail;
+
+
+
+export const getVerificationDetail = async (candidateId, committeeId) => {
+  try {
+    return await approvalModel.getVerificationDetails(candidateId, committeeId);
   } catch (error) {
-    console.error("Error get details:", error);
+    console.error("❌ ERROR in getVerificationDetail:", error);
+    throw error;
   }
-}
+};
+
+
 
 export const updateVerificationDetail = async (candidateId, details)=>{
   try{
@@ -64,3 +71,47 @@ export const updateVerificationDetail = async (candidateId, details)=>{
     console.error("Error update details:", error);
   }
 }
+
+export const getCandidatesForCommittee = async (committeeId) => {
+  try {
+    return await approvalModel.getCandidatesForCommittee(committeeId);
+  } catch (error) {
+    console.error("❌ ERROR in getCandidatesForCommittee:", error);
+    throw error;
+  }
+};
+
+export const getCandidateApprovalSummary = async (candidateId) => {
+  try {
+    const committeeDecisions = await approvalModel.getCandidateApprovalSummary(candidateId);
+    
+    if (!committeeDecisions || committeeDecisions.length === 0) {
+      return null; // If no records, return null
+    }
+
+    // 🔹 Count votes for "ผ่านการตรวจสอบ" and "ไม่ผ่านการตรวจสอบ"
+    let passCount = 0;
+    let failCount = 0;
+
+    committeeDecisions.forEach(decision => {
+      if (decision.approval_status === "ผ่านการตรวจสอบ") {
+        passCount++;
+      } else if (decision.approval_status === "ไม่ผ่านการตรวจสอบ") {
+        failCount++;
+      }
+    });
+
+    // 🔹 Determine final status based on majority vote
+    const finalApprovalStatus = passCount > failCount ? "ผ่านการตรวจสอบ" : "ไม่ผ่านการตรวจสอบ";
+
+    return {
+      candidateId,
+      finalApprovalStatus,
+      details: committeeDecisions
+    };
+  } catch (error) {
+    console.error("❌ ERROR in getCandidateApprovalSummary:", error);
+    throw error;
+  }
+};
+

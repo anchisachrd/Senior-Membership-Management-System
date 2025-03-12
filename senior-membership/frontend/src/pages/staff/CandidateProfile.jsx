@@ -719,18 +719,18 @@ function CandidateProfile() {
   const [failNote, setFailNote] = useState('');
 
   // สำหรับเช็ค role
-  const userRole = localStorage.getItem("userRole")
+  // const userRole = localStorage.getItem("userRole")
 
-  const checkUserRole = async () => {
-    if (userRole != 'staff' || userRole!= 'committee'){
-      navigate('/login')
-    }
-    console.log(userRole)
-  };
+  // const checkUserRole = async () => {
+  //   if (userRole != 'staff' || userRole!= 'committee'){
+  //     navigate('/login')
+  //   }
+  //   console.log(userRole)
+  // };
   
-  useEffect(() => {
-    checkUserRole();
-  }, []);
+  // useEffect(() => {
+  //   checkUserRole();
+  // }, []);
 
   const toggleModal2 = () => {
     setIsModal2Open(!isModal2Open);
