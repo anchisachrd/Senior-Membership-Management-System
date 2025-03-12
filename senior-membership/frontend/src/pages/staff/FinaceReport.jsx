@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { verifyUser } from '../../api/verifyApi';
 
 
 function FinanceReport() {
   const [total, setTotal] = useState(0);
   const [passSlips, setPassSlips] = useState([]);
+
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
 
   useEffect(() => {
     // 1) Fetch total sum of pass amounts
@@ -16,6 +20,29 @@ function FinanceReport() {
         console.error('Error fetching summary:', error);
       }
     };
+  
+    useEffect(() => {
+      fetchUserProfile();
+      checkUserRole();
+    }, [userEmail]);
+  
+    const checkUserRole = async () => {
+      if (userRole != 'staff') {
+        navigate('/login')
+      }
+    };
+  
+    const fetchUserProfile = async () => {
+      try {
+        const data = await verifyUser();
+        setUserRole(data.role)
+        setUserEmail(data.email)
+  
+      } catch (error) {
+        console.error('Fetch Protected Data Error:', error);
+      }
+    };
+
 
     // 2) Fetch all pass slips
     const fetchPassedSlips = async () => {

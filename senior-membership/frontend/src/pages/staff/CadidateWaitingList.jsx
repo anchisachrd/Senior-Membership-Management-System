@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { getVerifiedCandidates, sendToCommittee, deleteCandidate } from "../../api/candidateApi";
 import ConfirmModal from "../../components/ConfirmModal";
+import { verifyUser } from "../../api/verifyApi";
 
 function CadidateWaitingList() {
   const { id } = useParams();
@@ -10,14 +11,31 @@ function CadidateWaitingList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
-  const [onConfirmAction, setOnConfirmAction] = useState(() => {});
-  const userRole = localStorage.getItem("userRole")
+  const [onConfirmAction, setOnConfirmAction] = useState(() => { });
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
+
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchCandidates();
+  }, []);
+
+  useEffect(() => {
+    fetchUserProfile();
+    checkUserRole();
+  }, [userEmail]);
+
+  const checkUserRole = async () => {
+    if (userRole != 'staff') {
+      navigate('/login')
+    }
+  };
+  
   const handleRowClick = (candidateId) => {
     navigate(`/candidateProfile/${candidateId}`, {
-      state: { context : 'waitingCandidateProfile' },
+      state: { context: 'waitingCandidateProfile' },
     });
   };
 
@@ -30,10 +48,6 @@ function CadidateWaitingList() {
     }
   };
 
-  useEffect(() => {
-    fetchCandidates();
-    checkUserRole(); // Fetch initial data 
-  }, []);
 
   const handleSentdata = async (candidateId) => {
     try {
@@ -50,7 +64,7 @@ function CadidateWaitingList() {
     try {
       deleteCandidate(candidateId);
       alert('deleted');
-      
+
       await fetchCandidates();
     } catch (error) {
       alert("Failed to delete candidate");
@@ -61,7 +75,7 @@ function CadidateWaitingList() {
   const openModal = (title, description, action) => {
     setModalTitle(title);
     setModalDescription(description);
-    setOnConfirmAction(() => action); 
+    setOnConfirmAction(() => action);
     setIsModalOpen(true);
   };
 
@@ -70,13 +84,21 @@ function CadidateWaitingList() {
   };
 
   // บังคับเข้าหน้า
-  const checkUserRole = async () => {
-    if (userRole != 'staff'){
-      navigate('/login')
+
+
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
     }
   };
-  
- 
+
+
   return (
     <div className="ibm-plex-sans-thai-medium">
       {/* Confirmation Modal*/}
@@ -211,15 +233,15 @@ function CadidateWaitingList() {
                         ส่งข้อมูล
                       </button>
                       <button
-                       onClick={(e) => {
-                        e.stopPropagation();
-                        openModal(
-                          "ยืนยันการลบข้อมูล",
-                          "คุณต้องการลบข้อมูลผู้สมัครหรือไม่?",
-                          () => handleDeleteCandidate(candidate.candidate_id)
-                        );
-                      }}
-                       className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal(
+                            "ยืนยันการลบข้อมูล",
+                            "คุณต้องการลบข้อมูลผู้สมัครหรือไม่?",
+                            () => handleDeleteCandidate(candidate.candidate_id)
+                          );
+                        }}
+                        className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">
                         นำออก
                       </button>
                     </td>

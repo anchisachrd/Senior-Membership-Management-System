@@ -1,23 +1,36 @@
-import React, {useEffect} from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { verifyUser } from '../../api/verifyApi';
 
 function History() {
 
   const navigate = useNavigate();
-
-  // สำหรับเช็ค role
-    const userRole = localStorage.getItem("userRole")
   
-    const checkUserRole = async () => {
-      if (userRole != 'member'){
-        navigate('/login')
-      }
-      console.log(userRole)
-    };
-    
-    useEffect(() => {
-      checkUserRole();
-    }, []);
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
+
+  useEffect(() => {
+    fetchUserProfile();
+    checkUserRole();
+  }, [userEmail]);
+
+  const checkUserRole = async () => {
+    if (userRole != 'member') {
+      navigate('/login')
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+    }
+  };
+
 
   const handleRowClick = () => {
     navigate('/committee_candidateProfile');

@@ -1,21 +1,16 @@
 // CheckPayment.jsx (โค้ดสั้น ๆ)
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {getAllSlipHistory} from '../../api/memberApi'
-import axios from 'axios';
+import { getAllSlipHistory } from '../../api/memberApi'
+import { verifyUser } from '../../api/verifyApi';
+
 
 function CheckPayment() {
   const navigate = useNavigate();
   const [slips, setSlips] = useState([]);
 
-  const userRole = localStorage.getItem("userRole")
-
-  const checkUserRole = async () => {
-    if (userRole != 'staff') {
-      navigate('/login')
-    }
-    console.log(userRole)
-  };
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
 
   useEffect(() => {
     // เรียก API มาดึงรายการ slip ทั้งหมด
@@ -28,8 +23,31 @@ function CheckPayment() {
       }
     };
     fetchSlips();
-    checkUserRole();
+
   }, []);
+
+  useEffect(() => {
+    fetchUserProfile();
+    checkUserRole();
+  }, [userEmail]);
+
+  const checkUserRole = async () => {
+    if (userRole != 'staff') {
+      navigate('/login')
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+    }
+  };
+
 
   const handleRowClick = (historyId) => {
     // ไปหน้า detail พร้อมส่ง historyId
@@ -64,9 +82,8 @@ function CheckPayment() {
                   <td className="px-6 py-4">{index + 1}</td>
                   <td className="px-6 py-4">{slip.history_id}</td>
                   <td className="px-6 py-4">{slip.member_id}</td>
-                  <td className={`px-6 py-4 ${
-                    slip.slip_data?.success ? "text-green-600" : "text-red-600"
-                  }`}>
+                  <td className={`px-6 py-4 ${slip.slip_data?.success ? "text-green-600" : "text-red-600"
+                    }`}>
                     {slip.slip_data?.success ? 'สลิปโอนเงินถูกต้อง' : slip.error_msg}
                   </td>
                   <td className="px-6 py-4">{slip.created_at}</td>

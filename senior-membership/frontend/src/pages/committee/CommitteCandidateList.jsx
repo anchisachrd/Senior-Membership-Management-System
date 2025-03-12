@@ -3,25 +3,42 @@ import React, { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { getWatingApproveCandidate } from "../../api/candidateApi";
+import { verifyUser } from "../../api/verifyApi";
 
 function CommitteCandidateList() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
 
-   // สำหรับเช็ค role
-   const userRole = localStorage.getItem("userRole")
+  // สำหรับเช็ค role
 
-   const checkUserRole = async () => {
-     if (userRole != 'committee'){
-       navigate('/login')
-     }
-     console.log(userRole)
-   };
+  useEffect(() => {
+    fetchUserProfile();
+    checkUserRole();
+  }, [userEmail]);
+
+  const checkUserRole = async () => {
+    if (userRole != 'committee') {
+      navigate('/login')
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+    }
+  };
 
   const handleRowClick = (candidateId) => {
     console.log("Navigating to:", candidateId); // Debugging log
-    navigate(`/candidateProfile/${candidateId}`,  { state: { context: 'committeeCandidateProfile' } });
-}
+    navigate(`/candidateProfile/${candidateId}`, { state: { context: 'committeeCandidateProfile' } });
+  }
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -36,7 +53,6 @@ function CommitteCandidateList() {
       }
     };
     fetchCandidates();
-    checkUserRole();
   }, []);
 
   return (

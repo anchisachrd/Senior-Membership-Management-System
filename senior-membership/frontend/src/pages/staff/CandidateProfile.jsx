@@ -9,6 +9,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DocumentPreview from "../../components/DocumentPreview";
 import ConfirmModal from "../../components/ConfirmModal";
 import CommitteeVerification from "../../components/CommitteeVerification";
+import { verifyUser } from "../../api/verifyApi";
 
 function Information_personal({ data }) {
 
@@ -710,7 +711,7 @@ function CandidateProfile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
-  const [onConfirmAction, setOnConfirmAction] = useState(() => {});
+  const [onConfirmAction, setOnConfirmAction] = useState(() => { });
   const navigate = useNavigate();
 
   // สำหรับ Modal ตรวจเอกสารไม่ผ่าน
@@ -719,18 +720,32 @@ function CandidateProfile() {
   const [failNote, setFailNote] = useState('');
 
   // สำหรับเช็ค role
-  // const userRole = localStorage.getItem("userRole")
-
-  // const checkUserRole = async () => {
-  //   if (userRole != 'staff' || userRole!= 'committee'){
-  //     navigate('/login')
-  //   }
-  //   console.log(userRole)
-  // };
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
   
-  // useEffect(() => {
-  //   checkUserRole();
-  // }, []);
+
+  useEffect(() => {
+    fetchUserProfile();
+    checkUserRole();
+  }, [userEmail]);
+
+  const checkUserRole = async () => {
+    if (userRole != 'staff' || userRole!= 'committee') {
+      navigate('/login')
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+    }
+  };
+
 
   const toggleModal2 = () => {
     setIsModal2Open(!isModal2Open);
@@ -761,7 +776,7 @@ function CandidateProfile() {
     fetchCandidateAndHeirData();
   }, [id]);
 
-  
+
 
   // const toggleModal = () => {
   //   setIsModalOpen(!isModalOpen);
@@ -946,7 +961,7 @@ function CandidateProfile() {
               ไม่ผ่านการตรวจสอบ
             </button>
 
-              {/* modal ไม่ผ่านการตรวจสอบ */}
+            {/* modal ไม่ผ่านการตรวจสอบ */}
             {isModal2Open && (
               <div
                 id="popup-modal"
@@ -990,20 +1005,20 @@ function CandidateProfile() {
                     <div class='px-5 pb-5'>
                       <label class="block mb-2 text-base font-medium text-black ">ไม่ผ่านการตรวจสอบเพราะ <b>{failButton}</b></label>
                       <label class="block mb-2 text-sm font-medium text-black ">หมายเหตุ: </label>
-                      <textarea rows='4' type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5" placeholder="กรอกหมายเหตุ" 
-                      value={failNote} onChange={handleNoteChange}/>
+                      <textarea rows='4' type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5" placeholder="กรอกหมายเหตุ"
+                        value={failNote} onChange={handleNoteChange} />
                     </div>
 
                     <div class="relative flex justify-center items-center">
-                    <button
+                      <button
                         type="button"
                         onClick={handleModal2}
                         disabled={!(failNote && failButton)}
                         class='text-white bg-lime-800 hover:bg-lime-700 disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg px-5 py-2.5 text-sm mb-5'
-                    >
+                      >
                         เสร็จสิ้น
-                    </button>
-                </div>
+                      </button>
+                    </div>
 
 
                   </div>
