@@ -63,6 +63,12 @@ function SidebarStaff() {
             {userRole !== "staff" ? (
               <div>
                 <li>
+                  <Link to='/home' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
+                    <IoHomeOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <span class="ms-3 mt-1 dark:group-hover:text-white">หน้าแรก</span>
+                  </Link>
+                </li>
+                <li>
                   <a
                     href="#"
                     class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
@@ -147,6 +153,12 @@ function SidebarStaff() {
             ) : (
               <div>
                 <li>
+                  <li>
+                    <Link to='/home' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
+                      <IoHomeOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                      <span class="ms-3 mt-1 dark:group-hover:text-white">หน้าแรก</span>
+                    </Link>
+                  </li>
                   <a
                     href="#"
                     class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"

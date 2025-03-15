@@ -13,8 +13,6 @@ export const createHeir = async (person_id, candidate_id, relationship, address_
 
 
 
-
-
 // Get heir by national ID
 export const getHeirByNationalId = async (national_id) => {
     const { rows } = await query(
@@ -48,6 +46,14 @@ export const deleteHeir = async (heir_id) => {
     const { rows } = await query(
         `DELETE FROM heirs WHERE heir_id = $1 RETURNING *`,
         [heir_id]
+    );
+    return rows[0];
+};
+
+export const getIdByAccountId = async (accountId) => {
+    const { rows } = await query(
+        `SELECT heir_id FROM heirs WHERE account_id = $1`,
+        [accountId]
     );
     return rows[0];
 };

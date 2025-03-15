@@ -15,7 +15,7 @@ const router = express.Router();
 router.post("/login", authController.loginUserByEmail, (req, res) => {
     res.json({
       message: "Login successful",
-      token: req.token
+      token: req.token,
     });
   });
 

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCheck } from "react-icons/fa6";
-import { getAllCandidates } from '../../api/candidateApi';
-import { verifyUser } from '../../api/verifyApi';
+import { getPendingCandidates } from '../../api/candidateApi';
+// import { verifyUser } from '../../api/verifyApi';
 
 
 function StaffCandidateList() {
     const [candidates, setCandidates] = useState([]);
     const navigate = useNavigate();
-    const [userRole, setUserRole] = useState('')
-    const [userEmail, setUserEmail] = useState('')
+    // const [userRole, setUserRole] = useState('')
+    // const [userEmail, setUserEmail] = useState('')
 
 
     const handleRowClick = (candidateId) => {
@@ -17,46 +17,41 @@ function StaffCandidateList() {
     }
 
     // สำหรับเช็ค role
-    useEffect(() => {
-        fetchUserProfile();
-        checkUserRole();
-    }, [userEmail]);
+    // useEffect(() => {
+    //     fetchUserProfile();
+    //     checkUserRole();
+    // }, [userEmail]);
 
-    const checkUserRole = async () => {
-        if (userRole != 'staff') {
-            navigate('/login')
-        }
-    };
+    // const checkUserRole = async () => {
+    //     if (userRole != 'staff') {
+    //         navigate('/login')
+    //     }
+    // };
 
-    const fetchUserProfile = async () => {
-        try {
-            const data = await verifyUser();
-            setUserRole(data.role)
-            setUserEmail(data.email)
+    // const fetchUserProfile = async () => {
+    //     try {
+    //         const data = await verifyUser();
+    //         setUserRole(data.role)
+    //         setUserEmail(data.email)
 
-        } catch (error) {
-            console.error('Fetch Protected Data Error:', error);
-        }
-    };
+    //     } catch (error) {
+    //         console.error('Fetch Protected Data Error:', error);
+    //     }
+    // };
 
 
     useEffect(() => {
         const fetchCandidates = async () => {
-            try {
-                const data = await getAllCandidates();
-                console.log("API Response:", data);
-
-                //เอาข้อมูลที่เป็นผ่านการตรวจสอบออก เพราะให้ไปโชว์ในแถวคอยแทน
-                const filteredCandidates = data.filter(candidate => candidate.doc_verification_status !== 'ผ่านการตรวจสอบ');
-                setCandidates(filteredCandidates);
-            } catch (error) {
-                console.error('Error:', error);
-                setCandidates([]);
-            }
+          try {
+            const data = await getPendingCandidates(); // Fetch only 'รอตรวจเอกสาร' and 'ไม่ผ่าน'
+            setCandidates(data);
+          } catch (error) {
+            console.error("Error:", error);
+            setCandidates([]);
+          }
         };
         fetchCandidates();
-    }, []);
-
+      }, []);
     return (
         <div className='ibm-plex-sans-thai-medium'>
             <div class="p-12 sm:ml-64">
@@ -114,9 +109,6 @@ function StaffCandidateList() {
                                 <th scope="col" class="text-center align-middle py-4 px-4">
                                     ตรวจสอบเอกสาร
                                 </th>
-                                <th scope="col" class="text-center align-middle py-4 px-4">
-                                    อนุมัติการเป็นสมาชิก
-                                </th>
                             </tr>
                         </thead>
 
@@ -131,8 +123,6 @@ function StaffCandidateList() {
                                         <td className="text-center align-middle py-4 px-4">{candidate.phone}</td>
                                         <td className="text-center align-middle py-4 px-4">{candidate.priority ? <FaCheck /> : '-'}</td>
                                         <td className="text-center align-middle py-4 px-4">{candidate.doc_verification_status}</td>
-                                        <td className="text-center align-middle py-4 px-4">{candidate.approval_status}</td>
-
                                     </tr>
                                 ))
                             ) : (

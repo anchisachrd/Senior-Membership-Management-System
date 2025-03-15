@@ -1,8 +1,20 @@
 import * as accountModel from "../models/accountModel.js";
+import * as employeeModel from "../models/employeeModel.js";
+import * as heirModel from "../models/heirModel.js";
+import bcrypt from "bcrypt";
 
 
 export const loginByEmail = async (email) => {
     return await accountModel.getAccountByEmail(email);
+}
+
+// เก็บ employee id ตอน staff or committee login 
+export const getEmployeeIdbyAccountId = async (accountId) => {
+  return await employeeModel.getIdByAccountId(accountId);
+}
+
+export const getHeirIdbyAccountId = async (accountId) => {
+  return await heirModel.getIdByAccountId(accountId);
 }
 
 export const changePassword = async (accountId, oldPassword, newPassword) => {

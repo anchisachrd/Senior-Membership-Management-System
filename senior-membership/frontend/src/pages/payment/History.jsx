@@ -11,20 +11,20 @@ function History() {
 
   useEffect(() => {
     fetchUserProfile();
-    checkUserRole();
   }, [userEmail]);
 
-  const checkUserRole = async () => {
-    if (userRole != 'member') {
-      navigate('/login')
-    }
-  };
+ 
 
   const fetchUserProfile = async () => {
     try {
       const data = await verifyUser();
+      console.log(data)
       setUserRole(data.role)
       setUserEmail(data.email)
+      
+      if (data.role !== 'member') {
+        navigate('/login')
+    }
 
     } catch (error) {
       console.error('Fetch Protected Data Error:', error);

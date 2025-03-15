@@ -25,9 +25,24 @@ export const loginUserByEmail = async (req, res, next) => {
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid password" });
     }
-    // if (!account.role === 'candidate') {
-    //   return res.status(400).json({ message: "Not Candidate" });
-    // }
+    if (account.role === 'candidate') {
+      return res.status(400).json({ message: "You can not login, You are Candidate." });
+    }
+
+    if (account.role === 'member') {
+      // return res.status(400).json({ message: "Can't Login (You're Candidate)" });
+    }
+
+    if (account.role === 'heir') {
+      var role_id = await authServices.getHeirIdbyAccountId(account.account_id);
+
+    }
+
+    if (account.role === 'staff' || account.role === 'committee') {
+      var role_id = await authServices.getEmployeeIdbyAccountId(account.account_id);
+
+    }
+
 
     // 3. Check if the account is active
     // if (!account.is_active) {
@@ -40,7 +55,8 @@ export const loginUserByEmail = async (req, res, next) => {
         "userInfo": {
           "accountId": account.account_id,
           "email": account.email,
-          "role": account.role
+          "role": account.role,
+          "role_id": role_id
         }
       },
       JWT_SECRET,
@@ -48,11 +64,12 @@ export const loginUserByEmail = async (req, res, next) => {
     )
 
     // 5. Return success response with token
-    return res.json(
-      {
-        message: "Login successful"
-      }
-    );
+    // return res.json(
+    //   {
+    //     message: "Login successful",
+    //     accessToken
+    //   }
+    // );
 
     req.token = accessToken;
     req.user = {

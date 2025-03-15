@@ -1,4 +1,3 @@
-import axios from 'axios';
 
 // Base URL for API
 const apiUrl = 'http://localhost:3000/api/candidates';
@@ -117,9 +116,9 @@ export const createCandidate = async (candidateData, heirData) => {
   }
 };
 
-export const getAllCandidates = async () => {
+export const getPendingCandidates = async () => {
   try {
-    const response = await axios.get(apiUrl);
+    const response = await axios.get(`${apiUrl}/pending-candidates`);
     return response.data;  // Return the API response
   } catch (error) {
     console.error("There was an error fetching candidates:", error);
@@ -137,10 +136,13 @@ export const getCandidateAndHeirById = async (id) => {
   }
 };
 
+
+
 //update สถานะการตรวจสอบเอกสารของเจ้าหน้าที่
-export const updateCandidateStatus = async (candidateId) => {
+export const updateVerificationStatus = async (candidateId,payload) => {
   try {
-      const response = await axios.put(`${apiUrl}/${candidateId}/verify`);
+    // payload = { status: "ไม่ผ่าน", comments: "some text", reason: "ไม่ถูกต้อง" }
+    const response = await axios.post(`${apiUrl}/verification/${candidateId}/update`, payload);
       return response.data;
   } catch (error) {
       console.error("Error updating document verification status:", error);
@@ -152,6 +154,7 @@ export const updateCandidateStatus = async (candidateId) => {
 export const getVerifiedCandidates = async () => {
   try {
     const response = await axios.get(`${apiUrl}/verified`);
+    console.log("🌐 API Call Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching verified candidates:", error);
@@ -229,5 +232,3 @@ export const saveVerificationDetail = async (candidateId, details) => {
     throw error;
   }
 };
-
-

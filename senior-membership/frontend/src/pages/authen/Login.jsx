@@ -24,7 +24,7 @@ function Login() {
 
     try {
       // Replace with  backend API URL
-      const response = await fetch("http://localhost:3000/api/login", {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,28 +38,21 @@ function Login() {
         throw new Error(errorData.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
       }
 
+
       const data = await response.json();
-      console.log("Login Success");
       localStorage.setItem("userToken", data.token);
 
       // แปลง token
       const userInfo = jwtDecode(data.token)
       alert("เข้าสู่ระบบสำเร็จ!");
 
-      if (userInfo.userInfo.role === 'member'){
-        navigate("/history");
-      } else if (userInfo.userInfo.role === 'heir'){
-        navigate("/deathReport");
-      } else if (userInfo.userInfo.role === 'staff'){
-        navigate("/staff_candidateList");
-      } else if (userInfo.userInfo.role === 'committee'){
-        navigate("/committee_candidateList");
-      }
+      navigate("/home");
+      console.log(userInfo.userInfo.role);
+
      
 
     } catch (error) {
       console.error("Login Error:", error.message);
-      // Set API error in Formik errors
       setErrors({ apiError: error.message });
     } finally {
       setSubmitting(false);

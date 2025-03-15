@@ -77,7 +77,7 @@ export const getAccountById = async (accountId) => {
   export const updatePassword = async (accountId, password_hash) => {
     const { rows } = await query(
       `UPDATE accounts 
-         SET password_hash = $1 
+         SET password_hash = $1, updated_at = CURRENT_TIMESTAMP
          WHERE account_id = $2 
          RETURNING *`,
       [password_hash, accountId]
