@@ -12,20 +12,19 @@ function SendNotify() {
 
     useEffect(() => {
         fetchUserProfile();
-        checkUserRole();
     }, [userEmail]);
 
-    const checkUserRole = async () => {
-        if (userRole != 'staff') {
-            navigate('/login')
-        }
-    };
 
     const fetchUserProfile = async () => {
         try {
             const data = await verifyUser();
             setUserRole(data.role)
             setUserEmail(data.email)
+
+            if (userRole != 'staff') {
+                localStorage.removeItem("userToken");
+                navigate('/login')
+              }
 
         } catch (error) {
             console.error('Fetch Protected Data Error:', error);

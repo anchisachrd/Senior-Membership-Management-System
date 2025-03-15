@@ -20,6 +20,11 @@ router.get(
 router.get("/committee/final-results", approvalController.getFinalApprovalList);
 router.get("/committee/final-detail/:candidateId", approvalController.getFinalApprovalDetail);
 
+// router.put("/:candidateId/approval-status", approvalController.updateCandidateApprovalStatus);
+router.put(
+  "/:candidateId/committees/:committeeId/approval-status", 
+  approvalController.updateCandidateApprovalStatus
+);
 
 // PUT update the pass/fail & verification details
 router.put(

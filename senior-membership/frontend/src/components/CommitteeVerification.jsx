@@ -69,9 +69,11 @@ function CommitteeVerification({ candidateId }) {
 
     fetchApprovalData();
   }, [candidateId]);
+  
 
   function handleRadioChange(index, newStatus) {
     if (!isEditing) return;
+    
     setResults((prev) => {
       const updated = [...prev];
   

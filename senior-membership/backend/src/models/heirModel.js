@@ -58,3 +58,11 @@ export const deleteHeir = async (heir_id) => {
     );
     return rows[0];
 };
+
+export const getIdByAccountId = async (accountId) => {
+    const { rows } = await query(
+        `SELECT heir_id FROM heirs WHERE account_id = $1`,
+        [accountId]
+    );
+    return rows[0];
+};

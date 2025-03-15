@@ -4,7 +4,7 @@ export const verifyUser = async () => {
 
     try {
         const token = localStorage.getItem('userToken');
-        const response = await fetch('http://localhost:3000/api/login/verify', {
+        const response = await fetch('http://localhost:3000/api/auth/verify', {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,

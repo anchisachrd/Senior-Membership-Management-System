@@ -12,20 +12,21 @@ function DetailCheckPayment() {
  
    useEffect(() => {
      fetchUserProfile();
-     checkUserRole();
    }, [userEmail]);
  
-   const checkUserRole = async () => {
-     if (userRole != 'staff') {
-       navigate('/login')
-     }
-   };
+  
  
    const fetchUserProfile = async () => {
      try {
        const data = await verifyUser();
        setUserRole(data.role)
        setUserEmail(data.email)
+
+       if (data.role != 'staff') {
+        localStorage.removeItem("userToken");
+        alert("คุณไม่สามารถเข้าสู่หน้านี้ได้")
+        navigate('/login')
+      }
  
      } catch (error) {
        console.error('Fetch Protected Data Error:', error);

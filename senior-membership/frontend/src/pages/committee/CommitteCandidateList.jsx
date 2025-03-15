@@ -13,16 +13,12 @@ function CommitteCandidateList() {
 
   // สำหรับเช็ค role
 
-  // useEffect(() => {
-  //   fetchUserProfile();
-  //   checkUserRole();
-  // }, [userEmail]);
+  useEffect(() => {
+    fetchUserProfile();
+    
+  }, [userEmail]);
 
-  // const checkUserRole = async () => {
-  //   if (userRole != 'committee') {
-  //     navigate('/login')
-  //   }
-  // };
+  
 
   // const fetchUserProfile = async () => {
   //   try {

@@ -19,6 +19,8 @@ import SubmitPayment from './pages/payment/SubmitPayment.jsx'
 import History from './pages/payment/History.jsx'
 import HeirRegister from './pages/heir/HeirRegister.jsx'
 import EditInfo from './pages/authen/EditInfo.jsx'
+import Home from './pages/member/Home.jsx'
+import Profile from './pages/member/Profile.jsx'
 
 import SidebarStaff from './components/SidebarStaff.jsx'
 import Sidebar from './components/Sidebar.jsx'
@@ -35,6 +37,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/submitPayment' element={ <SubmitPayment />} />
         <Route path='/history' element={ <History />} />
         <Route path='/heir_register' element={ <HeirRegister />} />
+        <Route path='/home' element={ <Home />} />
+        <Route path='/profile' element={ <Profile />} />
       </Route>
 
       <Route  element={ <SidebarStaff />}>
