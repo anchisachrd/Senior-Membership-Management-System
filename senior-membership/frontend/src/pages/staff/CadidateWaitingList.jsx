@@ -1,9 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
-import { getVerifiedCandidates, sendToCommittee, deleteCandidate } from "../../api/candidateApi";
+import {
+  getVerifiedCandidates,
+  sendToCommittee,
+  deleteCandidate,
+} from "../../api/candidateApi";
 import ConfirmModal from "../../components/ConfirmModal";
-import { verifyUser } from "../../api/verifyApi";
+// import { verifyUser } from "../../api/verifyApi";
 
 function CadidateWaitingList() {
   const { id } = useParams();
@@ -11,10 +15,9 @@ function CadidateWaitingList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
-  const [onConfirmAction, setOnConfirmAction] = useState(() => { });
-  const [userRole, setUserRole] = useState('')
-  const [userEmail, setUserEmail] = useState('')
-
+  const [onConfirmAction, setOnConfirmAction] = useState(() => {});
+  const [userRole, setUserRole] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   const navigate = useNavigate();
 
@@ -22,32 +25,32 @@ function CadidateWaitingList() {
     fetchCandidates();
   }, []);
 
-  useEffect(() => {
-    fetchUserProfile();
-    checkUserRole();
-  }, [userEmail]);
+  // useEffect(() => {
+  //   fetchUserProfile();
+  //   checkUserRole();
+  // }, [userEmail]);
 
-  const checkUserRole = async () => {
-    if (userRole != 'staff') {
-      navigate('/login')
-    }
-  };
-  
+  // const checkUserRole = async () => {
+  //   if (userRole != 'staff') {
+  //     navigate('/login')
+  //   }
+  // };
+
   const handleRowClick = (candidateId) => {
     navigate(`/candidateProfile/${candidateId}`, {
-      state: { context: 'waitingCandidateProfile' },
+      state: { context: "waitingCandidateProfile" },
     });
   };
 
   const fetchCandidates = async () => {
     try {
       const data = await getVerifiedCandidates();
+      console.log("🎯 Candidate Data:", data);
       setCandidates(data);
     } catch (error) {
       console.error("Failed to fetch candidates:", error);
     }
   };
-
 
   const handleSentdata = async (candidateId) => {
     try {
@@ -63,14 +66,13 @@ function CadidateWaitingList() {
   const handleDeleteCandidate = async (candidateId) => {
     try {
       deleteCandidate(candidateId);
-      alert('deleted');
+      alert("deleted");
 
       await fetchCandidates();
     } catch (error) {
       alert("Failed to delete candidate");
     }
   };
-
 
   const openModal = (title, description, action) => {
     setModalTitle(title);
@@ -85,19 +87,15 @@ function CadidateWaitingList() {
 
   // บังคับเข้าหน้า
 
-
-
   const fetchUserProfile = async () => {
     try {
       const data = await verifyUser();
-      setUserRole(data.role)
-      setUserEmail(data.email)
-
+      setUserRole(data.role);
+      setUserEmail(data.email);
     } catch (error) {
-      console.error('Fetch Protected Data Error:', error);
+      console.error("Fetch Protected Data Error:", error);
     }
   };
-
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -187,7 +185,7 @@ function CadidateWaitingList() {
                   ได้รับสิทธิ์ก่อน
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
-                  ตรวจสอบเอกสาร
+                  วันที่ตรวจสอบเอกสาร
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
                   อนุมัติการเป็นสมาชิก
@@ -204,22 +202,36 @@ function CadidateWaitingList() {
                     onClick={() => handleRowClick(candidate.candidate_id)}
                     className="cursor-pointer bg-white border-b hover:bg-gray-50 text-gray-900"
                   >
-                    <td className="text-center align-middle py-4 px-4 font-medium">{index + 1}</td>
-                    <td className="text-center align-middle py-4 px-4">{candidate.candidate_id}</td>
+                    <td className="text-center align-middle py-4 px-4 font-medium">
+                      {index + 1}
+                    </td>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.candidate_id}
+                    </td>
                     <td className="text-center align-middle py-4 px-4">
                       {candidate.first_name} {candidate.last_name}
                     </td>
-                    <td className="text-center align-middle py-4 px-4">{candidate.national_id}</td>
-                    <td className="text-center align-middle py-4 px-4">{candidate.phone}</td>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.national_id}
+                    </td>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.phone}
+                    </td>
                     <td className="text-center align-middle">
                       {candidate.priority ? <FaCheck /> : "-"}
                     </td>
                     <td className="text-center align-middle py-4 px-4">
-                      {candidate.doc_verification_status}
+                      {candidate.verified_at}
                     </td>
-                    <td className="text-center align-middle py-4 px-4">{candidate.approval_status}</td>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.final_approval_status}
+                    </td>
                     <td className="text-center align-middle py-4 px-4 space-x-4">
                       <button
+                        disabled={
+                          candidate.final_approval_status !==
+                          "ยังไม่ส่งพิจารณา"
+                        }
                         onClick={(e) => {
                           e.stopPropagation();
                           openModal(
@@ -228,7 +240,12 @@ function CadidateWaitingList() {
                             () => handleSentdata(candidate.candidate_id)
                           );
                         }}
-                        className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
+                        className={`${
+                          candidate.final_approval_status !==
+                          "ยังไม่ส่งพิจารณา"
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        } text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2`}
                       >
                         ส่งข้อมูล
                       </button>
@@ -241,7 +258,8 @@ function CadidateWaitingList() {
                             () => handleDeleteCandidate(candidate.candidate_id)
                           );
                         }}
-                        className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">
+                        className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
+                      >
                         นำออก
                       </button>
                     </td>

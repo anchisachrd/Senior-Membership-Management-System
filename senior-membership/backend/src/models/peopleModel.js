@@ -18,3 +18,13 @@ export const createPerson = async (data) => {
     return result.rows[0];
   };
   
+
+  export const getPersonById = async (personId) => {
+    const { rows } = await query(`
+      SELECT *
+      FROM people
+      WHERE person_id = $1
+    `, [personId]);
+    return rows[0] || null;
+  };
+  

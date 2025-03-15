@@ -90,12 +90,9 @@ if (req.body.heir_title) {
 };
 
 
-
-
-
-export const getCandidates = async (req, res) => {
+export const getPendingCandidates = async (req, res) => {
   try {
-      const candidates = await registerService.fetchAllCandidates();
+      const candidates = await registerService.fetchPendingCandidates();
       
       // Ensure response is always an array
       res.status(200).json(candidates);
@@ -105,44 +102,30 @@ export const getCandidates = async (req, res) => {
   }
 };
 
-export const getCandidateandHeirById = async (req, res) => {
+
+
+export const getCandidateAndHeirById = async (req, res) => {
   try {
     const { id } = req.params;
     const candidateData = await registerService.fetchAllCandidateAndHeirData(id);
 
     if (!candidateData) {
-      return res.status(404).json({ message: 'Candidate not found' });
+      return res.status(404).json({ message: "Candidate not found" });
     }
 
     return res.status(200).json(candidateData);
   } catch (error) {
-    console.error('Error fetching candidate data:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error("Error fetching candidate data:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-export const updateDocStatus = async (req, res) => {
-  try {
-      const { id } = req.params;
-      const updatedCandidate = await candidateService.modifyDocVerificationStatus(id);
 
-      if (!updatedCandidate) {
-          return res.status(404).json({ message: 'Candidate not found' });
-      }
-
-      res.status(200).json({
-          success: true,
-          message: 'Document verification status updated to "ผ่านการตรวจสอบ"',
-          data: updatedCandidate,
-      });
-  } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
-  }
-};
 
 export const getVerifiedCandidates = async (req, res) => {
   try {
       const candidates = await candidateService.fetchAllVerifiedDocsCandidates();
+      console.log("📢 API Response:", candidates); 
       res.status(200).json(candidates);
   } catch (error) {
       res.status(500).json({ message: 'Error fetching verified candidates', error });

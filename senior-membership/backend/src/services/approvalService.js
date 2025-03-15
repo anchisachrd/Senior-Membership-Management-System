@@ -2,116 +2,81 @@ import * as approvalModel from '../models/approvalModel.js'
 import * as candidateModel from "../models/candidateModel.js";
 import * as accountModel from '../models/accountModel.js'
 import * as memberModel from '../models/memberModel.js'
+import * as employeeModel from "../models/employeeModel.js"
 import { query } from "../db.js"            // your Postgres pool.
 import { pool } from "../db.js";
 
-export const approvalStatusUpdate = async (
-  candidateId,
-  committeeId,
-  verificationDetails
-) => {
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
 
-    // ✅ Automatically compute approval status
-    const hasFail = verificationDetails.some(detail => detail.status === "fail");
-    const approvalStatus = hasFail ? "ไม่ผ่านการตรวจสอบ" : "ผ่านการตรวจสอบ";
+const checkIfAllCommitteesVoted = async (candidateId) => {
+  const approvals = await approvalModel.getApprovalsByCandidate(candidateId);
 
-
-    // Check if record exists
-    const exist = await approvalModel.findOneApproval(candidateId, committeeId);
-    
-    if (!exist) {
-      console.log("Creating new approval record...");
-      await approvalModel.createApprovalRecord(candidateId, committeeId, {
-        verificationDetails,
-        approvalStatus
-      });
-    } else {
-      console.log("Updating existing approval record...");
-      await approvalModel.updateApprovalRecord(candidateId, committeeId, {
-        verificationDetails,
-        approvalStatus
-      });
-    }
-
-    await client.query("COMMIT");
-    console.log("✅ Approval status successfully updated:", approvalStatus);
-
-    return { success: true, message: "Approval details updated", approvalStatus };
-  } catch (error) {
-    await client.query("ROLLBACK");
-    console.error("❌ ERROR in approvalStatusUpdate:", error);
-    throw error;
-  } finally {
-    client.release();
+  // Are there any still 'รอการพิจารณา'?
+  const anyPending = approvals.some(ad => ad.approval_status === 'รอการพิจารณา');
+  if (anyPending) {
+    return; // Do nothing if any committee hasn't voted
   }
+
+  // Everyone has voted -> do majority vote logic
+  let passCount = 0;
+  let failCount = 0;
+  approvals.forEach(ad => {
+    if (ad.approval_status === 'อนุมัติ') passCount++;
+    else if (ad.approval_status === 'ไม่อนุมัติ') failCount++;
+  });
+
+  let finalStatus = 'ไม่อนุมัติ'; // Default to fail
+  if (passCount > failCount) {
+    finalStatus = 'อนุมัติ';
+  }
+
+  // ✅ **Update `final_approval_status` in `candidates` table**
+  await candidateModel.updateFinalApprovalStatus(candidateId, finalStatus);
 };
 
 
-
-
-export const getVerificationDetail = async (candidateId, committeeId) => {
-  try {
-    return await approvalModel.getVerificationDetails(candidateId, committeeId);
-  } catch (error) {
-    console.error("❌ ERROR in getVerificationDetail:", error);
-    throw error;
-  }
+//return  pending approval base on committeeID
+export const listPendingApprovals = async (committeeId) => {
+  return approvalModel.getPendingApprovalsByCommittee(committeeId)
 };
 
-
-
-export const updateVerificationDetail = async (candidateId, details)=>{
-  try{
-    const updateDetail = await approvalModel.updateVerificationDetails(candidateId,  details);
-    return updateDetail;
-  } catch (error) {
-    console.error("Error update details:", error);
-  }
+//return approval detail ของ 1 committee
+export const getCommitteeApprovalDetail= async (candidateId, committeeId) => {
+  return approvalModel.getApprovalDetail(candidateId, committeeId);
 }
 
-export const getCandidatesForCommittee = async (committeeId) => {
-  try {
-    return await approvalModel.getCandidatesForCommittee(committeeId);
-  } catch (error) {
-    console.error("❌ ERROR in getCandidatesForCommittee:", error);
-    throw error;
+// update verification detail  {status, verificationDetails, comment, isSigned }
+export const updateCommitteeApproval = async (approvalId, updateData) => {
+  const updated = await approvalModel.updateApprovalDetail(approvalId, updateData);
+
+  // ✅ Check if all committees have voted & update final approval status
+  if (updated && updated.candidate_id) {
+    await checkIfAllCommitteesVoted(updated.candidate_id);
   }
+
+  return updated;
 };
 
-export const getCandidateApprovalSummary = async (candidateId) => {
-  try {
-    const committeeDecisions = await approvalModel.getCandidateApprovalSummary(candidateId);
-    
-    if (!committeeDecisions || committeeDecisions.length === 0) {
-      return null; // If no records, return null
-    }
 
-    // 🔹 Count votes for "ผ่านการตรวจสอบ" and "ไม่ผ่านการตรวจสอบ"
-    let passCount = 0;
-    let failCount = 0;
-
-    committeeDecisions.forEach(decision => {
-      if (decision.approval_status === "ผ่านการตรวจสอบ") {
-        passCount++;
-      } else if (decision.approval_status === "ไม่ผ่านการตรวจสอบ") {
-        failCount++;
-      }
-    });
-
-    // 🔹 Determine final status based on majority vote
-    const finalApprovalStatus = passCount > failCount ? "ผ่านการตรวจสอบ" : "ไม่ผ่านการตรวจสอบ";
-
-    return {
-      candidateId,
-      finalApprovalStatus,
-      details: committeeDecisions
-    };
-  } catch (error) {
-    console.error("❌ ERROR in getCandidateApprovalSummary:", error);
-    throw error;
-  }
+//Return all committees approvals for a candidate
+export const listApprovalsForCandidate = async (candidateId) => {
+  return approvalModel.getApprovalsByCandidate
 };
+
+
+// Get all final approvals (for the summary page)
+export const getAllFinalApprovals = async () => {
+  return await approvalModel.getAllFinalApprovals();
+};
+
+// Get detailed approvals for a specific candidate
+export const getFinalApprovalDetail = async (candidateId) => {
+  return await approvalModel.getApprovalsByCandidate(candidateId);
+};
+
+
+
+
+
+
+
 

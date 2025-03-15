@@ -11,3 +11,9 @@ export const createAccount = async (email, password, role) => {
 
     return rows[0];
 };
+
+export const getAccountById = async (accountId) => {
+    const sql = `SELECT * FROM accounts WHERE account_id = $1`;
+    const { rows } = await query(sql, [accountId]);
+    return rows[0] || null;
+  };

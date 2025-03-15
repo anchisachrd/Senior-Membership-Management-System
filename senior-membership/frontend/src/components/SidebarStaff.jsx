@@ -143,6 +143,20 @@ function SidebarStaff() {
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <a
+                    href="#"
+                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                  >
+                    <TiDocumentText
+                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      aria-hidden="true"
+                    />
+                    <span class="ms-3 mt-1 dark:group-hover:text-white">
+                      สรุปผลการอนุมัติ
+                    </span>
+                  </a>
+                </li>
               </div>
             ) : (
               <div>

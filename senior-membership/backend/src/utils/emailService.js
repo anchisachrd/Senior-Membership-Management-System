@@ -102,12 +102,24 @@ export const generatePasswordEmailTemplate = (recipientName, password) => `
 
 export const generateConfirmationEmail = (candidateName) => {
     return `
-      <h1>Thank you for registering!</h1>
-      <p>Dear ${candidateName},</p>
-      <p>We have successfully received your registration.</p>
-      <p>If your qualifications meet our requirements, we will contact you shortly.</p>
-      <p>Thank you for your interest in joining us.</p>
-      <p>Best regards,</p>
-      <p>Senior Club Team</p>
+      <h1>ลงทะเบียนชมรมผู้สูลอายุสำเร็จ</h1>
+      <p>เรียนคุณ <b>${candidateName}</b>,</p>
+      <p>เราขอแจ้งให้ทราบว่าเราได้รับข้อมูลการสมัครของคุณเรียบร้อยแล้ว</p>
+      <p>หากคุณมีคุณสมบัติตรงตามข้อกำหนดของเรา ทางเราจะติดต่อกลับไป</p>
+      <p>ขอขอบคุณที่ให้ความสนใจเข้าร่วมเป็นส่วนหนึ่งของเรา</p>
+      <p>ด้วยความเคารพ,</p>
+      <p>ชมรมผู้สูงอายุ</p>
     `;
-  };
+};
+
+
+export const generateFailVerificationEmail = (candidateName, reason, comments) => {
+    return `
+    <p>เรียน คุณ <b>${candidateName}</b>,</p>
+    <p>ข้อมูลการสมัครสมาชิกชมรมผู้สูงอายุของคุณไม่ผ่านการตรวจสอบ เนื่องจากข้อมูล${reason}</p>
+    <p><b>หมายเหตุจากเจ้าหน้าที่:</b> ${comments}</p>
+    <p>กรุณาตรวจสอบและอัปโหลดเอกสารใหม่</p>
+    <p>ด้วยความเคารพ,</p>
+    <p>ชมรมผู้สูงอายุ</p>
+    `;
+};

@@ -10,6 +10,13 @@ export const createHeir = async (person_id, candidate_id, relationship, address_
     return result.rows[0];
   };
 
+  export const getHeirByCandidateId = async (candidateId) => {
+    const { rows } = await query(
+      `SELECT * FROM heirs WHERE candidate_id = $1 LIMIT 1`,
+      [candidateId]
+    );
+    return rows[0] || null;
+  };
 
 
 
