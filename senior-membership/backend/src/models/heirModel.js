@@ -75,9 +75,12 @@ export const deleteHeir = async (heir_id) => {
     return rows[0];
 };
 
-export const getIdByAccountId = async (accountId) => {
+export const getInfoByAccountId = async (accountId) => {
     const { rows } = await query(
-        `SELECT heir_id FROM heirs WHERE account_id = $1`,
+        `SELECT h.heir_id, p.title, p.first_name, p.last_name
+        FROM heirs h
+        JOIN people p ON h.person_id = p.person_id 
+        WHERE account_id = $1`,
         [accountId]
     );
     return rows[0];

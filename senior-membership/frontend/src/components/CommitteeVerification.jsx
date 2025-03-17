@@ -5,6 +5,7 @@ import {
 } from "../api/committeeApi";
 import ConfirmModal from "./ConfirmModal";
 
+// #TODO : ทำ committee verification ต่อ
 function CommitteeVerification({ candidateId }) {
   const qualification = [
     {
@@ -37,7 +38,7 @@ function CommitteeVerification({ candidateId }) {
   useEffect(() => {
     const fetchApprovalData = async () => {
       try {
-        const data = await getMyCommitteeApproval(candidateId);
+        const data = await getMyCommitteeApproval(candidateId, userRoleId);
         console.log("Fetched approval data:", data);
 
         if (data && data.approvalId) {
@@ -159,6 +160,7 @@ function CommitteeVerification({ candidateId }) {
               {item.topic}
             </p>
             <div className="flex gap-12">
+              {/* Pass */}
               <div className="flex items-center me-4">
                 <input
                   type="radio"
@@ -177,6 +179,7 @@ function CommitteeVerification({ candidateId }) {
                   ผ่านคุณสมบัติ
                 </label>
               </div>
+              {/* Fail */}
               <div className="flex items-center me-4">
                 <input
                   type="radio"

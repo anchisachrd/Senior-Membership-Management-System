@@ -5,20 +5,21 @@ const router = express.Router();
 
 // GET the currently logged-in committee's pending approvals
 router.get(
-  "/committee/pending",
+  "/committee/:committeeId/pending",
   // isCommitteeMiddleware,
   approvalController.getPendingApprovals
 );
 
 // GET the single approval detail for the logged-in committee + candidate
 router.get(
-  "/candidate/:candidateId/my",
+  "/committee/:committeeId/candidate/:candidateId/my",
   // isCommitteeMiddleware,
   approvalController.getMyApprovalDetail
 );
 
-router.get("/committee/final-results", approvalController.getCommitteeSummaryApprovalList);
+router.get("/committee/:committeeId/final-results", approvalController.getCommitteeSummaryApprovalList);
 router.get("/committee/final-detail/:candidateId", approvalController.getFinalApprovalDetail);
+
 
 
 

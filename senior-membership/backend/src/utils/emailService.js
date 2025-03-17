@@ -122,6 +122,7 @@ export const generateFailVerificationEmail = (candidateName, reason, comments) =
     <p>ด้วยความเคารพ,</p>
     <p>ชมรมผู้สูงอายุ</p>
     `;
+
 };
 
 export const generateRejectionEmail = (candidateName, reason) => {

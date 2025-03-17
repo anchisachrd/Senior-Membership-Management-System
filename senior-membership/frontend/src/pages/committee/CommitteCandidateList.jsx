@@ -8,8 +8,9 @@ import StatusBadge from "../../components/StatusBadge";
 function CommitteCandidateList() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState("");
-  const [userEmail, setUserEmail] = useState("");
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
+  const [userRoleId, setUserRoleId] = useState('')
 
   // สำหรับเช็ค role
 
@@ -18,16 +19,17 @@ function CommitteCandidateList() {
 
   // }, [userEmail]);
 
-  // const fetchUserProfile = async () => {
-  //   try {
-  //     const data = await verifyUser();
-  //     setUserRole(data.role)
-  //     setUserEmail(data.email)
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+      setUserRoleId(data.role_id)
 
-  //   } catch (error) {
-  //     console.error('Fetch Protected Data Error:', error);
-  //   }
-  // };
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+    }
+  };
 
   const handleRowClick = (candidateId) => {
     console.log("Navigating to:", candidateId); // Debugging log
@@ -40,8 +42,9 @@ function CommitteCandidateList() {
     const fetchData = async () => {
       try {
         // This calls GET /api/committee/pending
-        const data = await getCommitteePendingApprovals();
+        const data = await getCommitteePendingApprovals(userRoleId);
         console.log("Pending Approvals API Response:", data);
+        // console.log(userRoleId)
         setCandidates(data);
       } catch (error) {
         console.error("Error loading pending approvals:", error);
@@ -49,7 +52,7 @@ function CommitteCandidateList() {
       }
     };
     fetchData();
-  }, []);
+  }, [userRoleId]);
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -57,6 +60,8 @@ function CommitteCandidateList() {
         <div class="text-xl text-black mx-3 mt-5 mb-8 font-bold">
           อนุมัติการสมัครสมาชิก
         </div>
+
+        
 
         <div class="mb-8 overflow-hidden">
           <div class="grid gap-6 md:grid-cols-4">

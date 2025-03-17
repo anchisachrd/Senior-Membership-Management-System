@@ -22,8 +22,8 @@ export const updateApprovalDetail = async (req, res) => {
 
 export const getMyApprovalDetail = async (req, res) => {
   try{
-    const { candidateId } = req.params;
-    const committeeId = 3;
+    const { candidateId, committeeId } = req.params;
+   
 
     const row = await approvalService.getCommitteeApprovalDetail(candidateId, committeeId);
     if (!row) {
@@ -49,7 +49,7 @@ export const getMyApprovalDetail = async (req, res) => {
 export const getPendingApprovals = async (req, res) => {
   try {
     // Suppose you extracted committeeId from the user's token/session
-    const committeeId = 3;
+    const {committeeId} = req.params;
     const pending = await approvalService.listPendingApprovals(committeeId);
     return res.json(pending);
   } catch (error) {
@@ -71,7 +71,7 @@ export const getCandidateApprovals = async (req, res) => {
 
 export const getCommitteeSummaryApprovalList = async (req, res) => {
   try {
-    const committeeId = 3; // Extracted from logged-in user's session/token
+    const {committeeId} = req.params; 
     const results = await approvalService.getCommitteeApprovalList(committeeId);
     return res.json(results);
   } catch (error) {
@@ -79,7 +79,6 @@ export const getCommitteeSummaryApprovalList = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 export const getFinalApprovalDetail = async (req, res) => {
   try {

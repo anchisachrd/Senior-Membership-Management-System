@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import {
   IoNotificationsOutline,
@@ -13,15 +13,53 @@ import { TiDocumentText } from "react-icons/ti";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { MdLogout } from "react-icons/md";
 import { Link } from "react-router";
+import { verifyUser } from "../api/verifyApi";
+
+import { IoHomeOutline } from "react-icons/io5";
+import { FaUserTie } from "react-icons/fa6";
 
 function SidebarStaff() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole");
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
+  const [userTitle, setUserTitle] = useState('')
+  const [userFirstName, setUserFirstName] = useState('')
+  const [userLastName, setUserLastName] = useState('')
+  const [userThaiRole, setUserThaiRole] = useState('')
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, [userEmail]);
+
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+      setUserTitle(data.info.title)
+      setUserFirstName(data.info.first_name)
+      setUserLastName(data.info.last_name)
+
+      if (data.role === 'staff') {
+        setUserThaiRole('เจ้าหน้าที่')
+      }
+      if (data.role === 'committee') {
+        setUserThaiRole('กรรมการ')
+      }
+
+      // console.log(data)
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("userRole");
+    localStorage.removeItem("userToken");
+    setUserRole('');
+    setUserEmail('');
     alert("ออกจากระบบเรียบร้อยแล้ว");
-    navigate("/login");
+    navigate("/login");;
   };
 
   return (
@@ -55,12 +93,17 @@ function SidebarStaff() {
         aria-label="Sidebar"
       >
         <div class="h-full px-4 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-100 flex flex-col">
-          <a href="" class="flex items-center mb-5">
+          <a href="" class="flex items-center mb-3">
             <img src="public/logo.png" class="h-auto max-w-full" alt="Logo" />
+
           </a>
 
+          <div class="flex justify-center items-center rounded-lg dark:text-gray-700 group mb-0">
+            <span class="font-bold">สำหรับ {userThaiRole}</span>
+          </div>
+
           {/* Sidebar Menu */}
-          <ul class="space-y-2 font-medium flex-grow">
+          <ul class="space-y-2 font-medium flex-grow mt-4">
             {userRole !== "staff" ? (
               <div>
                 <li>
@@ -313,6 +356,12 @@ function SidebarStaff() {
 
           {/* ปุ่มออกจากระบบ */}
           <div class="mt-auto">
+
+            <div class="flex items-center px-3 py-2 rounded-lg dark:text-gray-600 group mb-1">
+              <FaUserTie class="w-5 h-5 text-gray-600 " />
+              <span class="ms-3 mt-1">คุณ{userFirstName} {userLastName}</span>
+            </div>
+
             <a
               onClick={handleLogout}
               class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"

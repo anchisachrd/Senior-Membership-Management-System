@@ -18,7 +18,7 @@ function FinalResultApproval() {
   useEffect(() => {
     const fetchFinalResults = async () => {
       try {
-        const data = await getFinalApprovalList();
+        const data = await getFinalApprovalList(userRoleId);
         setCandidates(data);
       } catch (error) {
         console.error("Error fetching final results:", error);

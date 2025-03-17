@@ -21,6 +21,7 @@ import HeirRegister from './pages/heir/HeirRegister.jsx'
 import EditInfo from './pages/authen/EditInfo.jsx'
 import Home from './pages/member/Home.jsx'
 import Profile from './pages/member/Profile.jsx'
+import HomeForStaff from './pages/member/HomeForStaff.jsx'
 
 import SidebarStaff from './components/SidebarStaff.jsx'
 import Sidebar from './components/Sidebar.jsx'
@@ -55,6 +56,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/finance-report' element = {<FinaceReport/>}/>
         <Route path='/final-approval'element = {<FinalResultApproval/>}/>
         <Route path='/member-list' element = {<MemberList/>} />
+        <Route path='/home_staff' element={ <HomeForStaff />} />
 
       </Route>
       
