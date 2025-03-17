@@ -3,7 +3,9 @@ import { FiEye } from "react-icons/fi";
 import { LuFile } from "react-icons/lu";
 
 function DocumentPreview({ label, docPath }) {
+
     const fileName = docPath
+    
     ? docPath.replace(/^upload\//, "") // remove /upload
     : "ไม่มีไฟล์"
 
@@ -26,7 +28,8 @@ function DocumentPreview({ label, docPath }) {
 
         {/* Eye Icon: Open preview in a new window */}
         <a
-          href={isFileAvailable ? `http://localhost:3000/${docPath}` : "#"}
+          href={isFileAvailable ? `http://localhost:3000/documents/${docPath}` : "#"}
+          
           target="_blank"
           rel="noreferrer"
           className={`ml-auto ${
@@ -37,6 +40,7 @@ function DocumentPreview({ label, docPath }) {
         </a>
       </div>
     </div>
+    
   );
 }
 

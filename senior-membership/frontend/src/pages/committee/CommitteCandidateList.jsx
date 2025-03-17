@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { getWatingApproveCandidate } from "../../api/candidateApi";
+import {  getCommitteePendingApprovals  } from "../../api/committeeApi";
 import { verifyUser } from "../../api/verifyApi";
 
 function CommitteCandidateList() {
@@ -10,6 +10,7 @@ function CommitteCandidateList() {
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState('')
   const [userEmail, setUserEmail] = useState('')
+  const [userRoleId, setUserRoleId] = useState('')
 
   // สำหรับเช็ค role
 
@@ -25,10 +26,7 @@ function CommitteCandidateList() {
       const data = await verifyUser();
       setUserRole(data.role)
       setUserEmail(data.email)
-
-      if (userRole != 'committee') {
-        navigate('/login')
-      }
+      setUserRoleId(data.role_id)
 
     } catch (error) {
       console.error('Fetch Protected Data Error:', error);
@@ -41,19 +39,20 @@ function CommitteCandidateList() {
   }
 
   useEffect(() => {
-    const fetchCandidates = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getWatingApproveCandidate();
-        console.log("API Response:", data);
-
+        // This calls GET /api/committee/pending
+        const data = await getCommitteePendingApprovals(userRoleId);
+        console.log("Pending Approvals API Response:", data);
+        // console.log(userRoleId)
         setCandidates(data);
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error loading pending approvals:", error);
         setCandidates([]);
       }
     };
-    fetchCandidates();
-  }, []);
+    fetchData();
+  }, [userRoleId]);
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -61,6 +60,8 @@ function CommitteCandidateList() {
         <div class="text-xl text-black mx-3 mt-5 mb-8 font-bold">
           อนุมัติการสมัครสมาชิก
         </div>
+
+        
 
         <div class="mb-8 overflow-hidden">
           <div class="grid gap-6 md:grid-cols-4">
@@ -132,10 +133,10 @@ function CommitteCandidateList() {
                   ได้รับสิทธิ์ก่อน
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
-                  ตรวจสอบเอกสาร
+                สถานะการอนุมัติ
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
-                  อนุมัติการเป็นสมาชิก
+                  สรุปผลการอนุมัติ
                 </th>
               </tr>
             </thead>
@@ -161,7 +162,7 @@ function CommitteCandidateList() {
                       {candidate.priority ? <FaCheck /> : "-"}
                     </td>
                     <td className="text-center align-middle py-4 px-4">
-                      {candidate.doc_verification_status}
+                    {candidate.approval_status}
                     </td>
                     <td className="text-center align-middle py-4 px-4">{candidate.approval_status}</td>
                   </tr>
@@ -169,7 +170,8 @@ function CommitteCandidateList() {
               ) : (
                 <tr>
                   <td colSpan="4" className="text-center align-middle py-4">
-                    ไม่พบรายชื่อผู้สมัคร
+                  ไม่พบรายชื่อผู้สมัครที่รอการพิจารณา
+
                   </td>
                 </tr>
               )}

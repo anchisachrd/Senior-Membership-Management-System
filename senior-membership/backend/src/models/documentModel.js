@@ -48,23 +48,22 @@ export const deleteDocument = async (documentId) => {
 };
 
 export const getDocumentsByCandidateId = async (candidateId) => {
-  const { rows } = await query(
-    `
-      SELECT document_id, doc_path, doc_type, candidate_id, heir_id
-      FROM documents
-      WHERE candidate_id = $1 
-    `,
-    [candidateId]
-  );
+  const sql = `
+    SELECT document_id, doc_path, doc_type
+    FROM documents
+    WHERE entity_id = $1 AND entity_type = 'candidate';
+  `;
+  const { rows } = await query(sql, [candidateId]);
   return rows;
 };
 
 export const getDocumentsByHeirId = async (heirId) => {
-  const { rows } = await query (`
-      SELECT document_id, doc_path, doc_type, candidate_id, heir_id
-      FROM documents
-      WHERE heir_id = $1
-    `, [heirId]
-);
+  const sql = `
+    SELECT document_id, doc_path, doc_type
+    FROM documents
+    WHERE entity_id = $1 AND entity_type = 'heir';
+  `;
+  const { rows } = await query(sql, [heirId]);
   return rows;
 };
+

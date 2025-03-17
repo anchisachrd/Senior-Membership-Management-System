@@ -94,8 +94,6 @@ function Home() {
       const data = await verifyUser();
       setUserRole(data.role)
       setUserEmail(data.email)
-
-
     } catch (error) {
       console.error('Fetch Protected Data Error:', error);
     }

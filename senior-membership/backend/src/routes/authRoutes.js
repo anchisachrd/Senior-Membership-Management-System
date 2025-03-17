@@ -33,4 +33,10 @@ router.put('/change_password', authController.ChangePassword, (req, res) => {
   });
 });
 
+router.get('/get_address', authController.getAddressByMemberId);
+router.get('/get_info', authController.getInfoPeopleByMemberId);
+
+router.get('/get_address_heir', authController.getAddressByHeirId);
+router.get('/get_info_heir', authController.getInfoPeopleByHeirId);
+
 export default router;

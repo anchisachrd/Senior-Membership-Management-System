@@ -17,4 +17,37 @@ export const createPerson = async (data) => {
     );
     return result.rows[0];
   };
+
+
+  export const getPersonById = async (personId) => {
+    const { rows } = await query(`
+      SELECT *
+      FROM people
+      WHERE person_id = $1
+    `, [personId]);
+    return rows[0] || null;
+  };
+
+  export const getInfoByMemberId = async (memberId) => {
+    const { rows } = await query(`
+    SELECT p.title, p.first_name, p.last_name, p.national_id, p.dob, p.phone, p.gender, p.occupation 
+    FROM people p
+    JOIN candidates c ON c.person_id = p.person_id
+	  JOIN members m ON m.candidate_id = c.candidate_id
+    WHERE m.member_id = $1
+    `, [memberId]);
+
+    return rows[0];
+  };
+
+  export const getInfoByHeirId = async (heirId) => {
+    const { rows } = await query(`
+    SELECT p.title, p.first_name, p.last_name, p.national_id, p.dob, p.phone, p.gender, p.occupation
+    FROM people p
+    JOIN heirs h ON h.person_id = p.person_id
+    WHERE h.heir_id = $1
+    `, [heirId]);
+
+    return rows[0];
+  };
   

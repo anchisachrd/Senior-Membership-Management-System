@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
-  updateApprovalStatus,
-  getVerificationDetail,
-  saveVerificationDetail,
-} from "../api/candidateApi";
+  getMyCommitteeApproval,
+  updateCommitteeApproval,
+} from "../api/committeeApi";
 import ConfirmModal from "./ConfirmModal";
 
+// #TODO : ทำ committee verification ต่อ
 function CommitteeVerification({ candidateId }) {
   const qualification = [
     {
@@ -18,94 +18,147 @@ function CommitteeVerification({ candidateId }) {
     },
   ];
 
-  const [results, setResults] = useState(() => qualification.map(() => ""));
-  const [approvalStatus, setApprovalStatus] = useState("new");
+  const [results, setResults] = useState(
+    qualification.map(() => ({ status: "", comment: "" }))
+  );
+
+  const [approvalId, setApprovalId] = useState(null);
+  const [approvalStatus, setApprovalStatus] = useState("รอการพิจารณา");
   const [isEditing, setIsEditing] = useState(true);
 
   //for modal
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  useEffect(() => {
-    console.log("Updated Results:", results);
-  }, [results]);
-  
+  const isAllSelected = results.every((item) => item.status !== "");
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchApprovalData = async () => {
       try {
-        const data = await getVerificationDetail(candidateId);
-        console.log("Full fetch response:", data);
-  
-        if (data && data.verificationDetails) {
-          setResults(data.verificationDetails);
-          setApprovalStatus(data.approvalStatus || "new"); // ✅ Use backend-approved status
-          setIsEditing(data.approvalStatus === "new"); // Only allow editing if it's new
+        const data = await getMyCommitteeApproval(candidateId);
+        console.log("Fetched approval data:", data);
+
+        if (data && data.approvalId) {
+          setApprovalId(data.approvalId);
+          setApprovalStatus(data.approvalStatus || "รอการพิจารณา");
+
+          // ✅ Ensure verificationDetails is always an array with default structure
+          const filledDetails =
+            Array.isArray(data.verificationDetails) &&
+            data.verificationDetails.length > 0
+              ? data.verificationDetails.map((item) => ({
+                  status: item.status || "", // Default empty status
+                  comment: item.comment || "", // Default empty comment
+                }))
+              : qualification.map(() => ({ status: "", comment: "" })); // Create default values
+
+          setResults(filledDetails);
+          setIsEditing(data.approvalStatus === "รอการพิจารณา");
         } else {
-          setResults(qualification.map(() => ""));
-          setApprovalStatus("new");
+          // If no approval found, initialize default values
+          setApprovalId(null);
+          setApprovalStatus("รอการพิจารณา");
+          setResults(qualification.map(() => ({ status: "", comment: "" })));
           setIsEditing(true);
         }
-      } catch (error) {
-        console.error("Error fetching verification details:", error);
+      } catch (err) {
+        console.error("Error loading committee approval detail:", err);
+        setResults(qualification.map(() => ({ status: "", comment: "" }))); // Default fallback
       }
     };
-  
-    fetchData();
+
+    fetchApprovalData();
   }, [candidateId]);
   
 
-  const isAllSelected = results.every((v) => v !== "");
- 
-
-  const handleRadioChange = (index, value) => {
+  function handleRadioChange(index, newStatus) {
     if (!isEditing) return;
     
     setResults((prev) => {
-      const copy = [...prev];
-      
-      // Update the specific index with structured data
-      copy[index] = {
-        status: value,  // Update status (pass/fail)
-        reason: value === "fail" ? qualification[index].failReason : null, // Add reason if failed
-        comment: value === "fail" ? "" : null, // Placeholder for comment (optional)
-      };
-      
-      return copy;
+      const updated = [...prev];
+  
+      if (newStatus === "fail") {
+        updated[index] = {
+          status: "fail",
+          reason: qualification[index].failReason,
+          comment: updated[index].comment || "", // ✅ Preserve previous comment
+        };
+      } else {
+        updated[index] = {
+          status: "pass",
+          reason: null,
+          comment: "", // Reset comment if changed to pass
+        };
+      }
+      return updated;
     });
-  };
+  }
+  
 
-  const handleSendData = async () => {
-    if (!isAllSelected) return;
-    setIsSaveModalOpen(true); // Open save modal
-  };
+  function handleCommentChange(index, text) {
+    if (!isEditing) return;
+    setResults((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], comment: text };
+      return updated;
+    });
+  }
+
+  function handleSendData() {
+    if (!isAllSelected) {
+      alert("กรุณาเลือกผลการตรวจสอบให้ครบทุกหัวข้อ");
+      return;
+    }
+
+    // If any "fail" has empty comment, you can force them to fill it
+    const missingComments = results.some(
+      (r) => r.status === "fail" && !r.comment.trim()
+    );
+    if (missingComments) {
+      alert("กรุณากรอกหมายเหตุสำหรับข้อที่ 'ไม่ผ่าน'");
+      return;
+    }
+
+    setIsSaveModalOpen(true);
+  }
 
   const confirmSaveData = async () => {
-    setIsSaveModalOpen(false); // Close modal
+    setIsSaveModalOpen(false);
+
+    // Decide final pass/fail for this committee
+    const anyFail = results.some((r) => r.status === "fail");
+    const finalStatus = anyFail ? "ไม่อนุมัติ" : "อนุมัติ";
+
+    if (!approvalId) {
+      alert("No approval row found or none created for this candidate!");
+      return;
+    }
 
     try {
-      const response = await updateApprovalStatus(candidateId, {
-        verificationDetails: results, // Send results only, backend calculates status
-      });
-  
-      // ✅ Use the computed `approvalStatus` from backend response
-      setApprovalStatus(response.approvalStatus);
-      setIsEditing(false);
-  
-      alert(`เปลี่ยนสถานะสมาชิกเป็น ${response.approvalStatus}`);
+      const payload = {
+        status: finalStatus,
+        verificationDetails: results,
+        comment: "", // optional
+        isSigned: true,
+      };
+      const response = await updateCommitteeApproval(approvalId, payload);
+
+      // response.data => { message, data: { ...updatedRow } }
+      const updatedRow = response.data; // or response.data.data
+      if (updatedRow.approval_id) {
+        setApprovalStatus(updatedRow.approval_status);
+        setIsEditing(false);
+      }
+      alert(`เปลี่ยนสถานะสมาชิกเป็น ${updatedRow.approval_status}`);
     } catch (error) {
       console.error("Error updating approval status:", error);
       alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
     }
   };
 
-  const handleClearAll = () => {
-    setResults(qualification.map(() => ""));
-  };
-
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  function handleClearAll() {
+    setResults(qualification.map(() => ({ status: "", comment: "" })));
+  }
 
   const handleDelete = () => {
     setIsDeleteModalOpen(true);
@@ -118,20 +171,20 @@ function CommitteeVerification({ candidateId }) {
 
   return (
     <div className="w-full">
-      {/* Main Panel (with relative for absolute positioning inside) */}
-      <div className="bg-gray-200 overflow-hidden rounded-xl  mt-12 relative p-8">
-        {/** "แก้ไขข้อมูล" Button - Top-Right */}
-        {!isEditing && (approvalStatus === "pass" || approvalStatus === "fail") && (
-          <button
-            type="button"
-            onClick={handleEdit}
-            className="absolute top-4 right-4 text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg px-4 py-2"
-          >
-            แก้ไขข้อมูล
-          </button>
-        )}
+      <div className="bg-gray-200 overflow-hidden rounded-xl mt-12 relative p-8">
+        {/* Edit button if they've already submitted */}
+        {!isEditing &&
+          (approvalStatus === "อนุมัติ" || approvalStatus === "ไม่อนุมัติ") && (
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="absolute top-4 right-4 text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg px-4 py-2"
+            >
+              แก้ไขข้อมูล
+            </button>
+          )}
 
-        <p className="block mt-4 mb-10 text-xl  leading-tight font-bold text-grey-600">
+        <p className="block mt-4 mb-10 text-xl leading-tight font-bold text-grey-600">
           ตรวจสอบเอกสารตามคุณสมบัติ ( โปรดเลือกให้ครบถ้วน )
         </p>
 
@@ -141,42 +194,58 @@ function CommitteeVerification({ candidateId }) {
               {item.topic}
             </p>
             <div className="flex gap-12">
+              {/* Pass */}
               <div className="flex items-center me-4">
                 <input
                   type="radio"
-                  value="pass"
                   name={`topic_${index}`}
                   disabled={!isEditing}
-                  checked={results[index]?.status === "pass"} 
+                  checked={results[index].status === "pass"}
                   onChange={() => handleRadioChange(index, "pass")}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                 />
                 <label className="ms-2 text-m font-medium text-gray-900">
                   ผ่านคุณสมบัติ
                 </label>
               </div>
+              {/* Fail */}
               <div className="flex items-center me-4">
                 <input
                   type="radio"
-                  value="fail"
                   name={`topic_${index}`}
                   disabled={!isEditing}
-                  checked={results[index]?.status === "fail"}
+                  checked={results[index].status === "fail"}
                   onChange={() => handleRadioChange(index, "fail")}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                 />
                 <label className="ms-2 text-m font-medium text-gray-900">
                   ไม่ผ่านคุณสมบัติ
                 </label>
               </div>
             </div>
+
+            {/* หมายเหตุ text area */}
+            {results[index].status === "fail" && (
+              <div className="mt-2">
+                <label className="block mb-1 text-gray-700">หมายเหตุ:</label>
+                <textarea
+                 className={`border rounded p-2 w-full transition-colors duration-200
+                  ${!isEditing ? "bg-gray-300 text-gray-600" : "bg-white text-black"}
+                `}
+                  rows={3}
+                  disabled={!isEditing}
+                  value={results[index].comment || ""} 
+                  onChange={(e) => handleCommentChange(index, e.target.value)}
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
 
-      {/* Centered Buttons Below */}
+      {/* Save / Clear / Delete buttons */}
       <div className="relative mt-14 flex justify-center gap-4">
-        {(approvalStatus === "new" || isEditing) && (
+        {(approvalStatus === "รอการพิจารณา" || isEditing) && (
           <>
             <button
               type="button"
@@ -196,7 +265,7 @@ function CommitteeVerification({ candidateId }) {
           </>
         )}
 
-        {approvalStatus === "fail" && !isEditing && (
+        {approvalStatus === "ไม่อนุมัติ" && !isEditing && (
           <button
             type="button"
             onClick={handleDelete}
@@ -206,8 +275,9 @@ function CommitteeVerification({ candidateId }) {
           </button>
         )}
       </div>
-       {/* Confirm Modals */}
-       <ConfirmModal
+
+      {/* Confirm Modals */}
+      <ConfirmModal
         isOpen={isSaveModalOpen}
         title="ยืนยันการบันทึกข้อมูล"
         description="คุณต้องการบันทึกข้อมูลนี้หรือไม่?"

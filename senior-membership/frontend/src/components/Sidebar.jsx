@@ -1,23 +1,60 @@
-import React, {} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom';
 import { IoNotificationsOutline, IoDocumentTextOutline, IoHomeOutline } from "react-icons/io5";
 import { AiOutlineHistory } from "react-icons/ai";
-import { FaRegUser } from "react-icons/fa";
+// import { FaHouseUser } from "react-icons/fa";
 import { TiDocumentText } from "react-icons/ti";
-import { FaUserPlus } from "react-icons/fa6";
+import { FaUserPlus, FaUser, FaHouseUser } from "react-icons/fa6";
 import { MdLogout } from "react-icons/md";
 import { Link } from "react-router";
+import { verifyUser } from "../api/verifyApi";
 
 function Sidebar() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole")
+
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
+  const [userTitle, setUserTitle] = useState('')
+    const [userFirstName, setUserFirstName] = useState('')
+    const [userLastName, setUserLastName] = useState('')
+  const [userThaiRole, setUserThaiRole] = useState('')
+  useEffect(() => {
+    fetchUserProfile();
+  }, [userEmail]);
+
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+      setUserTitle(data.info.title)
+      setUserFirstName(data.info.first_name)
+      setUserLastName(data.info.last_name)
+
+      if (data.role === 'member') {
+        setUserThaiRole('สมาชิก')
+      }
+      if (data.role === 'heir') {
+        setUserThaiRole('ทายาท')
+      }
+
+      console.log(data)
+
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("userRole");
     localStorage.removeItem("userToken");
+    setUserRole('');
+    setUserEmail('');
     alert("ออกจากระบบเรียบร้อยแล้ว");
     navigate("/login");
-    }
+  }
+
 
   return (
 
@@ -31,13 +68,17 @@ function Sidebar() {
 
       <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
         <div class="h-full px-4 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-100 flex flex-col">
-          <a href="" class="flex items-center mb-5">
+          <a href="" class="flex items-center mb-3">
             <img src="public/logo.png"
               class="h-auto max-w-full" alt="Logo" />
           </a>
 
+          <div class="flex justify-center items-center rounded-lg dark:text-gray-700 group mb-0">
+            <span class="font-bold">สำหรับ {userThaiRole}</span>
+          </div>
+
           {/* Sidebar Menu */}
-          <ul class="space-y-2 font-medium flex-grow">
+          <ul class="space-y-2 font-medium flex-grow mt-4">
             {userRole !== 'heir' ? (
               <div>
                 <li>
@@ -59,8 +100,8 @@ function Sidebar() {
                   </Link>
                 </li>
                 <li>
-                  <Link to='/' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <FaRegUser class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <Link to='/profile' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
+                    <FaHouseUser class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">โปรไฟล์</span>
                   </Link>
                 </li>
@@ -97,16 +138,26 @@ function Sidebar() {
                     <span class="ms-3 mt-1 dark:group-hover:text-white">สมัครสมาชิก</span>
                   </Link>
                 </li>
+                <li>
+                  <Link to='/profile' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
+                    <FaHouseUser class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <span class="ms-3 mt-1 dark:group-hover:text-white">โปรไฟล์</span>
+                  </Link>
+                </li>
               </div>
             )}
           </ul>
 
           {/* ปุ่มออกจากระบบ */}
           <div class="mt-auto">
-              <a onClick={handleLogout} class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                <MdLogout class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                <span class="ms-3 mt-1 dark:group-hover:text-white">ออกจากระบบ</span>
-              </a>
+            <div class="flex items-center px-3 py-2 rounded-lg dark:text-gray-600 group mb-1">
+              <FaUser class="w-5 h-5 text-gray-600 " />
+              <span class="ms-3 mt-1">คุณ{userFirstName} {userLastName}</span>
+            </div>
+            <a onClick={handleLogout} class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
+              <MdLogout class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+              <span class="ms-3 mt-1 dark:group-hover:text-white">ออกจากระบบ</span>
+            </a>
           </div>
         </div>
       </aside>

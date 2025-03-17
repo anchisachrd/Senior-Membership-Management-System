@@ -104,7 +104,7 @@ export const getCandidateByFinalApprovalStatus = async (status) => {
   return rows;
 };
 
-export const updateApprovalStatus = async (candidateId, status) => {
+export const updateFinalApprovalStatus = async (candidateId, status) => {
   const { rows } = await query(
     `UPDATE candidates
        SET final_approval_status = $1

@@ -1,144 +1,124 @@
 import { query } from "../db.js";
 
-export const createApprovalDetails = async (candidateId) => {
-  const { rows } = await query(
-    `
-        INSERT INTO approval_details (candidate_id, committee_id, verification_details, fail_reasons)
-        VALUES ($1, 1, '[]', '[]')
-        RETURNING *;
-      `,
-    [candidateId]
-  );
-  return rows[0];
-};
 
-export const getVerificationDetails = async (candidateId, committeeId) => {
-  const { rows } = await query(
-    `SELECT verification_details, status
-      FROM approval_details
-      WHERE candidate_id = $1 AND committee_id = $2`,
-    [candidateId, committeeId]
-  );
-
-  return rows.length > 0 ? rows[0] : null;
-};
-
-export const updateVerificationDetails = async (candidateId, details) => {
-  const { rows } = await query(
-    `UPDATE approval_details 
-     SET verification_details = $1 
-     WHERE candidate_id = $2 
-     RETURNING *`,
-    [JSON.stringify(details), candidateId]
-  );
-  return rows[0];
-};
-
-export const saveFailReasons = async (candidateId, failReasons) => {
-  const { rows } = await query(
-    ` UPDATE approval_details 
-    SET fail_reasons = $1
-    WHERE candidate_id = $2
-    RETURNING *;`,
-    [JSON.stringify(failReasons), candidateId]
-  );
-  return rows[0];
-};
-
-export const findOneApproval = async (candidateId, committeeId) => {
-  const { rows } = await query(
-    `SELECT * FROM approval_details
-     WHERE candidate_id = $1 AND committee_id = $2
-     LIMIT 1`,
-    [candidateId, committeeId]
-  );
-  return rows[0] || null;
-};
-
-export const createApprovalRecord = async (
+//ใส่ รอการพิจารณา ใน column หลังจากที่ staff กดส่งข้อมูล
+export const createApprovalDetails = async (
   candidateId,
   committeeId,
-  { verificationDetails, failReasons, status }
+  status = "รอการพิจารณา"
 ) => {
   const { rows } = await query(
     `
-      INSERT INTO approval_details (
-        candidate_id, committee_id, verification_details, fail_reasons, status
-      )
-      VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO approval_details
+        (candidate_id, committee_id, approval_status)
+      VALUES
+        ($1, $2, $3)
       RETURNING *;
-    `,
-    [
-      candidateId,
-      committeeId,
-      JSON.stringify(verificationDetails || []),
-      JSON.stringify(failReasons || []),
-      status,
-    ]
+      `,
+    [candidateId, committeeId, status]
   );
   return rows[0];
 };
 
-export const updateApprovalRecord = async (
-  candidateId,
-  committeeId,
-  { verificationDetails, approvalStatus }
+// pass/fail + verification detail
+export const updateApprovalDetail = async (
+  approvalId,
+  { status, verificationDetails, comment, isSigned }
 ) => {
+  // 🛠 Ensure verificationDetails is properly stringified before inserting into JSONB column
+  const formattedDetails = JSON.stringify(verificationDetails || []);
+
   const { rows } = await query(
     `
       UPDATE approval_details
       SET 
-        verification_details = $3,
-        status = $4
-      WHERE candidate_id = $1 AND committee_id = $2
+        approval_status = $1,
+        verification_details = $2::jsonb,  -- Ensure correct JSON type
+        comment = $3,
+        is_signed = $4,
+        signed_at = CASE WHEN $4 = true THEN NOW() ELSE NULL END
+      WHERE approval_id = $5
       RETURNING *;
-    `,
-    [
-      candidateId,
-      committeeId,
-      JSON.stringify(verificationDetails || []),
-      approvalStatus, // ✅ Make sure approvalStatus is passed correctly
-    ]
+      `,
+    [status, formattedDetails, comment, isSigned, approvalId]
   );
 
   return rows[0];
 };
 
-export const getCandidatesForCommittee = async (committeeId) => {
+
+//เอาข้อมูลของ committee คนเดียว 
+export const getApprovalDetail = async (candidateId, committeeId) => {
   const { rows } = await query(
     `
-    SELECT 
-      c.candidate_id, 
-      c.first_name, 
-      c.last_name, 
-      c.national_id, 
-      c.phone, 
-      c.priority,
-      a.status
-    FROM candidates c
-    LEFT JOIN approval_details a 
-      ON c.candidate_id = a.candidate_id 
-      AND a.committee_id = $1
-    `,
-    [committeeId]
+      SELECT * 
+      FROM approval_details
+      WHERE candidate_id = $1
+        AND committee_id = $2
+      LIMIT 1;
+      `,
+    [candidateId, committeeId]
   );
+  return rows[0];
+};
 
+//เอา all committee approval from 1 cnadidate
+export const getApprovalsByCandidate = async (candidateId) => {
+  const { rows } = await query(
+    `
+      SELECT ad.*, e.first_name, e.last_name, e.position
+      FROM approval_details ad
+      JOIN employees e ON ad.committee_id = e.employee_id
+      WHERE ad.candidate_id = $1
+      ORDER BY ad.approval_id ASC;
+      `,
+    [candidateId]
+  );
   return rows;
 };
 
-export const getCandidateApprovalSummary = async (candidateId) => {
+//show pending approval of that committee
+export const getPendingApprovalsByCommittee = async (committeeId) => {
   const { rows } = await query(
-    `SELECT a.committee_id, 
-       CONCAT(e.name, ' ', e.surname) AS committee_fullname, 
-       a.status AS approval_status, 
-       a.verification_details
-FROM approval_details a
-JOIN employees e ON a.committee_id = e.employee_id
-WHERE a.candidate_id = $1
-`,
+    `
+      SELECT ad.*, p.first_name, p.last_name, p.national_id, p.phone
+      FROM approval_details ad
+      JOIN candidates c ON ad.candidate_id = c.candidate_id
+      JOIN people p ON c.person_id = p.person_id
+      WHERE ad.committee_id = $1
+        AND ad.approval_status = 'รอการพิจารณา';
+      `,
+    [committeeId]
+  );
+  return rows;
+};
+
+//for final approval list
+export const getAllFinalApprovals = async () => {
+  const { rows } = await query(
+    `
+    SELECT c.candidate_id, p.first_name, p.last_name, c.final_approval_status
+    FROM candidates c
+    JOIN people p ON c.person_id = p.person_id
+    WHERE c.final_approval_status IN ('รอการพิจารณา', 'ไม่อนุมัติ', 'อนุมัติ')
+    `
+  );
+  return rows;
+};
+
+//for approval detail summary page
+export const getFinalApprovalDetail = async (candidateId) => {
+  const { rows } = await query(
+    `
+    SELECT ad.*, e.first_name, e.last_name, e.position
+    FROM approval_details ad
+    JOIN employees e ON ad.committee_id = e.employee_id
+    WHERE ad.candidate_id = $1
+    ORDER BY ad.approval_id ASC;
+    `,
     [candidateId]
   );
-
-  return rows.length > 0 ? rows : null;  // 🔹 Return raw database result
+  return rows;
 };
+
 

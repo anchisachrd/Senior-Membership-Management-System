@@ -9,11 +9,13 @@ export const findAllByPosition = async (position) => {
 
 };
 
-export const getIdByAccountId = async (accountId) => {
-    const { rows } = await query(
-      `SELECT employee_id FROM employees WHERE account_id = $1;`,
-      [accountId]
-    );
-    return rows;
+export const getInfoByAccountId = async (accountId) => {
+  const { rows } = await query(
+    `SELECT employee_id, title, first_name, last_name
+      FROM employees 
+      WHERE account_id = $1;`,
+    [accountId]
+  );
+  return rows[0];
 
 };
