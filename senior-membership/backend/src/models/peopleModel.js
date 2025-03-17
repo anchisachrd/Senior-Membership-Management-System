@@ -17,7 +17,7 @@ export const createPerson = async (data) => {
     );
     return result.rows[0];
   };
-
+  
 
   export const getPersonById = async (personId) => {
     const { rows } = await query(`

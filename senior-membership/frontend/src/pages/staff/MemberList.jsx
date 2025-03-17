@@ -1,16 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { getFinalApprovalList } from "../api/committeeApi";
-import { FaFileAlt } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import StatusBadge from "./StatusBadge";
-import { verifyUser } from "../api/verifyApi";
+import { getCommitteePendingApprovals } from "../../api/committeeApi";
+import { verifyUser } from "../../api/verifyApi";
+import StatusBadge from "../../components/StatusBadge";
 
-function FinalResultApproval() {
+function MemberList() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
-   const [userRole, setUserRole] = useState('')
-  const [userEmail, setUserEmail] = useState('')
-  const [userRoleId, setUserRoleId] = useState('')
+  const [userRole, setUserRole] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+
+  // สำหรับเช็ค role
+
+  // useEffect(() => {
+  //   fetchUserProfile();
+
+  // }, [userEmail]);
+
+  // const fetchUserProfile = async () => {
+  //   try {
+  //     const data = await verifyUser();
+  //     setUserRole(data.role)
+  //     setUserEmail(data.email)
+
+  //   } catch (error) {
+  //     console.error('Fetch Protected Data Error:', error);
+  //   }
+  // };
 
   const handleRowClick = (candidateId) => {
     console.log("Navigating to:", candidateId); // Debugging log
@@ -19,34 +36,20 @@ function FinalResultApproval() {
     });
   };
 
-  const fetchUserProfile = async () => {
-      try {
-        const data = await verifyUser();
-        setUserRole(data.role)
-        setUserEmail(data.email)
-        setUserRoleId(data.role_id)
-  
-      } catch (error) {
-        console.error('Fetch Protected Data Error:', error);
-      }
-    };
-  
-    useEffect(() => {
-      fetchUserProfile();
-  
-    }, [userEmail]);
-
   useEffect(() => {
-    const fetchFinalResults = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getFinalApprovalList(userRoleId);
+        // This calls GET /api/committee/pending
+        const data = await getCommitteePendingApprovals();
+        console.log("Pending Approvals API Response:", data);
         setCandidates(data);
       } catch (error) {
-        console.error("Error fetching final results:", error);
+        console.error("Error loading pending approvals:", error);
+        setCandidates([]);
       }
     };
-    fetchFinalResults();
-  }, [userRoleId]);
+    fetchData();
+  }, []);
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -97,11 +100,13 @@ function FinalResultApproval() {
                 </button>
               </div>
             </form>
+
+            {/* filter */}
           </div>
         </div>
 
         <div class="relative overflow-hidden shadow-xl sm:rounded-lg">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
               <tr>
                 <th scope="col" class="text-center align-middle py-4 px-4">
@@ -114,16 +119,17 @@ function FinalResultApproval() {
                   ชื่อผู้สมัคร
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
-                  ผลการพิจารณาของฉัน
+                  เลขบัตรประชาชน
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
-                  สรุปผลการอนุมัติ
+                  เบอร์โทรศัพท์
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
-                  ดูผลสรุป
+                  วันที่เริ่มเป็นสมาชิก
                 </th>
               </tr>
             </thead>
+
             <tbody>
               {candidates.length > 0 ? (
                 candidates.map((candidate, index) => (
@@ -145,35 +151,23 @@ function FinalResultApproval() {
                       {candidate.first_name} {candidate.last_name}
                     </td>
                     <td className="text-center align-middle py-4 px-4">
-                     <StatusBadge status= {candidate.approval_status}/>
+                      {candidate.national_id}
                     </td>
                     <td className="text-center align-middle py-4 px-4">
-                     <StatusBadge status= {candidate.final_approval_status}/>
+                      {candidate.phone}
                     </td>
                     <td className="text-center align-middle py-4 px-4">
-                      <button
-                        className={`px-4 py-2 rounded-lg ${
-                          candidate.final_approval_status === "รอการพิจารณา" || candidate.final_approval_status === "รอการแก้ไข" 
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-500 text-white hover:bg-blue-700"
-                        }`}
-                        disabled={
-                          candidate.final_approval_status === "รอการพิจารณา" || candidate.final_approval_status === "รอการแก้ไข" 
-                        }
-                        onClick={(event) => {
-                          event.stopPropagation(); // Prevent row click
-                          navigate(`/final-approval/detail/${candidate.candidate_id}`);
-                        }}
-                      >
-                        <FaFileAlt className="inline-block" /> ดูผล
-                      </button>
+                      {candidate.priority ? <FaCheck /> : "-"}
+                    </td>
+                    <td className="text-center align-middle">
+                      <StatusBadge status={candidate.approval_status} />
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="text-center align-middle py-4">
-                    ไม่มีผลการพิจารณา
+                  <td colSpan="4" className="text-center align-middle py-4">
+                    ไม่พบรายชื่อผู้สมัครที่รอการพิจารณา
                   </td>
                 </tr>
               )}
@@ -185,4 +179,4 @@ function FinalResultApproval() {
   );
 }
 
-export default FinalResultApproval;
+export default MemberList;

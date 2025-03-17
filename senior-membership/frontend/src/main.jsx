@@ -27,6 +27,8 @@ import SidebarStaff from './components/SidebarStaff.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import FinaceReport from './pages/staff/FinaceReport.jsx'
 import FinalResultApproval from './components/FinalResultApproval.jsx'
+import FinalResultDetail from './components/FinalResultDetail.jsx'
+import MemberList from './pages/staff/MemberList.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -53,6 +55,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/staff_detailCheckPayment' element={ < DetailCheckPayment/>} />
         <Route path='/finance-report' element = {<FinaceReport/>}/>
         <Route path='/final-approval'element = {<FinalResultApproval/>}/>
+        <Route path='/member-list' element = {<MemberList/>} />
         <Route path='/home_staff' element={ <HomeForStaff />} />
 
       </Route>
@@ -61,6 +64,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/login' element={ <Login />} />
       <Route path='/register' element={ <Register />} />
       <Route path='/edit_info' element={ <EditInfo />} />
+      <Route path="/final-approval/detail/:candidateId" element={<FinalResultDetail />} />
 
     </Routes>
   </BrowserRouter>,

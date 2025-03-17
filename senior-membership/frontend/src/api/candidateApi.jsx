@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios from 'axios';
+
 // Base URL for API
 const apiUrl = 'http://localhost:3000/api/candidates';
 const apiApproval = 'http://localhost:3000/api/approval-details';

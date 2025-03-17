@@ -14,13 +14,7 @@ import CommitteeVerification from "../../components/CommitteeVerification";
 function Information_personal({ data }) {
   const onChangeDate = (data_date) => {
     const dobFromData = new Date(data_date);
-    const filterDob =
-      dobFromData.getFullYear() +
-      543 +
-      "-" +
-      (dobFromData.getMonth() + 1).toString().padStart(2, "0") +
-      "-" +
-      dobFromData.getDate().toString().padStart(2, "0");
+    const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
     return filterDob;
   };
 
@@ -356,13 +350,7 @@ function Information_personal({ data }) {
 function Information_heir({ data }) {
   const onChangeDate = (data_date) => {
     const dobFromData = new Date(data_date);
-    const filterDob =
-      dobFromData.getFullYear() +
-      543 +
-      "-" +
-      (dobFromData.getMonth() + 1).toString().padStart(2, "0") +
-      "-" +
-      dobFromData.getDate().toString().padStart(2, "0");
+    const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
     return filterDob;
   };
 
@@ -729,27 +717,25 @@ function CandidateProfile() {
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
-  // useEffect(() => {
-  //   fetchUserProfile();
-  //   checkUserRole();
-  // }, [userEmail]);
+  useEffect(() => {
+    fetchUserProfile();
+  }, [userEmail]);
 
-  // const checkUserRole = async () => {
-  //   if (userRole != 'staff' || userRole!= 'committee') {
-  //     navigate('/login')
-  //   }
-  // };
 
-  // const fetchUserProfile = async () => {
-  //   try {
-  //     const data = await verifyUser();
-  //     setUserRole(data.role)
-  //     setUserEmail(data.email)
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
 
-  //   } catch (error) {
-  //     console.error('Fetch Protected Data Error:', error);
-  //   }
-  // };
+      if (data.role != 'staff' || data.role != 'committee') {
+        navigate('/login')
+      }
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+    }
+  };
 
   const toggleModal2 = () => {
     setIsModal2Open(!isModal2Open);
@@ -947,19 +933,7 @@ function CandidateProfile() {
             >
               ส่งข้อมูล
             </button>
-            <button
-              type="button"
-              onClick={() =>
-                openModal(
-                  "ยืนยันการลบ",
-                  "คุณต้องการลบข้อมูลผู้สมัครหรือไม่?",
-                  () => alert("ลบข้อมูล clicked!")
-                )
-              }
-              className="text-white bg-red-600 hover:bg-red-700 rounded-lg px-4 py-2"
-            >
-              ลบข้อมูล
-            </button>
+          
           </div>
         )}
 

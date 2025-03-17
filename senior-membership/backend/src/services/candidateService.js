@@ -31,12 +31,12 @@ export const modifyDocVerificationStatus = async (
       candidateId
     ); // Fetch all in one query
 
-    const { first_name, email } = candidateDetails;
+    const { full_name, email } = candidateDetails;
     const subject = `แจ้งเตือนข้อมูลการสมัครสมาชิกของชมรมผู้สูงอายุ${reason}`;
 
     if (email) {
       const emailContent = emailService.generateFailVerificationEmail(
-        first_name,
+        full_name,
         reason,
         comments
       );
@@ -47,7 +47,7 @@ export const modifyDocVerificationStatus = async (
 };
 
 export const sendCandidateToCommittee = async (candidateId) => {
-  await candidateModel.updateApprovalStatus(candidateId, "รอการพิจารณา");
+  await candidateModel.updateFinalApprovalStatus(candidateId, "รอการพิจารณา");
   await docVerificationModel.updateSentTimestamp(candidateId);
 
   const committeeMembers = await employeeModel.findAllByPosition("committee");
@@ -89,3 +89,7 @@ export const fetchAllApprovalStatusCandidates = async () => {
 export const removeCandidate = async (candidateId) => {
   return await candidateModel.deleteCandidateById(candidateId);
 };
+
+
+
+

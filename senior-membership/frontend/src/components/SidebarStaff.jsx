@@ -5,6 +5,7 @@ import {
   IoDocumentTextOutline,
   IoNotificationsCircleOutline,
   IoPeopleOutline,
+  IoHomeOutline
 } from "react-icons/io5";
 import { LuPiggyBank, LuUserRoundCog } from "react-icons/lu";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -14,7 +15,6 @@ import { MdLogout } from "react-icons/md";
 import { Link } from "react-router";
 import { verifyUser } from "../api/verifyApi";
 
-import { IoHomeOutline } from "react-icons/io5";
 import { FaUserTie } from "react-icons/fa6";
 
 function SidebarStaff() {
@@ -193,8 +193,9 @@ function SidebarStaff() {
                   </ul>
                 </li>
                 <li>
-                  <a
-                    href="#"
+             
+                  <Link
+                    to="/final-approval"
                     class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <TiDocumentText
@@ -204,7 +205,7 @@ function SidebarStaff() {
                     <span class="ms-3 mt-1 dark:group-hover:text-white">
                       สรุปผลการอนุมัติ
                     </span>
-                  </a>
+                  </Link>
                 </li>
               </div>
             ) : (

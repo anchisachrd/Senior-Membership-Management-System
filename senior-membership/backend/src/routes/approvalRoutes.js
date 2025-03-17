@@ -12,19 +12,16 @@ router.get(
 
 // GET the single approval detail for the logged-in committee + candidate
 router.get(
-  "/candidate/:candidateId/my",
+  "/committee/:committeeId/candidate/:candidateId/my",
   // isCommitteeMiddleware,
   approvalController.getMyApprovalDetail
 );
 
-router.get("/committee/final-results", approvalController.getFinalApprovalList);
+router.get("/committee/:committeeId/final-results", approvalController.getCommitteeSummaryApprovalList);
 router.get("/committee/final-detail/:candidateId", approvalController.getFinalApprovalDetail);
 
-// router.put("/:candidateId/approval-status", approvalController.updateCandidateApprovalStatus);
-// router.put(
-//   "/:candidateId/committees/:committeeId/approval-status", 
-//   approvalController.updateCandidateApprovalStatus
-// );
+
+
 
 // PUT update the pass/fail & verification details
 router.put(
@@ -33,6 +30,8 @@ router.put(
   approvalController.updateApprovalDetail
 );
 
+router.put("/committee/:candidateId/send-back", approvalController.comitteeRevision);
+router.put("/:candidateId/result-membership", approvalController.sentResultMembership);
 // Optionally, get all committees' approvals for a candidate
 router.get(
   "/candidates/:candidateId/approvals",

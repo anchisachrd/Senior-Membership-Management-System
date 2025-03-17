@@ -122,4 +122,31 @@ export const generateFailVerificationEmail = (candidateName, reason, comments) =
     <p>ด้วยความเคารพ,</p>
     <p>ชมรมผู้สูงอายุ</p>
     `;
+
 };
+
+export const generateRejectionEmail = (candidateName, reason) => {
+    return `
+    <p>เรียน คุณ <b>${candidateName}</b>,</p>
+    <p>ขอแจ้งให้ทราบว่าการสมัครสมาชิกชมรมผู้สูงอายุของคุณ <b>ไม่ผ่านการอนุมัติ</b> เนื่องจาก ${reason}</p>
+    <p>หากมีข้อสงสัย กรุณาติดต่อทางชมรมได้ที่เบอร์ 0988-822-2222</p>
+    <p>ด้วยความเคารพ,</p>
+    <p>ชมรมผู้สูงอายุ</p>
+    `;
+};
+
+// #TODO ทำ email ต่อ
+export const generateApprovalEmail = (candidateName) => {
+    return `
+    <p>เรียน คุณ <b>${candidateName}</b>,</p>
+    <p>🎉 <b>ยินดีด้วย!</b> 🎉</p>
+    <p>เราขอแจ้งให้ทราบว่าการสมัครสมาชิกชมรมผู้สูงอายุของคุณ <b>ได้รับการอนุมัติ</b> เรีบร้อยแล้ว</p>
+    <p>คุณสามารถเข้าสู่ระบบเพื่อเริ่มต้นใช้งานได้ที่:</p>
+    <p><a href="http://localhost:5173/login" class="btn">Login Now</a></p>
+    <p>หากคุณมีคำถามเพิ่มเติม กรุณาติดต่อฝ่ายสนับสนุน</p>
+    <p>ขอขอบคุณที่เข้าร่วมกับเรา</p>
+    <p>ด้วยความเคารพ,</p>
+    <p>ชมรมผู้สูงอายุ</p>
+    `;
+};
+
