@@ -18,6 +18,22 @@ export const createHeir = async (person_id, candidate_id, relationship, address_
     return rows[0] || null;
   };
 
+  export const getHeirInFoByCandidateId = async (candidateId) => {
+    const { rows } = await query(
+      `SELECT CONCAT(p.first_name, ' ', p.last_name) AS heir_name, 
+       a.email AS heir_email, 
+       a.password_hash
+    FROM heirs h
+    JOIN people p ON h.person_id = p.person_id
+    JOIN accounts a ON h.account_id = a.account_id
+    WHERE h.candidate_id = $1;`,
+      [candidateId]
+    );
+    return rows[0];
+  };
+
+
+
 
 
 

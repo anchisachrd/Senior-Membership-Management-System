@@ -1,6 +1,5 @@
 import { query } from "../db.js";
 
-
 //ใส่ รอการพิจารณา ใน column หลังจากที่ staff กดส่งข้อมูล
 export const createApprovalDetails = async (
   candidateId,
@@ -46,8 +45,7 @@ export const updateApprovalDetail = async (
   return rows[0];
 };
 
-
-//เอาข้อมูลของ committee คนเดียว 
+//เอาข้อมูลของ committee คนเดียว
 export const getApprovalDetail = async (candidateId, committeeId) => {
   const { rows } = await query(
     `
@@ -66,7 +64,7 @@ export const getApprovalDetail = async (candidateId, committeeId) => {
 export const getApprovalsByCandidate = async (candidateId) => {
   const { rows } = await query(
     `
-      SELECT ad.*, e.first_name, e.last_name, e.position
+      SELECT ad.*, e.title, e.first_name, e.last_name, e.position
       FROM approval_details ad
       JOIN employees e ON ad.committee_id = e.employee_id
       WHERE ad.candidate_id = $1
@@ -86,7 +84,7 @@ export const getPendingApprovalsByCommittee = async (committeeId) => {
       JOIN candidates c ON ad.candidate_id = c.candidate_id
       JOIN people p ON c.person_id = p.person_id
       WHERE ad.committee_id = $1
-        AND ad.approval_status = 'รอการพิจารณา';
+       AND ad.approval_status IN ('รอการพิจารณา', 'รอการแก้ไข');
       `,
     [committeeId]
   );
@@ -94,14 +92,22 @@ export const getPendingApprovalsByCommittee = async (committeeId) => {
 };
 
 //for final approval list
-export const getAllFinalApprovals = async () => {
+export const getCommitteeFinalApprovals = async (committeeId) => {
   const { rows } = await query(
     `
-    SELECT c.candidate_id, p.first_name, p.last_name, c.final_approval_status
-    FROM candidates c
+    SELECT 
+      ad.candidate_id,
+      p.first_name,
+      p.last_name,
+      c.final_approval_status,
+      ad.approval_status
+    FROM approval_details ad
+    JOIN candidates c ON ad.candidate_id = c.candidate_id
     JOIN people p ON c.person_id = p.person_id
-    WHERE c.final_approval_status IN ('รอการพิจารณา', 'ไม่อนุมัติ', 'อนุมัติ')
-    `
+    WHERE ad.committee_id = $1
+    ORDER BY ad.candidate_id ASC;
+    `,
+    [committeeId]
   );
   return rows;
 };
@@ -110,9 +116,15 @@ export const getAllFinalApprovals = async () => {
 export const getFinalApprovalDetail = async (candidateId) => {
   const { rows } = await query(
     `
-    SELECT ad.*, e.first_name, e.last_name, e.position
+    SELECT 
+        ad.*, 
+        e.title AS committee_title, e.first_name AS committee_first_name, e.last_name AS committee_last_name, 
+        p.title AS candidate_title, p.first_name AS candidate_first_name, p.last_name AS candidate_last_name, 
+        c.final_approval_status
     FROM approval_details ad
     JOIN employees e ON ad.committee_id = e.employee_id
+    JOIN candidates c ON ad.candidate_id = c.candidate_id
+    JOIN people p ON c.person_id = p.person_id
     WHERE ad.candidate_id = $1
     ORDER BY ad.approval_id ASC;
     `,
@@ -121,4 +133,14 @@ export const getFinalApprovalDetail = async (candidateId) => {
   return rows;
 };
 
-
+export const clearVerificationDetail = async (candidateId) => {
+  const { rows } = await query(
+    `
+    UPDATE approval_details 
+    SET approval_status = 'รอการแก้ไข', verification_details = '[]'
+    WHERE candidate_id = $1
+    `,
+    [candidateId]
+  );
+  return rows[0];
+};

@@ -17,7 +17,6 @@ export const createPerson = async (data) => {
     );
     return result.rows[0];
   };
-<<<<<<< HEAD
   
 
   export const getPersonById = async (personId) => {
@@ -28,6 +27,4 @@ export const createPerson = async (data) => {
     `, [personId]);
     return rows[0] || null;
   };
-=======
->>>>>>> 987039cdee1213812766e8cc628e1df63ec3dc4a
   

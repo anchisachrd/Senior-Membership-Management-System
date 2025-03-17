@@ -97,9 +97,8 @@ export const registerCandidateAndHeir = async (candidateData, heirData) => {
     console.log("gen password", heirPassword);
     heirPassword = await hashPassword(heirPassword);
 
-    const heirAccount = await accountModel.createAccount(
+    const heirAccount = await accountModel.createHeirAccount(
       heirData.account.email,
-      heirPassword,
       "heir"
     );
 
@@ -141,8 +140,14 @@ export const registerCandidateAndHeir = async (candidateData, heirData) => {
     );
 
     const subject = `แจ้งเตือนยืนยันการสมัครสมาชิกชมรมผู้สูงอายุ`;
-    const emailContent = emailService.generateConfirmationEmail(candidateData.first_name)
-    await emailService.sendEmail(candidateData.account.email, subject, emailContent);
+    const emailContent = emailService.generateConfirmationEmail(
+      candidateData.first_name
+    );
+    await emailService.sendEmail(
+      candidateData.account.email,
+      subject,
+      emailContent
+    );
   }
 
   return { candidate, heir };
@@ -303,4 +308,46 @@ export const fetchAllCandidateAndHeirData = async (candidateId) => {
   };
 
   return candidateObj;
+};
+
+export const sendEmailMembership = async (candidateId, reason) => {
+  const candidateInfo = await candidateModel.getCandidateDetails(candidateId);
+  const heirInfo = await heirModel.getHeirInFoByCandidateId(candidateId);
+
+  const { full_name, email, final_approval_status } = candidateInfo;
+  const { heir_name, heir_email } = heirInfo;
+  const candidateSubject = `แจ้งผลการสมัครสมาชิกชมรมผู้สูงอายุ`;
+  const heirSubject = `แจ้งข้อมูลเข้าสู่ระบบสมาชิกชมรมผู้สูงอายุสำหรับทายาท`;
+
+  const heirPassword = generateRandomPassword();
+  const hashedPassword = hashPassword(heirPassword);
+  console.log( "eamil: ", email, heir_email)
+  if (final_approval_status === "อนุมัติ") {
+    const candidatePassContent = emailService.generateApprovalEmail(full_name);
+    await emailService.sendEmail(email, candidateSubject, candidatePassContent);
+
+    await accountModel.activateCandidateAccount(candidateId);
+    await candidateModel.activateMember(candidateId)
+    await accountModel.updateHeirPasswordByCandidateId(
+      candidateId,
+      hashedPassword
+    );
+
+    const heirPassContent = emailService.generatePasswordEmailTemplate(
+      heir_name,
+      heirPassword
+    );
+    await emailService.sendEmail(heir_email, heirSubject, heirPassContent);
+
+  } else if (final_approval_status === "ไม่อนุมัติ") {
+    const candidateFailContent = emailService.generateRejectionEmail(
+      full_name,
+      reason
+    );
+    await emailService.sendEmail(
+      email,
+      candidateSubject,
+      candidateFailContent
+    );
+  }
 };

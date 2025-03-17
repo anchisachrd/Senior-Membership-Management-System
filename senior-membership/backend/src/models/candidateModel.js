@@ -33,15 +33,30 @@ export const getPendingCandidates = async () => {
 
 export const getCandidateDetails = async (candidateId) => {
   const result = await query(
-    `SELECT p.first_name, a.email
-       FROM candidates c
-       JOIN people p ON c.person_id = p.person_id
-       JOIN accounts a ON c.account_id = a.account_id
-       WHERE c.candidate_id = $1;`,
+    `SELECT CONCAT(p.first_name, ' ', p.last_name) AS full_name, 
+       a.email,  
+       c.final_approval_status
+      FROM candidates c
+      JOIN people p ON c.person_id = p.person_id
+      JOIN accounts a ON c.account_id = a.account_id
+      WHERE c.candidate_id = $1;
+    `,
     [candidateId]
   );
   return result.rows[0];
 };
+
+export const activateMember = async (candidateId) => {
+  const { rows } = await query(
+    `UPDATE candidates 
+     SET is_member = TRUE 
+     WHERE candidate_id = $1
+     RETURNING *;`,
+    [candidateId]
+  );
+  return rows[0]; // Returns the updated row
+};
+
 
 export const getAccountByCandidateId = async (candidateId) => {
   // Get candidate details
@@ -77,7 +92,7 @@ export const updateCandidateHeirID = async (candidateId, heirId) => {
 
 export const getCandidateByFinalApprovalStatus = async (status) => {
   const { rows } = await query(
-   `
+    `
     SELECT 
         c.candidate_id,
         p.first_name,
