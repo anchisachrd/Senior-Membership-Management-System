@@ -198,7 +198,7 @@ function SidebarStaff() {
                     to="/final-approval"
                     class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
-                    <TiDocumentText
+                    <IoDocumentTextOutline
                       class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
                       aria-hidden="true"
                     />
@@ -357,7 +357,7 @@ function SidebarStaff() {
           <div class="mt-auto">
 
             <div class="flex items-center px-3 py-2 rounded-lg dark:text-gray-600 group mb-1">
-              <FaUserTie class="w-5 h-5 text-gray-600 " />
+              <FaUserTie class="w-3 h-3 text-gray-600 " />
               <span class="ms-3 mt-1">คุณ{userFirstName} {userLastName}</span>
             </div>
 
