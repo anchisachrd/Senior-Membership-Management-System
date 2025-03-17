@@ -1,24 +1,22 @@
-
 import React, { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import {  getCommitteePendingApprovals  } from "../../api/committeeApi";
+import { getCommitteePendingApprovals } from "../../api/committeeApi";
 import { verifyUser } from "../../api/verifyApi";
+import StatusBadge from "../../components/StatusBadge";
 
 function CommitteCandidateList() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState('')
-  const [userEmail, setUserEmail] = useState('')
+  const [userRole, setUserRole] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   // สำหรับเช็ค role
 
-  useEffect(() => {
-    fetchUserProfile();
-    
-  }, [userEmail]);
+  // useEffect(() => {
+  //   fetchUserProfile();
 
-  
+  // }, [userEmail]);
 
   // const fetchUserProfile = async () => {
   //   try {
@@ -33,8 +31,10 @@ function CommitteCandidateList() {
 
   const handleRowClick = (candidateId) => {
     console.log("Navigating to:", candidateId); // Debugging log
-    navigate(`/candidateProfile/${candidateId}`, { state: { context: 'committeeCandidateProfile' } });
-  }
+    navigate(`/candidateProfile/${candidateId}`, {
+      state: { context: "committeeCandidateProfile" },
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,8 +57,6 @@ function CommitteCandidateList() {
         <div class="text-xl text-black mx-3 mt-5 mb-8 font-bold">
           อนุมัติการสมัครสมาชิก
         </div>
-
-        
 
         <div class="mb-8 overflow-hidden">
           <div class="grid gap-6 md:grid-cols-4">
@@ -130,10 +128,7 @@ function CommitteCandidateList() {
                   ได้รับสิทธิ์ก่อน
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
-                สถานะการอนุมัติ
-                </th>
-                <th scope="col" class="text-center align-middle py-4 px-4">
-                  สรุปผลการอนุมัติ
+                  สถานะการอนุมัติ
                 </th>
               </tr>
             </thead>
@@ -146,29 +141,36 @@ function CommitteCandidateList() {
                     onClick={() => handleRowClick(candidate.candidate_id)}
                     className="cursor-pointer bg-white border-b hover:bg-gray-50 text-gray-900"
                   >
-                    <th scope="row" className="text-center align-middle py-4 px-4 font-medium">
+                    <th
+                      scope="row"
+                      className="text-center align-middle py-4 px-4 font-medium"
+                    >
                       {index + 1}
                     </th>
-                    <td className="text-center align-middle py-4 px-4">{candidate.candidate_id}</td>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.candidate_id}
+                    </td>
                     <td className="text-center align-middle py-4 px-4">
                       {candidate.first_name} {candidate.last_name}
                     </td>
-                    <td className="text-center align-middle py-4 px-4">{candidate.national_id}</td>
-                    <td className="text-center align-middle py-4 px-4">{candidate.phone}</td>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.national_id}
+                    </td>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.phone}
+                    </td>
                     <td className="text-center align-middle py-4 px-4">
                       {candidate.priority ? <FaCheck /> : "-"}
                     </td>
-                    <td className="text-center align-middle py-4 px-4">
-                    {candidate.approval_status}
+                    <td className="text-center align-middle">
+                      <StatusBadge status={candidate.approval_status} />
                     </td>
-                    <td className="text-center align-middle py-4 px-4">{candidate.approval_status}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan="4" className="text-center align-middle py-4">
-                  ไม่พบรายชื่อผู้สมัครที่รอการพิจารณา
-
+                    ไม่พบรายชื่อผู้สมัครที่รอการพิจารณา
                   </td>
                 </tr>
               )}

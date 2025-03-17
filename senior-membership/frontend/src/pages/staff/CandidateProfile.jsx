@@ -947,19 +947,7 @@ function CandidateProfile() {
             >
               ส่งข้อมูล
             </button>
-            <button
-              type="button"
-              onClick={() =>
-                openModal(
-                  "ยืนยันการลบ",
-                  "คุณต้องการลบข้อมูลผู้สมัครหรือไม่?",
-                  () => alert("ลบข้อมูล clicked!")
-                )
-              }
-              className="text-white bg-red-600 hover:bg-red-700 rounded-lg px-4 py-2"
-            >
-              ลบข้อมูล
-            </button>
+          
           </div>
         )}
 

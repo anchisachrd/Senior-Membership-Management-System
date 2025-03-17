@@ -1,62 +1,61 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa6";
-import { getPendingCandidates } from "../../api/candidateApi";
+import { useNavigate } from "react-router-dom";
+import { getCommitteePendingApprovals } from "../../api/committeeApi";
+import { verifyUser } from "../../api/verifyApi";
 import StatusBadge from "../../components/StatusBadge";
-// import { verifyUser } from '../../api/verifyApi';
 
-function StaffCandidateList() {
+function MemberList() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
-  // const [userRole, setUserRole] = useState('')
-  // const [userEmail, setUserEmail] = useState('')
+  const [userRole, setUserRole] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+
+  // สำหรับเช็ค role
+
+  // useEffect(() => {
+  //   fetchUserProfile();
+
+  // }, [userEmail]);
+
+  // const fetchUserProfile = async () => {
+  //   try {
+  //     const data = await verifyUser();
+  //     setUserRole(data.role)
+  //     setUserEmail(data.email)
+
+  //   } catch (error) {
+  //     console.error('Fetch Protected Data Error:', error);
+  //   }
+  // };
 
   const handleRowClick = (candidateId) => {
+    console.log("Navigating to:", candidateId); // Debugging log
     navigate(`/candidateProfile/${candidateId}`, {
-      state: { context: "staffCandidateProfile" },
+      state: { context: "committeeCandidateProfile" },
     });
   };
 
-  // สำหรับเช็ค role
-  // useEffect(() => {
-  //     fetchUserProfile();
-  //     checkUserRole();
-  // }, [userEmail]);
-
-  // const checkUserRole = async () => {
-  //     if (userRole != 'staff') {
-  //         navigate('/login')
-  //     }
-  // };
-
-  // const fetchUserProfile = async () => {
-  //     try {
-  //         const data = await verifyUser();
-  //         setUserRole(data.role)
-  //         setUserEmail(data.email)
-
-  //     } catch (error) {
-  //         console.error('Fetch Protected Data Error:', error);
-  //     }
-  // };
-
   useEffect(() => {
-    const fetchCandidates = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getPendingCandidates(); // Fetch only 'รอตรวจเอกสาร' and 'ไม่ผ่าน'
+        // This calls GET /api/committee/pending
+        const data = await getCommitteePendingApprovals();
+        console.log("Pending Approvals API Response:", data);
         setCandidates(data);
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error loading pending approvals:", error);
         setCandidates([]);
       }
     };
-    fetchCandidates();
+    fetchData();
   }, []);
+
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div class="p-12 sm:ml-64">
         <div class="text-xl text-black mx-3 mt-5 mb-8 font-bold">
-          จัดการผู้สมัคร
+          อนุมัติการสมัครสมาชิก
         </div>
 
         <div class="mb-8 overflow-hidden">
@@ -106,13 +105,6 @@ function StaffCandidateList() {
           </div>
         </div>
 
-        <button
-          type="button"
-          className="focus:outline-none text-white focus:ring-gray-300 font-medium rounded-lg text-base px-4 py-2 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 mb-7"
-        >
-          <Link to="/staff_cadidateWaitingList">แถวคอยการสมัคร</Link>
-        </button>
-
         <div class="relative overflow-hidden shadow-xl sm:rounded-lg">
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
@@ -133,10 +125,7 @@ function StaffCandidateList() {
                   เบอร์โทรศัพท์
                 </th>
                 <th scope="col" class="text-center align-middle py-4 px-4">
-                  ได้รับสิทธิ์ก่อน
-                </th>
-                <th scope="col" class="text-center align-middle py-4 px-4">
-                  ตรวจสอบเอกสาร
+                  วันที่เริ่มเป็นสมาชิก
                 </th>
               </tr>
             </thead>
@@ -151,7 +140,7 @@ function StaffCandidateList() {
                   >
                     <th
                       scope="row"
-                      className="text-center align-middle py-3 px-4 font-medium"
+                      className="text-center align-middle py-4 px-4 font-medium"
                     >
                       {index + 1}
                     </th>
@@ -170,15 +159,15 @@ function StaffCandidateList() {
                     <td className="text-center align-middle py-4 px-4">
                       {candidate.priority ? <FaCheck /> : "-"}
                     </td>
-                    <td className="text-center align-middle ">
-                      <StatusBadge status={candidate.doc_verification_status} />
+                    <td className="text-center align-middle">
+                      <StatusBadge status={candidate.approval_status} />
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan="4" className="text-center align-middle py-4">
-                    ไม่พบรายชื่อผู้สมัคร
+                    ไม่พบรายชื่อผู้สมัครที่รอการพิจารณา
                   </td>
                 </tr>
               )}
@@ -190,4 +179,4 @@ function StaffCandidateList() {
   );
 }
 
-export default StaffCandidateList;
+export default MemberList;

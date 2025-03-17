@@ -2,10 +2,18 @@ import React, { useState, useEffect } from "react";
 import { getFinalApprovalList } from "../api/committeeApi";
 import { FaFileAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import StatusBadge from "./StatusBadge";
 
 function FinalResultApproval() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
+
+  const handleRowClick = (candidateId) => {
+    console.log("Navigating to:", candidateId); // Debugging log
+    navigate(`/candidateProfile/${candidateId}`, {
+      state: { context: "committeeCandidateProfile" },
+    });
+  };
 
   useEffect(() => {
     const fetchFinalResults = async () => {
@@ -20,52 +28,138 @@ function FinalResultApproval() {
   }, []);
 
   return (
-    <div className="p-12">
-      <h2 className="text-xl font-bold mb-4">ผลการพิจารณาทั้งหมด</h2>
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">No.</th>
-            <th className="border p-2">รหัสผู้สมัคร</th>
-            <th className="border p-2">ชื่อผู้สมัคร</th>
-            <th className="border p-2">สรุปผลการอนุมัติ</th>
-            <th className="border p-2">ดูผลสรุป</th>
-          </tr>
-        </thead>
-        <tbody>
-          {candidates.length > 0 ? (
-            candidates.map((candidate, index) => (
-              <tr key={candidate.candidate_id} className="text-center">
-                <td className="border p-2">{index + 1}</td>
-                <td className="border p-2">{candidate.candidate_id}</td>
-                <td className="border p-2">
-                  {candidate.first_name} {candidate.last_name}
-                </td>
-                <td className="border p-2">
-                  {candidate.final_approval_status }
-                </td>
-                <td className="border p-2">
-                  <button
-                    className={`px-4 py-2 rounded-lg ${
-                      candidate.final_approval_status === 'รอการพิจารณา' ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 text-white" 
-                    }`}
-                    disabled={candidate.final_approval_status === 'รอการพิจารณา'}
-                    onClick={() => navigate(`/committee/final-detail/${candidate.candidate_id}`)}
+    <div className="ibm-plex-sans-thai-medium">
+      <div class="p-12 sm:ml-64">
+        <div class="text-xl text-black mx-3 mt-5 mb-8 font-bold">
+          อนุมัติการสมัครสมาชิก
+        </div>
+
+        <div class="mb-8 overflow-hidden">
+          <div class="grid gap-6 md:grid-cols-4">
+            <form class="max-w-3xl">
+              <label
+                for="default-search"
+                class="mb-2 text-sm font-medium text-gray-200 sr-only dark:text-white"
+              >
+                ค้นหา
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <svg
+                    class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
                   >
-                    <FaFileAlt className="inline-block" /> ดูผล
-                  </button>
-                </td>
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="search"
+                  id="default-search"
+                  class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+                  placeholder=""
+                  required
+                />
+                <button
+                  type="submit"
+                  class="text-white absolute end-2.5 bottom-2.5 bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                >
+                  ค้นหา
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="relative overflow-hidden shadow-xl sm:rounded-lg">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
+              <tr>
+                <th scope="col" class="text-center align-middle py-4 px-4">
+                  No.
+                </th>
+                <th scope="col" class="text-center align-middle py-4 px-4">
+                  รหัสผู้สมัคร
+                </th>
+                <th scope="col" class="text-center align-middle py-4 px-4">
+                  ชื่อผู้สมัคร
+                </th>
+                <th scope="col" class="text-center align-middle py-4 px-4">
+                  ผลการพิจารณาของฉัน
+                </th>
+                <th scope="col" class="text-center align-middle py-4 px-4">
+                  สรุปผลการอนุมัติ
+                </th>
+                <th scope="col" class="text-center align-middle py-4 px-4">
+                  ดูผลสรุป
+                </th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="border p-4 text-center">
-                ไม่มีผลการพิจารณา
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {candidates.length > 0 ? (
+                candidates.map((candidate, index) => (
+                  <tr
+                    key={candidate.candidate_id}
+                    onClick={() => handleRowClick(candidate.candidate_id)}
+                    className="cursor-pointer bg-white border-b hover:bg-gray-50 text-gray-900"
+                  >
+                    <th
+                      scope="row"
+                      className="text-center align-middle py-4 px-4 font-medium"
+                    >
+                      {index + 1}
+                    </th>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.candidate_id}
+                    </td>
+                    <td className="text-center align-middle py-4 px-4">
+                      {candidate.first_name} {candidate.last_name}
+                    </td>
+                    <td className="text-center align-middle py-4 px-4">
+                     <StatusBadge status= {candidate.approval_status}/>
+                    </td>
+                    <td className="text-center align-middle py-4 px-4">
+                     <StatusBadge status= {candidate.final_approval_status}/>
+                    </td>
+                    <td className="text-center align-middle py-4 px-4">
+                      <button
+                        className={`px-4 py-2 rounded-lg ${
+                          candidate.final_approval_status === "รอการพิจารณา" || candidate.final_approval_status === "รอการแก้ไข" 
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-500 text-white hover:bg-blue-700"
+                        }`}
+                        disabled={
+                          candidate.final_approval_status === "รอการพิจารณา" || candidate.final_approval_status === "รอการแก้ไข" 
+                        }
+                        onClick={(event) => {
+                          event.stopPropagation(); // Prevent row click
+                          navigate(`/final-approval/detail/${candidate.candidate_id}`);
+                        }}
+                      >
+                        <FaFileAlt className="inline-block" /> ดูผล
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center align-middle py-4">
+                    ไม่มีผลการพิจารณา
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

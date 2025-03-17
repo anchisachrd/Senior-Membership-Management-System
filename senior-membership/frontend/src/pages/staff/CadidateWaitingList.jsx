@@ -7,6 +7,7 @@ import {
   deleteCandidate,
 } from "../../api/candidateApi";
 import ConfirmModal from "../../components/ConfirmModal";
+import StatusBadge from "../../components/StatusBadge";
 // import { verifyUser } from "../../api/verifyApi";
 
 function CadidateWaitingList() {
@@ -25,10 +26,9 @@ function CadidateWaitingList() {
     fetchCandidates();
   }, []);
 
-   useEffect(() => {
-      fetchUserProfile();
-    }, [userEmail]);
-
+  useEffect(() => {
+    fetchUserProfile();
+  }, [userEmail]);
 
   const handleRowClick = (candidateId) => {
     navigate(`/candidateProfile/${candidateId}`, {
@@ -57,17 +57,6 @@ function CadidateWaitingList() {
     }
   };
 
-  const handleDeleteCandidate = async (candidateId) => {
-    try {
-      deleteCandidate(candidateId);
-      alert("deleted");
-
-      await fetchCandidates();
-    } catch (error) {
-      alert("Failed to delete candidate");
-    }
-  };
-
   const openModal = (title, description, action) => {
     setModalTitle(title);
     setModalDescription(description);
@@ -87,10 +76,9 @@ function CadidateWaitingList() {
       setUserRole(data.role);
       setUserEmail(data.email);
 
-      if (data.role != 'staff') {
-        navigate('/login')
+      if (data.role != "staff") {
+        navigate("/login");
       }
-
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
     }
@@ -222,45 +210,52 @@ function CadidateWaitingList() {
                     <td className="text-center align-middle py-4 px-4">
                       {candidate.verified_at}
                     </td>
-                    <td className="text-center align-middle py-4 px-4">
-                      {candidate.final_approval_status}
+                    <td className="text-center ">
+                    <StatusBadge status={candidate.final_approval_status}/>
                     </td>
                     <td className="text-center align-middle py-4 px-4 space-x-4">
-                      <button
-                        disabled={
-                          candidate.final_approval_status !==
-                          "ยังไม่ส่งพิจารณา"
-                        }
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openModal(
-                            "ยืนยันการส่งข้อมูลกรรมการ",
-                            "คุณต้องการส่งข้อมูลไปที่กรรมการหรือไม่?",
-                            () => handleSentdata(candidate.candidate_id)
-                          );
-                        }}
-                        className={`${
-                          candidate.final_approval_status !==
-                          "ยังไม่ส่งพิจารณา"
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700"
-                        } text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2`}
-                      >
-                        ส่งข้อมูล
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openModal(
-                            "ยืนยันการลบข้อมูล",
-                            "คุณต้องการลบข้อมูลผู้สมัครหรือไม่?",
-                            () => handleDeleteCandidate(candidate.candidate_id)
-                          );
-                        }}
-                        className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
-                      >
-                        นำออก
-                      </button>
+                      {candidate.final_approval_status ===
+                      "ยังไม่ส่งพิจารณา" || candidate.final_approval_status ===
+                      "รอการพิจารณา" ? (
+                        <button
+                          disabled={
+                            candidate.final_approval_status !==
+                            "ยังไม่ส่งพิจารณา" && candidate.final_approval_status !==
+                            "รอการพิจารณา"
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openModal(
+                              "ยืนยันการส่งข้อมูลกรรมการ",
+                              "คุณต้องการส่งข้อมูลไปที่กรรมการหรือไม่?",
+                              () => handleSentdata(candidate.candidate_id)
+                            );
+                          }}
+                          className={`${
+                            candidate.final_approval_status !==
+                            "ยังไม่ส่งพิจารณา"
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-blue-600 hover:bg-blue-700"
+                          } text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2`}
+                        >
+                          ส่งข้อมูล
+                        </button>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(
+                              `/final-approval/detail/${candidate.candidate_id}`,
+                              {
+                                state: { fromStaff: true }, // Pass state to identify the page source
+                              }
+                            );
+                          }}
+                          className="bg-blue-700 hover:bg-blue-600 text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2"
+                        >
+                          ดูผล
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
