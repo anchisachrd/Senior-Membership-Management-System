@@ -15,7 +15,7 @@ import { MdLogout } from "react-icons/md";
 import { Link } from "react-router";
 import { verifyUser } from "../api/verifyApi";
 
-import { IoHomeOutline } from "react-icons/io5";
+
 import { FaUserTie } from "react-icons/fa6";
 
 function SidebarStaff() {

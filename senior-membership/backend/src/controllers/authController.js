@@ -40,6 +40,9 @@ console.log("🔒 Stored Hash:", account.password_hash);
       return res.status(400).json({ message: "You can not login, You are Candidate." });
     }
 
+     // 3. Check if the account is active
+    
+
     if (account.role === 'member') {
       const member = await authServices.getMemberIdbyAccountId(account.account_id);
       var info = {
@@ -73,10 +76,7 @@ console.log("🔒 Stored Hash:", account.password_hash);
     }
 
 
-    // 3. Check if the account is active
-    // if (!account.is_active) {
-    //   return res.status(403).json({ message: "Account is inactive. Please contact support." });
-    // }
+   
 
     // 4. Generate JWT token
     const accessToken = jwt.sign(

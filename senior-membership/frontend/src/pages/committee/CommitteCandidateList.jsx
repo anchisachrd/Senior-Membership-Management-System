@@ -12,12 +12,7 @@ function CommitteCandidateList() {
   const [userEmail, setUserEmail] = useState('')
   const [userRoleId, setUserRoleId] = useState('')
 
-  // สำหรับเช็ค role
-
-  // useEffect(() => {
-  //   fetchUserProfile();
-
-  // }, [userEmail]);
+  
 
   const fetchUserProfile = async () => {
     try {
@@ -30,6 +25,11 @@ function CommitteCandidateList() {
       console.error('Fetch Protected Data Error:', error);
     }
   };
+
+   useEffect(() => {
+    fetchUserProfile();
+
+  }, [userEmail]);
 
   const handleRowClick = (candidateId) => {
     console.log("Navigating to:", candidateId); // Debugging log
