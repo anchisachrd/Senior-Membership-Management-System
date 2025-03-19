@@ -3,10 +3,32 @@ import { getFinalApprovalList } from "../api/committeeApi";
 import { FaFileAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
+import { verifyUser } from "../api/verifyApi";
 
 function FinalResultApproval() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
+   const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
+  const [userRoleId, setUserRoleId] = useState('')
+
+
+  const fetchUserProfile = async () => {
+      try {
+        const data = await verifyUser();
+        setUserRole(data.role)
+        setUserEmail(data.email)
+        setUserRoleId(data.role_id)
+  
+      } catch (error) {
+        console.error('Fetch Protected Data Error:', error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchUserProfile();
+  
+    }, [userEmail]);
 
   const handleRowClick = (candidateId) => {
     console.log("Navigating to:", candidateId); // Debugging log
@@ -25,7 +47,7 @@ function FinalResultApproval() {
       }
     };
     fetchFinalResults();
-  }, []);
+  }, [userRoleId]);
 
   return (
     <div className="ibm-plex-sans-thai-medium">

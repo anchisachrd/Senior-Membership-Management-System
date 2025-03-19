@@ -61,10 +61,11 @@ export const updateHeirPasswordByCandidateId = async (
   return rows[0]; 
 };
 
-export const activateCandidateAccount = async (candidateId) => {
+export const activateMemberAccount = async (candidateId) => {
   const { rows } = await query(
     `UPDATE accounts
-     SET is_active = TRUE
+     SET is_active = TRUE,
+         role = 'member'
      WHERE account_id = (
         SELECT account_id FROM candidates WHERE candidate_id = $1
      )

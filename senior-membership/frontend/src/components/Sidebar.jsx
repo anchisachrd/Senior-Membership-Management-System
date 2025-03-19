@@ -151,7 +151,7 @@ function Sidebar() {
           {/* ปุ่มออกจากระบบ */}
           <div class="mt-auto">
             <div class="flex items-center px-3 py-2 rounded-lg dark:text-gray-600 group mb-1">
-              <FaUser class="w-5 h-5 text-gray-600 " />
+              <FaUser class="w-3 h-3 text-gray-600 " />
               <span class="ms-3 mt-1">คุณ{userFirstName} {userLastName}</span>
             </div>
             <a onClick={handleLogout} class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">

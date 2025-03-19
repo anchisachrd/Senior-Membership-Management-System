@@ -12,7 +12,8 @@ function CommitteCandidateList() {
   const [userEmail, setUserEmail] = useState('')
   const [userRoleId, setUserRoleId] = useState('')
 
-  
+  // สำหรับเช็ค role
+
 
   const fetchUserProfile = async () => {
     try {
@@ -26,7 +27,7 @@ function CommitteCandidateList() {
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     fetchUserProfile();
 
   }, [userEmail]);

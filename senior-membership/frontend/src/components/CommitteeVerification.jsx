@@ -4,6 +4,7 @@ import {
   updateCommitteeApproval,
 } from "../api/committeeApi";
 import ConfirmModal from "./ConfirmModal";
+import { verifyUser } from "../api/verifyApi";
 
 // #TODO : ทำ committee verification ต่อ
 function CommitteeVerification({ candidateId }) {
@@ -26,6 +27,10 @@ function CommitteeVerification({ candidateId }) {
   const [approvalStatus, setApprovalStatus] = useState("รอการพิจารณา");
   const [signedAt, setSignedAt] = useState(null);
 
+   const [userRole, setUserRole] = useState('')
+    const [userEmail, setUserEmail] = useState('')
+    const [userRoleId, setUserRoleId] = useState('')
+
   //for modal
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
@@ -34,6 +39,22 @@ function CommitteeVerification({ candidateId }) {
       item.status !== "" &&
       (item.status !== "fail" || item.comment.trim() !== "")
   );
+
+  const fetchUserProfile = async () => {
+        try {
+          const data = await verifyUser();
+          setUserRole(data.role)
+          setUserEmail(data.email)
+          setUserRoleId(data.role_id)
+    
+        } catch (error) {
+          console.error('Fetch Protected Data Error:', error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchUserProfile();
+      }, [userEmail]);
 
   useEffect(() => {
     const fetchApprovalData = async () => {
@@ -71,7 +92,7 @@ function CommitteeVerification({ candidateId }) {
     };
 
     fetchApprovalData();
-  }, [candidateId]);
+  }, [candidateId, userRoleId]);
 
   function handleRadioChange(index, newStatus) {
     if (!(approvalStatus === "รอการพิจารณา" || approvalStatus === "รอการแก้ไข"))

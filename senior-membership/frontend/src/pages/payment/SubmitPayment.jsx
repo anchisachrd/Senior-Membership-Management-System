@@ -11,8 +11,8 @@ function SubmitPayment() {
     const [bank, setBank] = useState("");
     const [amount, setAmount] = useState("");
     const [slipFile, setSlipFile] = useState(null); // Store uploaded file
-    const memberId = 2; // Example memberId 
-    const deathId = 2; 
+    const memberId = 5; // Example memberId 
+    const deathId = 3; 
 
     // Toggle modal state
     const toggleModal = () => setIsModalOpen(!isModalOpen);

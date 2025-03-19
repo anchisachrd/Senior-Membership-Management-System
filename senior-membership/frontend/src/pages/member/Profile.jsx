@@ -197,13 +197,7 @@ function Profile() {
 
     const onChangeDate = (data_date) => {
         const dobFromData = new Date(data_date);
-        const filterDob =
-          dobFromData.getFullYear() +
-          543 +
-          "-" +
-          (dobFromData.getMonth() + 1).toString().padStart(2, "0") +
-          "-" +
-          dobFromData.getDate().toString().padStart(2, "0");
+        const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
         return filterDob;
       };
     

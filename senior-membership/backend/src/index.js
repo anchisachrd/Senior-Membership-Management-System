@@ -4,8 +4,9 @@ import candidateRoutes from "./routes/candidateRoute.js"
 import approvalRoutes from "./routes/approvalRoutes.js"
 import bcrypt from "bcrypt"
 import path from 'path';
-import slipRoutes from "./routes/slipRoutes.js"; // <--- Import slipRoutes
 import authRoutes from "./routes/authRoutes.js" // <-- login
+import memberRoutes from './routes/memberRoutes.js'
+import heirRoutes from './routes/heirRoutes.js'
 
 
 
@@ -22,7 +23,8 @@ app.use(express.json());
 app.use('/api/candidates', candidateRoutes);
 app.use('/api/approval-details', approvalRoutes);
 // ✅ เพิ่ม slipRoutes ใน app.js
-app.use('/api/members', slipRoutes);
+app.use('/api/members', memberRoutes );
+app.use('/api/heirs', heirRoutes);
 // Login
 app.use('/api/auth', authRoutes);
 

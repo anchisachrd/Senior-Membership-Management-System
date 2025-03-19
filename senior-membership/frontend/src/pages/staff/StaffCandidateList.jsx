@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaCheck } from "react-icons/fa6";
 import { getPendingCandidates } from "../../api/candidateApi";
 import StatusBadge from "../../components/StatusBadge";
-// import { verifyUser } from '../../api/verifyApi';
+import { verifyUser } from '../../api/verifyApi';
 
 function StaffCandidateList() {
   const [candidates, setCandidates] = useState([]);
   const navigate = useNavigate();
-  // const [userRole, setUserRole] = useState('')
-  // const [userEmail, setUserEmail] = useState('')
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
 
   const handleRowClick = (candidateId) => {
     navigate(`/candidateProfile/${candidateId}`, {
@@ -18,27 +18,24 @@ function StaffCandidateList() {
   };
 
   // สำหรับเช็ค role
-  // useEffect(() => {
-  //     fetchUserProfile();
-  //     checkUserRole();
-  // }, [userEmail]);
+  useEffect(() => {
+      fetchUserProfile();
+  }, [userEmail]);
 
-  // const checkUserRole = async () => {
-  //     if (userRole != 'staff') {
-  //         navigate('/login')
-  //     }
-  // };
+  const fetchUserProfile = async () => {
+      try {
+          const data = await verifyUser();
+          setUserRole(data.role)
+          setUserEmail(data.email)
 
-  // const fetchUserProfile = async () => {
-  //     try {
-  //         const data = await verifyUser();
-  //         setUserRole(data.role)
-  //         setUserEmail(data.email)
+          if (data.role != 'staff') {
+                    navigate('/login')
+                }
 
-  //     } catch (error) {
-  //         console.error('Fetch Protected Data Error:', error);
-  //     }
-  // };
+      } catch (error) {
+          console.error('Fetch Protected Data Error:', error);
+      }
+  };
 
   useEffect(() => {
     const fetchCandidates = async () => {

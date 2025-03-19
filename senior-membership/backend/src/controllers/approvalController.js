@@ -22,8 +22,8 @@ export const updateApprovalDetail = async (req, res) => {
 
 export const getMyApprovalDetail = async (req, res) => {
   try{
-    const { candidateId } = req.params;
-    const {committeeId} = req.params;
+    const { candidateId, committeeId } = req.params;
+   
 
     const row = await approvalService.getCommitteeApprovalDetail(candidateId, committeeId);
     if (!row) {
@@ -71,7 +71,7 @@ export const getCandidateApprovals = async (req, res) => {
 
 export const getCommitteeSummaryApprovalList = async (req, res) => {
   try {
-    const {committeeId} = req.params; // Extracted from logged-in user's session/token
+    const {committeeId} = req.params; 
     const results = await approvalService.getCommitteeApprovalList(committeeId);
     return res.json(results);
   } catch (error) {

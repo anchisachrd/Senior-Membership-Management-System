@@ -32,6 +32,22 @@ export const createHeir = async (person_id, candidate_id, relationship, address_
     return rows[0];
   };
 
+  export const getMemberByHeirId = async (heirId) => {
+    const { rows } = await query(
+      `SELECT 
+          m.member_id,
+          CONCAT(p.title, ' ', p.first_name, ' ', p.last_name) AS member_name
+      FROM members m
+      JOIN candidates c ON m.candidate_id = c.candidate_id
+      JOIN people p ON c.person_id = p.person_id
+      JOIN heirs h ON h.candidate_id = c.candidate_id
+      WHERE h.heir_id = $1
+      ORDER BY m.start_date DESC`,
+      [heirId]
+    );
+  
+    return rows[0];
+  };
 
 
 

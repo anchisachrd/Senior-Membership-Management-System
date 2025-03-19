@@ -8,7 +8,7 @@ import {
 } from "../../api/candidateApi";
 import ConfirmModal from "../../components/ConfirmModal";
 import StatusBadge from "../../components/StatusBadge";
-// import { verifyUser } from "../../api/verifyApi";
+import { verifyUser } from "../../api/verifyApi";
 
 function CadidateWaitingList() {
   const { id } = useParams();
@@ -82,6 +82,12 @@ function CadidateWaitingList() {
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
     }
+  };
+
+  const onChangeDate = (data_date) => {
+    const dobFromData = new Date(data_date);
+    const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
+    return filterDob;
   };
 
   return (
@@ -208,7 +214,7 @@ function CadidateWaitingList() {
                       {candidate.priority ? <FaCheck /> : "-"}
                     </td>
                     <td className="text-center align-middle py-4 px-4">
-                      {candidate.verified_at}
+                    {onChangeDate(candidate.verified_at)}
                     </td>
                     <td className="text-center ">
                     <StatusBadge status={candidate.final_approval_status}/>

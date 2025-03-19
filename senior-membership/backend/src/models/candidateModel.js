@@ -46,17 +46,16 @@ export const getCandidateDetails = async (candidateId) => {
   return result.rows[0];
 };
 
-export const activateMember = async (candidateId) => {
+export const updateIsMember = async (candidateId, isMember) => {
   const { rows } = await query(
     `UPDATE candidates 
-     SET is_member = TRUE 
-     WHERE candidate_id = $1
+     SET is_member = $1 
+     WHERE candidate_id = $2
      RETURNING *;`,
-    [candidateId]
+    [isMember, candidateId]
   );
   return rows[0]; // Returns the updated row
 };
-
 
 export const getAccountByCandidateId = async (candidateId) => {
   // Get candidate details
@@ -69,6 +68,8 @@ export const getAccountByCandidateId = async (candidateId) => {
 
   return rows[0]?.account_id || null;
 };
+
+
 
 export const deleteCandidateById = async (id) => {
   const { rows } = await query(

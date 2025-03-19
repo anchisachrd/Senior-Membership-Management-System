@@ -49,8 +49,11 @@ function Login() {
       if (userInfo.userInfo.role === 'member' || userInfo.userInfo.role === 'heir'){
         navigate("/home");
       }
-      if (userInfo.userInfo.role === 'staff' || userInfo.userInfo.role === 'committee'){
-        navigate("/home_staff");
+      if (userInfo.userInfo.role === 'staff'){
+        navigate("/staff_candidateList");
+      }
+      if (userInfo.userInfo.role === 'committee'){
+        navigate("/committee_candidateList");
       }
      
 

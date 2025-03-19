@@ -6,704 +6,13 @@ import {
   updateApprovalStatus,
 } from "../../api/candidateApi";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import DocumentPreview from "../../components/DocumentPreview";
 import ConfirmModal from "../../components/ConfirmModal";
 import CommitteeVerification from "../../components/CommitteeVerification";
+import MemberPaymentHistory from "../../components/MemberPaymentHistory";
+import HeirInfo from "../../components/HeirInfo";
+import CandidateInfo from "../../components/CandidateInfo";
 // import { verifyUser } from "../../api/verifyApi";
 
-function Information_personal({ data }) {
-  const onChangeDate = (data_date) => {
-    const dobFromData = new Date(data_date);
-    const filterDob =
-      dobFromData.getFullYear() +
-      543 +
-      "-" +
-      (dobFromData.getMonth() + 1).toString().padStart(2, "0") +
-      "-" +
-      dobFromData.getDate().toString().padStart(2, "0");
-    return filterDob;
-  };
-
-  const onChangeGender = (data_gender) => {
-    var filterGender = "";
-
-    if (data_gender === "F") {
-      filterGender = "หญิง";
-    } else {
-      filterGender = "ชาย";
-    }
-    return filterGender;
-  };
-
-  return (
-    <div>
-      {/* กล่อง 1 */}
-      <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-14">
-        <div class="p-8">
-          <p class="block mt-1 mb-7 text-xl leading-tight font-bold text-grey-600">
-            1. ข้อมูลส่วนตัวของผู้สมัคร
-          </p>
-
-          <div class="grid gap-6 mb-6 md:grid-cols-3">
-            <div>
-              <label
-                for="title_name_member"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                คำนำหน้า
-              </label>
-
-              <input
-                type="text"
-                value={data.title}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="first_name_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                ชื่อจริง
-              </label>
-              <input
-                type="text"
-                value={data.first_name}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="last_name_member"
-                className="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                นามสกุล
-              </label>
-              <input
-                type="text"
-                value={data.last_name}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                placeholder="กรอกนามสกุลของผู้สมัคร"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="id_number_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                เลขบัตรประชาชน
-              </label>
-              <input
-                type="text"
-                value={data.national_id}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="birth_day_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                วัน/เดือน/ปี เกิด
-              </label>
-              <input
-                id="birth_day_member"
-                type="text"
-                value={onChangeDate(data.dob)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="sex_member"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                เพศ
-              </label>
-              <input
-                id="sex_member"
-                value={onChangeGender(data.gender)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div class="grid gap-6 mb-4 md:grid-cols-2">
-            <div>
-              <label
-                for="job_member"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                อาชีพ
-              </label>
-              <input
-                id="job_member"
-                value={data.occupation}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="phone_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                หมายเลขโทรศัพท์
-              </label>
-              <input
-                type="text"
-                value={data.phone}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div class="mb-4">
-            <label
-              for="email_member"
-              class="block mb-2 text-sm font-medium text-gray-900 "
-            >
-              อีเมล
-            </label>
-            <input
-              type="text"
-              value={data.email}
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-              readOnly
-            />
-          </div>
-
-          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500"></hr>
-
-          {/* ที่อยู่ */}
-          <p class="block mb-5 mt-0 text-base leading-tight font-bold text-grey-600">
-            ที่อยู่ปัจจุบัน
-          </p>
-
-          <div class="grid gap-6 mb-5 md:grid-cols-3">
-            <div>
-              <label
-                for="home_number_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                บ้านเลขที่
-              </label>
-              <input
-                type="text"
-                value={data.address.house_num}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="moo_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                หมู่ที่
-              </label>
-              <input
-                type="text"
-                value={data.address.moo}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="soi_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                ซอย
-              </label>
-              <input
-                type="text"
-                value={data.address.soi}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div class="grid gap-6 mb-4 md:grid-cols-2">
-            <div>
-              <label
-                for="road_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                ถนน
-              </label>
-              <input
-                type="text"
-                value={data.address.street}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="sub_district_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                ตำบล/แขวง
-              </label>
-              <input
-                type="text"
-                value={data.address.subdistrict}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="district_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                อำเภอ/เขต
-              </label>
-              <input
-                type="text"
-                value={data.address.district}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="province_member"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                จังหวัด
-              </label>
-              <input
-                id="province_member"
-                value={data.address.province}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div class="grid gap-6 mb-3 md:grid-cols-2">
-            <div>
-              <label
-                for="zip_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                รหัสไปรษณีย์
-              </label>
-              <input
-                type="text"
-                value={data.address.postal_code}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* กล่อง */}
-      <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-14">
-        <div class="p-8">
-          <p class="block mt-1 mb-7 text-xl leading-tight font-bold text-grey-600">
-            2. เอกสารของผู้สมัคร
-          </p>
-
-          <DocumentPreview
-            label="สำเนาทะเบียนบ้าน"
-            docPath={data.documents?.house_registration}
-          />
-
-          <DocumentPreview
-            label="สำเนาบัตรประชาชน"
-            docPath={data.documents?.id_card}
-          />
-
-          <DocumentPreview
-            label="ใบเปลี่ยนชื่อ"
-            docPath={data.documents?.rename_doc}
-          />
-
-          <DocumentPreview
-            label="ใบรับรองแพทย์"
-            docPath={data.documents?.med_certification}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Information_heir({ data }) {
-  const onChangeDate = (data_date) => {
-    const dobFromData = new Date(data_date);
-    const filterDob =
-      dobFromData.getFullYear() +
-      543 +
-      "-" +
-      (dobFromData.getMonth() + 1).toString().padStart(2, "0") +
-      "-" +
-      dobFromData.getDate().toString().padStart(2, "0");
-    return filterDob;
-  };
-
-  const onChangeGender = (data_gender) => {
-    var filterGender = "";
-
-    if (data_gender === "F") {
-      filterGender = "หญิง";
-    } else {
-      filterGender = "ชาย";
-    }
-    return filterGender;
-  };
-
-  return (
-    <div>
-      {/* กล่อง  3 */}
-      <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-14">
-        <div class="p-8">
-          <p class="block mt-1 mb-7 text-xl leading-tight font-bold text-grey-600">
-            3. ข้อมูลส่วนตัวของทายาท
-          </p>
-
-          <div class="grid gap-6 mb-6 md:grid-cols-3">
-            <div>
-              <label
-                for="title_name_heir"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                คำนำหน้า
-              </label>
-              <input
-                value={data.title}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="first_name_heir"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                ชื่อจริง
-              </label>
-              <input
-                type="text"
-                id="first_name_heir"
-                value={data.first_name}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="last_name_heir"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                นามสกุล
-              </label>
-              <input
-                type="text"
-                id="last_name_heir"
-                value={data.last_name}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="id_number_heir"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                เลขบัตรประชาชน
-              </label>
-              <input
-                type="text"
-                id="id_number_heir"
-                value={data.national_id}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="birth_day_heir"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                วัน/เดือน/ปี เกิด
-              </label>
-              <input
-                id="birth_day_heir"
-                type="text"
-                value={onChangeDate(data.dob)}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="sex_heir"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                เพศ
-              </label>
-              <input
-                id="sex_heir"
-                type="text"
-                value={onChangeGender(data.gender)}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div class="grid gap-6 mb-3 md:grid-cols-2">
-            <div>
-              <label
-                for="job_heir"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                อาชีพ
-              </label>
-              <input
-                id="job_heir"
-                value={data.occupation}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="relationship_heir"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                ความเกี่ยวข้อง
-              </label>
-              <input
-                id="relationship_heir"
-                value={data.relationship}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="phone_heir"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                หมายเลขโทรศัพท์
-              </label>
-              <input
-                type="text"
-                value={data.phone}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="email_heir"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                อีเมล
-              </label>
-              <input
-                type="text"
-                value={data.email}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-          </div>
-
-          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500"></hr>
-
-          {/* ที่อยู่ */}
-          <p class="block mb-5 mt-0 text-base leading-tight font-bold text-grey-600">
-            ที่อยู่ปัจจุบัน
-          </p>
-
-          <div class="grid gap-6 mb-5 md:grid-cols-3">
-            <div>
-              <label
-                for="home_number_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                บ้านเลขที่
-              </label>
-              <input
-                type="text"
-                value={data.address.house_num}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="moo_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                หมู่ที่
-              </label>
-              <input
-                type="text"
-                value={data.address.moo}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="soi_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                ซอย
-              </label>
-              <input
-                type="text"
-                value={data.address.soi}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div class="grid gap-6 mb-4 md:grid-cols-2">
-            <div>
-              <label
-                for="road_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                ถนน
-              </label>
-              <input
-                type="text"
-                value={data.address.street}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="sub_district_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                ตำบล/แขวง
-              </label>
-              <input
-                type="text"
-                value={data.address.subdistrict}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="district_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                อำเภอ/เขต
-              </label>
-              <input
-                type="text"
-                value={data.address.district}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label
-                for="province_member"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
-                จังหวัด
-              </label>
-              <input
-                value={data.address.province}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div class="grid gap-6 mb-3 md:grid-cols-2">
-            <div>
-              <label
-                for="zip_member"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                รหัสไปรษณีย์
-              </label>
-              <input
-                type="text"
-                value={data.address.postal_code}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                readOnly
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* กล่อง 4 */}
-      <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-14">
-        <div class="p-8">
-          <p class="block mt-1 mb-7 text-xl leading-tight font-bold text-grey-600">
-            4. เอกสารของทายาท
-          </p>
-
-          <DocumentPreview
-            label="สำเนาทะเบียนบ้าน"
-            docPath={data.documents?.house_registration}
-          />
-
-          <DocumentPreview
-            label="สำเนาบัตรประชาชน"
-            docPath={data.documents?.id_card}
-          />
-
-          <DocumentPreview
-            label="ใบเปลี่ยนชื่อ"
-            docPath={data.documents?.rename_doc}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 function CandidateProfile() {
   const { id } = useParams();
   const location = useLocation();
@@ -729,27 +38,23 @@ function CandidateProfile() {
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
-  // useEffect(() => {
-  //   fetchUserProfile();
-  //   checkUserRole();
-  // }, [userEmail]);
+  useEffect(() => {
+    fetchUserProfile();
+  }, [userEmail]);
 
-  // const checkUserRole = async () => {
-  //   if (userRole != 'staff' || userRole!= 'committee') {
-  //     navigate('/login')
-  //   }
-  // };
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role);
+      setUserEmail(data.email);
 
-  // const fetchUserProfile = async () => {
-  //   try {
-  //     const data = await verifyUser();
-  //     setUserRole(data.role)
-  //     setUserEmail(data.email)
-
-  //   } catch (error) {
-  //     console.error('Fetch Protected Data Error:', error);
-  //   }
-  // };
+      if (data.role != "staff" || data.role != "committee") {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Fetch Protected Data Error:", error);
+    }
+  };
 
   const toggleModal2 = () => {
     setIsModal2Open(!isModal2Open);
@@ -843,17 +148,7 @@ function CandidateProfile() {
     }
   };
 
-  // 2. If ALL are pass → set "ผ่านการตรวจสอบ" or maybe "รอการอนุมัติ"
-  const handleSubmitPass = async () => {
-    try {
-      await updateApprovalStatus(id, "ผ่านการตรวจสอบ");
-      alert("สถานะผู้สมัครถูกเปลี่ยนเป็น 'ผ่านการตรวจสอบ'");
-      navigate("/committee_candidateList"); // or wherever you want to go next
-    } catch (error) {
-      console.error("Error updating approval status:", error);
-      alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
-    }
-  };
+ 
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -910,18 +205,23 @@ function CandidateProfile() {
               </button>
             </li>
           )}
+       
         </ul>
 
         {/* Tab Content */}
         <div className="mb-8 overflow-hidden">
           {activeTab === "personalInfo" && candidate && (
-            <Information_personal data={candidate} />
+            <CandidateInfo data={candidate} />
           )}
-          {activeTab === "heirInfo" && heir && <Information_heir data={heir} />}
+          {activeTab === "heirInfo" && heir && <HeirInfo data={heir}/>}
           {activeTab === "candidateVerification" &&
             context === "committeeCandidateProfile" && (
               <CommitteeVerification candidateId={id} />
             )}
+          {activeTab === "memberPaymentHistory" &&
+            context === "committeeCandidateProfile" && (
+            <MemberPaymentHistory />
+          )}
         </div>
 
         {/* condition ว่าถ้าเจออันไหนให้เรนเดอร์ปุ่มนั้น โดยค่าจะส่งมากจากแต่ละไฟล์ที่ใช้ */}
@@ -941,13 +241,12 @@ function CandidateProfile() {
               }
               className={`text-white rounded-lg px-4 py-2 ${
                 candidate.final_approval_status !== "ยังไม่ได้ส่งพิจารณา"
-                  ? "bg-gray-400 cursor-not-allowed" 
+                  ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
               ส่งข้อมูล
             </button>
-          
           </div>
         )}
 
