@@ -50,23 +50,23 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
 
   return (
     <div>
-      <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl">
-        <div className="p-8">
-          <p className="block mt-1 mb-7 text-xl font-bold text-grey-600">
+      <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl">
+        <div class="p-8">
+          <p class="block mt-1 mb-7 text-xl font-bold text-grey-600">
             1. ข้อมูลส่วนตัวของผู้สมัคร
           </p>
 
-          <div className="grid gap-6 mb-6 md:grid-cols-3">
+          <div class="grid gap-6 mb-6 md:grid-cols-3">
             {/* Title */}
             <div>
-              <label htmlFor="candidate_title" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_title" class="block mb-2 text-sm font-medium text-gray-900">
                 คำนำหน้า
               </label>
               <Field
                 as="select"
                 name="candidate_title"
                 id="candidate_title"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.candidate_title && touched.candidate_title
                     ? "border-none bg-red-100 text-gray-500"
                     : values.candidate_title === ""
@@ -80,73 +80,73 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                 <option value="นางสาว">นางสาว</option>
                 <option value="นาง">นาง</option>
               </Field>
-              <ErrorMessage name="candidate_title" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_title" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* First Name */}
             <div>
-              <label htmlFor="candidate_first_name" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_first_name" class="block mb-2 text-sm font-medium text-gray-900">
                 ชื่อจริง
               </label>
               <Field
                 type="text"
                 name="candidate_first_name"
                 id="candidate_first_name"
-                className={`bg-light ${errors.candidate_first_name && touched.candidate_first_name
+                class={`bg-light ${errors.candidate_first_name && touched.candidate_first_name
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกชื่อของผู้สมัคร"
               />
-              <ErrorMessage name="candidate_first_name" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_first_name" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Last Name */}
             <div>
-              <label htmlFor="candidate_last_name" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_last_name" class="block mb-2 text-sm font-medium text-gray-900">
                 นามสกุล
               </label>
               <Field
                 type="text"
                 name="candidate_last_name"
                 id="candidate_last_name"
-                className={`bg-light ${errors.candidate_last_name && touched.candidate_last_name
+                class={`bg-light ${errors.candidate_last_name && touched.candidate_last_name
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกนามสกุลของผู้สมัคร"
               />
-              <ErrorMessage name="candidate_last_name" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_last_name" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* National ID */}
             <div>
-              <label htmlFor="candidate_national_id" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_national_id" class="block mb-2 text-sm font-medium text-gray-900">
                 เลขบัตรประชาชน
               </label>
               <Field
                 type="text"
                 name="candidate_national_id"
                 id="candidate_national_id"
-                className={`bg-light ${errors.candidate_national_id && touched.candidate_national_id
+                class={`bg-light ${errors.candidate_national_id && touched.candidate_national_id
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกเลขบัตรประชาชน"
               />
-              <ErrorMessage name="candidate_national_id" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_national_id" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* DOB */}
             <div>
-              <label htmlFor="candidate_dob" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_dob" class="block mb-2 text-sm font-medium text-gray-900">
                 วัน/เดือน/ปี เกิด
               </label>
               <Field
                 type="date"
                 name="candidate_dob"
                 id="candidate_dob"
-                className={`bg-light ${errors.candidate_dob && touched.candidate_dob
+                class={`bg-light ${errors.candidate_dob && touched.candidate_dob
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
@@ -161,7 +161,7 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                     }
                     placeholderText="วว/ดด/ปป"
                     dateFormat="dd/MM/yyyy"
-                    className={`bg-light  text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                    class={`bg-light  text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
           ${form.errors.candidate_dob && form.touched.candidate_dob
                         ? "bg-red-100"
                         : "border border-gray-400 text-black"
@@ -169,19 +169,19 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                   />
                 )}
               </Field> */}
-              <ErrorMessage name="candidate_dob" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_dob" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Gender */}
             <div>
-              <label htmlFor="candidate_gender" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_gender" class="block mb-2 text-sm font-medium text-gray-900">
                 เพศ
               </label>
               <Field
                 as="select"
                 name="candidate_gender"
                 id="candidate_gender"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.candidate_dob && touched.candidate_dob
                     ? "border-none bg-red-100 text-gray-500"
                     : values.candidate_dob === ""
@@ -193,21 +193,21 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                 <option value="M">ชาย</option>
                 <option value="F">หญิง</option>
               </Field>
-              <ErrorMessage name="candidate_gender" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_gender" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
           {/* Occupation & Phone */}
-          <div className="grid gap-6 mb-4 md:grid-cols-2">
+          <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
-              <label htmlFor="candidate_occupation" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_occupation" class="block mb-2 text-sm font-medium text-gray-900">
                 อาชีพ
               </label>
               <Field
                 as="select"
                 name="candidate_occupation"
                 id="candidate_occupation"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.candidate_occupation && touched.candidate_occupation
                     ? "border-none bg-red-100 text-gray-500"
                     : values.candidate_occupation === ""
@@ -222,192 +222,192 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="candidate_occupation" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_occupation" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             <div>
-              <label htmlFor="candidate_phone" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_phone" class="block mb-2 text-sm font-medium text-gray-900">
                 หมายเลขโทรศัพท์
               </label>
               <Field
                 type="text"
                 name="candidate_phone"
                 id="candidate_phone"
-                className={`bg-light ${errors.candidate_phone && touched.candidate_phone
+                class={`bg-light ${errors.candidate_phone && touched.candidate_phone
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกหมายเลขโทรศัพท์"
               />
-              <ErrorMessage name="candidate_phone" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_phone" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
           {/* Email */}
-          <div className="mb-4">
-            <label htmlFor="candidate_email" className="block mb-2 text-sm font-medium text-gray-900">
+          <div class="mb-4">
+            <label htmlFor="candidate_email" class="block mb-2 text-sm font-medium text-gray-900">
               อีเมล
             </label>
             <Field
               type="email"
               name="candidate_email"
               id="candidate_email"
-              className={`bg-light ${errors.candidate_email && touched.candidate_email
+              class={`bg-light ${errors.candidate_email && touched.candidate_email
                 ? "bg-red-100"
                 : "border border-gray-400"
                 } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               placeholder="กรอกอีเมลของผู้สมัคร"
             />
-            <ErrorMessage name="candidate_email" component="div" className="text-red-600 text-sm mt-1" />
+            <ErrorMessage name="candidate_email" component="div" class="text-red-600 text-sm mt-1" />
           </div>
 
           {/* Password / Confirm Password */}
-          <div className="grid gap-6 mb-4 md:grid-cols-2">
+          <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
-              <label htmlFor="candidate_password" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_password" class="block mb-2 text-sm font-medium text-gray-900">
                 รหัสผ่าน
               </label>
               <Field
                 type="password"
                 name="candidate_password"
                 id="candidate_password"
-                className={`bg-light ${errors.candidate_password && touched.candidate_password
+                class={`bg-light ${errors.candidate_password && touched.candidate_password
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกรหัสผ่าน"
               />
-              <ErrorMessage name="candidate_password" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_password" component="div" class="text-red-600 text-sm mt-1" />
             </div>
             <div>
-              <label htmlFor="candidate_confirm_password" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_confirm_password" class="block mb-2 text-sm font-medium text-gray-900">
                 ยืนยันรหัสผ่าน
               </label>
               <Field
                 type="password"
                 name="candidate_confirm_password"
                 id="candidate_confirm_password"
-                className={`bg-light ${errors.candidate_confirm_password && touched.candidate_confirm_password
+                class={`bg-light ${errors.candidate_confirm_password && touched.candidate_confirm_password
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกรหัสผ่านให้ตรงกัน"
               />
-              <ErrorMessage name="candidate_confirm_password" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_confirm_password" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
-          <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
+          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
 
           {/* Address */}
-          <p className="block mb-5 text-base font-bold text-grey-600">ที่อยู่ปัจจุบัน</p>
+          <p class="block mb-5 text-base font-bold text-grey-600">ที่อยู่ปัจจุบัน</p>
 
           {/* HouseNumber, Moo, Soi */}
-          <div className="grid gap-6 mb-5 md:grid-cols-3">
+          <div class="grid gap-6 mb-5 md:grid-cols-3">
             <div>
-              <label htmlFor="candidate_house_number" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_house_number" class="block mb-2 text-sm font-medium text-gray-900">
                 บ้านเลขที่
               </label>
               <Field
                 type="text"
                 name="candidate_house_number"
                 id="candidate_house_number"
-                className={`bg-light ${errors.candidate_house_number && touched.candidate_house_number
+                class={`bg-light ${errors.candidate_house_number && touched.candidate_house_number
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_house_number" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_house_number" component="div" class="text-red-600 text-sm mt-1" />
             </div>
             <div>
-              <label htmlFor="candidate_moo" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_moo" class="block mb-2 text-sm font-medium text-gray-900">
                 หมู่ที่
               </label>
               <Field
                 type="text"
                 name="candidate_moo"
                 id="candidate_moo"
-                className={`bg-light ${errors.candidate_moo && touched.candidate_moo
+                class={`bg-light ${errors.candidate_moo && touched.candidate_moo
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_moo" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_moo" component="div" class="text-red-600 text-sm mt-1" />
             </div>
             <div>
-              <label htmlFor="candidate_soi" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_soi" class="block mb-2 text-sm font-medium text-gray-900">
                 ซอย
               </label>
               <Field
                 type="text"
                 name="candidate_soi"
                 id="candidate_soi"
-                className={`bg-light ${errors.candidate_soi && touched.candidate_soi
+                class={`bg-light ${errors.candidate_soi && touched.candidate_soi
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_soi" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_soi" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
           {/* Street, Subdistrict, District, Province, Postal */}
-          <div className="grid gap-6 mb-4 md:grid-cols-2">
+          <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
-              <label htmlFor="candidate_street" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_street" class="block mb-2 text-sm font-medium text-gray-900">
                 ถนน
               </label>
               <Field
                 type="text"
                 name="candidate_street"
                 id="candidate_street"
-                className={`bg-light ${errors.candidate_street && touched.candidate_street
+                class={`bg-light ${errors.candidate_street && touched.candidate_street
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_street" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_street" component="div" class="text-red-600 text-sm mt-1" />
             </div>
             <div>
-              <label htmlFor="candidate_subdistrict" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_subdistrict" class="block mb-2 text-sm font-medium text-gray-900">
                 ตำบล/แขวง
               </label>
               <Field
                 type="text"
                 name="candidate_subdistrict"
                 id="candidate_subdistrict"
-                className={`bg-light ${errors.candidate_subdistrict && touched.candidate_subdistrict
+                class={`bg-light ${errors.candidate_subdistrict && touched.candidate_subdistrict
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_subdistrict" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_subdistrict" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             <div>
-              <label htmlFor="candidate_district" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_district" class="block mb-2 text-sm font-medium text-gray-900">
                 อำเภอ/เขต
               </label>
               <Field
                 type="text"
                 name="candidate_district"
                 id="candidate_district"
-                className={`bg-light ${errors.candidate_district && touched.candidate_district
+                class={`bg-light ${errors.candidate_district && touched.candidate_district
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_district" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_district" component="div" class="text-red-600 text-sm mt-1" />
             </div>
             <div>
-              <label htmlFor="candidate_province" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_province" class="block mb-2 text-sm font-medium text-gray-900">
                 จังหวัด
               </label>
               <Field
                 as="select"
                 name="candidate_province"
                 id="candidate_province"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.candidate_province && touched.candidate_province
                     ? "border-none bg-red-100 text-gray-500"
                     : values.candidate_province === ""
@@ -422,26 +422,26 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="candidate_province" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_province" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
           {/* Postal Code */}
-          <div className="grid gap-6 mb-3 md:grid-cols-2">
+          <div class="grid gap-6 mb-3 md:grid-cols-2">
             <div>
-              <label htmlFor="candidate_postal_code" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="candidate_postal_code" class="block mb-2 text-sm font-medium text-gray-900">
                 รหัสไปรษณีย์
               </label>
               <Field
                 type="text"
                 name="candidate_postal_code"
                 id="candidate_postal_code"
-                className={`bg-light ${errors.candidate_postal_code && touched.candidate_postal_code
+                class={`bg-light ${errors.candidate_postal_code && touched.candidate_postal_code
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_postal_code" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="candidate_postal_code" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
@@ -531,24 +531,24 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
   return (
     <div>
       {/* Personal Information of Heir */}
-      <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl">
-        <div className="p-8">
-          <p className="block mt-1 mb-7 text-xl font-bold text-grey-600">
+      <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl">
+        <div class="p-8">
+          <p class="block mt-1 mb-7 text-xl font-bold text-grey-600">
             3. ข้อมูลส่วนตัวของทายาท
           </p>
 
           {/* Heir Title, First Name, Last Name */}
-          <div className="grid gap-6 mb-6 md:grid-cols-3">
+          <div class="grid gap-6 mb-6 md:grid-cols-3">
             {/* Heir Title */}
             <div>
-              <label htmlFor="heir_title" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_title" class="block mb-2 text-sm font-medium text-gray-900">
                 คำนำหน้า
               </label>
               <Field
                 as="select"
                 name="heir_title"
                 id="heir_title"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.heir_title && touched.heir_title
                     ? "border-none bg-red-100 text-gray-500"
                     : values.heir_title === ""
@@ -556,87 +556,87 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                       : "text-black"
                   }`}
               >
-                <option className="text-gray-100" value="">เลือกคำนำหน้า</option>
+                <option class="text-gray-100" value="">เลือกคำนำหน้า</option>
                 <option value="นาย">นาย</option>
                 <option value="นางสาว">นางสาว</option>
                 <option value="นาง">นาง</option>
               </Field>
-              <ErrorMessage name="heir_title" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_title" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir First Name */}
             <div>
-              <label htmlFor="heir_first_name" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_first_name" class="block mb-2 text-sm font-medium text-gray-900">
                 ชื่อจริง
               </label>
               <Field
                 type="text"
                 name="heir_first_name"
                 id="heir_first_name"
-                className={`bg-light ${errors.heir_first_name && touched.heir_first_name ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_first_name && touched.heir_first_name ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกชื่อของทายาท"
               />
-              <ErrorMessage name="heir_first_name" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_first_name" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Last Name */}
             <div>
-              <label htmlFor="heir_last_name" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_last_name" class="block mb-2 text-sm font-medium text-gray-900">
                 นามสกุล
               </label>
               <Field
                 type="text"
                 name="heir_last_name"
                 id="heir_last_name"
-                className={`bg-light ${errors.heir_last_name && touched.heir_last_name ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_last_name && touched.heir_last_name ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกนามสกุลของทายาท"
               />
-              <ErrorMessage name="heir_last_name" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_last_name" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir National ID */}
             <div>
-              <label htmlFor="heir_national_id" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_national_id" class="block mb-2 text-sm font-medium text-gray-900">
                 เลขบัตรประชาชน
               </label>
               <Field
                 type="text"
                 name="heir_national_id"
                 id="heir_national_id"
-                className={`bg-light ${errors.heir_national_id && touched.heir_national_id ? " bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_national_id && touched.heir_national_id ? " bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกเลขบัตรประชาชน"
               />
-              <ErrorMessage name="heir_national_id" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_national_id" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir DOB */}
             <div>
-              <label htmlFor="heir_dob" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_dob" class="block mb-2 text-sm font-medium text-gray-900">
                 วัน/เดือน/ปี เกิด
               </label>
               <Field
                 type="date"
                 name="heir_dob"
                 id="heir_dob"
-                className={`bg-light ${errors.heir_dob && touched.heir_dob ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_dob && touched.heir_dob ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="heir_dob" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_dob" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Gender */}
             <div>
-              <label htmlFor="heir_gender" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_gender" class="block mb-2 text-sm font-medium text-gray-900">
                 เพศ
               </label>
               <Field
                 as="select"
                 name="heir_gender"
                 id="heir_gender"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.heir_gender && touched.heir_gender
                     ? "border-none bg-red-100 text-gray-500"
                     : values.heir_gender === ""
@@ -648,22 +648,22 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                 <option value="M">ชาย</option>
                 <option value="F">หญิง</option>
               </Field>
-              <ErrorMessage name="heir_gender" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_gender" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
           {/* Heir Occupation, Relationship, Phone, Email */}
-          <div className="grid gap-6 mb-3 md:grid-cols-2">
+          <div class="grid gap-6 mb-3 md:grid-cols-2">
             {/* Heir Occupation */}
             <div>
-              <label htmlFor="heir_occupation" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_occupation" class="block mb-2 text-sm font-medium text-gray-900">
                 อาชีพ
               </label>
               <Field
                 as="select"
                 name="heir_occupation"
                 id="heir_occupation"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.heir_occupation && touched.heir_occupation
                     ? "border-none bg-red-100 text-gray-500"
                     : values.heir_occupation === ""
@@ -678,19 +678,19 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="heir_occupation" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_occupation" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Relationship */}
             <div>
-              <label htmlFor="heir_relationship" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_relationship" class="block mb-2 text-sm font-medium text-gray-900">
                 ความเกี่ยวข้อง
               </label>
               <Field
                 as="select"
                 name="heir_relationship"
                 id="heir_relationship"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.heir_relationship && touched.heir_relationship
                     ? "border-none bg-red-100 text-gray-500"
                     : values.heir_relationship === ""
@@ -705,175 +705,175 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="heir_relationship" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_relationship" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Phone */}
             <div>
-              <label htmlFor="heir_phone" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_phone" class="block mb-2 text-sm font-medium text-gray-900">
                 หมายเลขโทรศัพท์
               </label>
               <Field
                 type="text"
                 name="heir_phone"
                 id="heir_phone"
-                className={`bg-light ${errors.heir_phone && touched.heir_phone ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_phone && touched.heir_phone ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="หมายเลขโทรศัพท์"
               />
-              <ErrorMessage name="heir_phone" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_phone" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Email */}
             <div>
-              <label htmlFor="heir_email" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_email" class="block mb-2 text-sm font-medium text-gray-900">
                 อีเมล
               </label>
               <Field
                 type="email"
                 name="heir_email"
                 id="heir_email"
-                className={`bg-light ${errors.heir_email && touched.heir_email ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_email && touched.heir_email ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="อีเมล"
               />
-              <ErrorMessage name="heir_email" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_email" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
-          <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
+          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
 
           {/* Heir Address */}
-          <p className="block mb-5 text-base font-bold text-grey-600">ที่อยู่ปัจจุบัน</p>
+          <p class="block mb-5 text-base font-bold text-grey-600">ที่อยู่ปัจจุบัน</p>
 
           {/* Checkbox - same address */}
-          <div className="mb-5">
-            <label className="inline-flex items-center">
+          <div class="mb-5">
+            <label class="inline-flex items-center">
               <Field
                 type="checkbox"
                 name="sameAddress"
                 checked={values.sameAddress}
                 onChange={handleCheckboxChange}
-                className="mr-2"
+                class="mr-2"
               />
-              <span className="text-sm font-bold text-gray-900">
+              <span class="text-sm font-bold text-gray-900">
                 ที่อยู่ปัจจุบันเหมือนกับผู้สมัคร
               </span>
             </label>
           </div>
 
           {/* Heir Address Fields */}
-          <div className="grid gap-6 mb-5 md:grid-cols-3">
+          <div class="grid gap-6 mb-5 md:grid-cols-3">
             {/* Heir House Number */}
             <div>
-              <label htmlFor="heir_house_number" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_house_number" class="block mb-2 text-sm font-medium text-gray-900">
                 บ้านเลขที่
               </label>
               <Field
                 type="text"
                 name="heir_house_number"
                 id="heir_house_number"
-                className={`bg-light ${errors.heir_house_number && touched.heir_house_number
+                class={`bg-light ${errors.heir_house_number && touched.heir_house_number
                   ? "bg-red-100"
                   : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_house_number" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_house_number" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Moo */}
             <div>
-              <label htmlFor="heir_moo" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_moo" class="block mb-2 text-sm font-medium text-gray-900">
                 หมู่ที่
               </label>
               <Field
                 type="text"
                 name="heir_moo"
                 id="heir_moo"
-                className={`bg-light ${errors.heir_moo && touched.heir_moo ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_moo && touched.heir_moo ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_moo" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_moo" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Soi */}
             <div>
-              <label htmlFor="heir_soi" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_soi" class="block mb-2 text-sm font-medium text-gray-900">
                 ซอย
               </label>
               <Field
                 type="text"
                 name="heir_soi"
                 id="heir_soi"
-                className={`bg-light ${errors.heir_soi && touched.heir_soi ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_soi && touched.heir_soi ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_soi" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_soi" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
-          <div className="grid gap-6 mb-4 md:grid-cols-2">
+          <div class="grid gap-6 mb-4 md:grid-cols-2">
             {/* Heir Street */}
             <div>
-              <label htmlFor="heir_street" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_street" class="block mb-2 text-sm font-medium text-gray-900">
                 ถนน
               </label>
               <Field
                 type="text"
                 name="heir_street"
                 id="heir_street"
-                className={`bg-light ${errors.heir_street && touched.heir_street ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_street && touched.heir_street ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_street" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_street" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Subdistrict */}
             <div>
-              <label htmlFor="heir_subdistrict" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_subdistrict" class="block mb-2 text-sm font-medium text-gray-900">
                 ตำบล/แขวง
               </label>
               <Field
                 type="text"
                 name="heir_subdistrict"
                 id="heir_subdistrict"
-                className={`bg-light ${errors.heir_subdistrict && touched.heir_subdistrict ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_subdistrict && touched.heir_subdistrict ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_subdistrict" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_subdistrict" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir District */}
             <div>
-              <label htmlFor="heir_district" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_district" class="block mb-2 text-sm font-medium text-gray-900">
                 อำเภอ/เขต
               </label>
               <Field
                 type="text"
                 name="heir_district"
                 id="heir_district"
-                className={`bg-light ${errors.heir_district && touched.heir_district ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_district && touched.heir_district ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_district" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_district" component="div" class="text-red-600 text-sm mt-1" />
             </div>
 
             {/* Heir Province */}
             <div>
-              <label htmlFor="heir_province" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_province" class="block mb-2 text-sm font-medium text-gray-900">
                 จังหวัด
               </label>
               <Field
                 as="select"
                 name="heir_province"
                 id="heir_province"
-                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
                   ${errors.heir_province && touched.heir_province
                     ? "border-none bg-red-100 text-gray-500"
                     : values.heir_province === ""
@@ -889,25 +889,25 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="heir_province" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_province" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
-          <div className="grid gap-6 mb-3 md:grid-cols-2">
+          <div class="grid gap-6 mb-3 md:grid-cols-2">
             {/* Heir Postal Code */}
             <div>
-              <label htmlFor="heir_postal_code" className="block mb-2 text-sm font-medium text-gray-900">
+              <label htmlFor="heir_postal_code" class="block mb-2 text-sm font-medium text-gray-900">
                 รหัสไปรษณีย์
               </label>
               <Field
                 type="text"
                 name="heir_postal_code"
                 id="heir_postal_code"
-                className={`bg-light ${errors.heir_postal_code && touched.heir_postal_code ? "bg-red-100" : "border border-gray-400"
+                class={`bg-light ${errors.heir_postal_code && touched.heir_postal_code ? "bg-red-100" : "border border-gray-400"
                   } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_postal_code" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="heir_postal_code" component="div" class="text-red-600 text-sm mt-1" />
             </div>
           </div>
 
@@ -952,23 +952,23 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
 // =============== STEP 3: Confirm Page ===============
 function Confirm() {
   return (
-    <div className="p-8">
-      <div className="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
-        <div className="p-10 bg-white border border-lime-200 rounded-lg shadow dark:bg-lime-600 dark:border-lime-500 overflow-hidden">
-          <div className="grid gap-6 md:grid-cols-1 place-items-center">
-            <FaCircleCheck className="mt-1 w-10 h-10 text-white" aria-hidden="true" />
-            <p className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+    <div class="p-8">
+      <div class="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
+        <div class="p-10 bg-white border border-lime-200 rounded-lg shadow dark:bg-lime-600 dark:border-lime-500 overflow-hidden">
+          <div class="grid gap-6 md:grid-cols-1 place-items-center">
+            <FaCircleCheck class="mt-1 w-10 h-10 text-white" aria-hidden="true" />
+            <p class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               คุณลงทะเบียนชมรมผู้สูงอายุสำเร็จเรียบร้อยแล้ว
             </p>
-            <p className="mb-2 font-normal text-white">
+            <p class="mb-2 font-normal text-white">
               ผลการลงทะเบียนชมรมผู้สูงอายุของคุณ ทางชมรมจะแจ้งไปยังอีเมลที่คุณได้กรอกลงไป
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-1 place-items-center">
+          <div class="grid gap-6 md:grid-cols-1 place-items-center">
             <button
               type="button"
-              className="text-gray-900 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center me-2 mb-2 mt-5"
+              class="text-gray-900 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center me-2 mb-2 mt-5"
             >
               <Link to="/login">กลับไปยังหน้าเข้าสู่ระบบ</Link>
             </button>
@@ -1127,9 +1127,9 @@ function Register() {
   return (
     <div>
       {/* Navigation Bar */}
-      <nav className="bg-white">
-        <div className="max-w-screen-3xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <img src="logo.png" className="h-16" alt="Logo" />
+      <nav class="bg-white">
+        <div class="max-w-screen-3xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <img src="logo.png" class="h-16" alt="Logo" />
         </div>
       </nav>
 
@@ -1149,12 +1149,12 @@ function Register() {
             validateForm,
             setTouched,
           }) => (
-            <Form className="p-8">
-              <div className="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
-                <div className="2xl:flex">
-                  <div className="ibm-plex-sans-thai-medium">
+            <Form class="p-8">
+              <div class="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
+                <div class="2xl:flex">
+                  <div class="ibm-plex-sans-thai-medium">
                     {/* Form Title */}
-                    <div className="text-center text-3xl text-black mb-8 font-bold">
+                    <div class="text-center text-3xl text-black mb-8 font-bold">
                       ลงทะเบียนชมรมผู้สูงอายุ
                     </div>
 
@@ -1179,18 +1179,18 @@ function Register() {
                     )}
 
                     {/* Navigation Buttons */}
-                    <div className="mt-14">
-                      <div className="w-full max-w-md mx-auto bg-gray-100 border-2 border-gray-200 rounded-md">
-                        <div className="flex items-center justify-between gap-3 p-3 bg-white rounded">
+                    <div class="mt-14">
+                      <div class="w-full max-w-md mx-auto bg-gray-100 border-2 border-gray-200 rounded-md">
+                        <div class="flex items-center justify-between gap-3 p-3 bg-white rounded">
                           {/* Back Button (Hidden on Step 1) */}
                           {step !== 1 ? (
                             <button
                               type="button"
                               onClick={() => setStep(step - 1)}
-                              className="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
+                              class="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
                             >
                               <svg
-                                className="rotate-180"
+                                class="rotate-180"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="22"
                                 height="23"
@@ -1212,13 +1212,13 @@ function Register() {
                           )}
 
                           {/* Step Indicators */}
-                          <ul className="flex gap-1 items-center">
+                          <ul class="flex gap-1 items-center">
                             <li
-                              className={`w-2 h-2 rounded-full ${step === 1 ? "bg-gray-600" : "bg-gray-300"
+                              class={`w-2 h-2 rounded-full ${step === 1 ? "bg-gray-600" : "bg-gray-300"
                                 }`}
                             ></li>
                             <li
-                              className={`w-2 h-2 rounded-full ${step === 2 ? "bg-gray-600" : "bg-gray-300"
+                              class={`w-2 h-2 rounded-full ${step === 2 ? "bg-gray-600" : "bg-gray-300"
                                 }`}
                             ></li>
                           </ul>
@@ -1248,7 +1248,7 @@ function Register() {
                                   }
                                 });
                               }}
-                              className="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
+                              class="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
                             >
                               หน้าถัดไป
                               <svg
@@ -1288,7 +1288,7 @@ function Register() {
                                     }
                                   });
                                 }}
-                                className="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
+                                class="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
                               >
                                 เสร็จสิ้น
                                 <svg
@@ -1312,18 +1312,18 @@ function Register() {
                               {isModalOpen && (
                                 <div
                                   id="popup-modal"
-                                  className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
+                                  class="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
                                 >
-                                  <div className="relative p-4 w-full max-w-md max-h-full">
-                                    <div className="relative bg-white rounded-lg shadow dark:bg-gray-100">
+                                  <div class="relative p-4 w-full max-w-md max-h-full">
+                                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-100">
                                       {/* Close Button */}
                                       <button
                                         type="button"
-                                        className="absolute top-3 end-2.5 text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8"
+                                        class="absolute top-3 end-2.5 text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8"
                                         onClick={() => setIsModalOpen(false)}
                                       >
                                         <svg
-                                          className="w-3 h-3"
+                                          class="w-3 h-3"
                                           xmlns="http://www.w3.org/2000/svg"
                                           fill="none"
                                           viewBox="0 0 14 14"
@@ -1336,12 +1336,12 @@ function Register() {
                                             d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                                           />
                                         </svg>
-                                        <span className="sr-only">Close modal</span>
+                                        <span class="sr-only">Close modal</span>
                                       </button>
                                       {/* Modal Content */}
-                                      <div className="p-4 md:p-5 text-center">
+                                      <div class="p-4 md:p-5 text-center">
                                         <svg
-                                          className="mx-auto mb-4 text-gray-800 w-12 h-12"
+                                          class="mx-auto mb-4 text-gray-800 w-12 h-12"
                                           xmlns="http://www.w3.org/2000/svg"
                                           fill="none"
                                           viewBox="0 0 20 20"
@@ -1354,16 +1354,16 @@ function Register() {
                                             d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                                           />
                                         </svg>
-                                        <p className="mb-1 text-lg font-bold text-gray-800">
+                                        <p class="mb-1 text-lg font-bold text-gray-800">
                                           ยืนยันการลงทะเบียน
                                         </p>
-                                        <p className="mb-5 text-base font-normal text-gray-800">
+                                        <p class="mb-5 text-base font-normal text-gray-800">
                                           โปรดตรวจสอบข้อมูลให้ถูกต้องก่อนกดยืนยัน
                                         </p>
                                         {/* Confirm Button */}
                                         <button
                                           type="submit"
-                                          className="text-gray-900 bg-white border border-lime-200 hover:bg-lime-100 font-medium rounded-lg text-sm px-5 py-2.5"
+                                          class="text-gray-900 bg-white border border-lime-200 hover:bg-lime-100 font-medium rounded-lg text-sm px-5 py-2.5"
                                         >
                                           ยืนยัน
                                         </button>
@@ -1371,7 +1371,7 @@ function Register() {
                                         <button
                                           type="button"
                                           onClick={() => setIsModalOpen(false)}
-                                          className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white border border-red-200 hover:bg-red-100 rounded-lg"
+                                          class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white border border-red-200 hover:bg-red-100 rounded-lg"
                                         >
                                           ยกเลิก
                                         </button>
@@ -1390,7 +1390,7 @@ function Register() {
               </div>
               {/* Optional: Display global form submission errors */}
               {errors.global && (
-                <div className="mt-4 text-red-500 text-center">{errors.global}</div>
+                <div class="mt-4 text-red-500 text-center">{errors.global}</div>
               )}
             </Form>
           )}

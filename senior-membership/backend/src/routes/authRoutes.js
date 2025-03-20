@@ -38,4 +38,6 @@ router.get('/get_info', authController.getInfoPeopleByMemberId);
 router.get('/get_address_heir', authController.getAddressByHeirId);
 router.get('/get_info_heir', authController.getInfoPeopleByHeirId);
 
+router.post('/logout', authController.logoutUser)
+
 export default router;

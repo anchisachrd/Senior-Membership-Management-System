@@ -80,7 +80,7 @@ function Home() {
       setUserRole(data.role)
       setUserEmail(data.email)
 
-      if (data.role !== 'member') {
+      if (data.role !== 'member' && data.role !== 'heir') {
         navigate('/login');
       }
 

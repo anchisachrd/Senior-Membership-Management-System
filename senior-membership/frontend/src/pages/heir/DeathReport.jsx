@@ -18,7 +18,7 @@ function FormPage({ setStep }) {
             setUserRole(data.role)
             setUserEmail(data.email)
             setUserRoleId(data.role_id)
-            if (data.role != "heir") {
+            if (data.role !== "heir") {
                 navigate("/login");
               }
 

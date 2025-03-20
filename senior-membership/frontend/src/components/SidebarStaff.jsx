@@ -52,13 +52,18 @@ function SidebarStaff() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    setUserRole("");
-    setUserEmail("");
+  const handleLogout = async () => {
+    await fetch('http://localhost:3000/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+  });
+  
+    console.log("Logged out!");
     alert("ออกจากระบบเรียบร้อยแล้ว");
     navigate("/login");
-  };
+    setUserRole('');
+    setUserEmail('');
+  }
 
   return (
     <div className="ibm-plex-sans-thai-medium">

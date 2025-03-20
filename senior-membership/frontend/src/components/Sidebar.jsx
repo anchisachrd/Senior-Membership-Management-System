@@ -15,8 +15,8 @@ function Sidebar() {
   const [userRole, setUserRole] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const [userTitle, setUserTitle] = useState('')
-    const [userFirstName, setUserFirstName] = useState('')
-    const [userLastName, setUserLastName] = useState('')
+  const [userFirstName, setUserFirstName] = useState('')
+  const [userLastName, setUserLastName] = useState('')
   const [userThaiRole, setUserThaiRole] = useState('')
   useEffect(() => {
     fetchUserProfile();
@@ -43,12 +43,17 @@ function Sidebar() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    setUserRole('');
-    setUserEmail('');
+  const handleLogout = async () => {
+    await fetch('http://localhost:3000/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+  });
+  
+    console.log("Logged out!");
     alert("ออกจากระบบเรียบร้อยแล้ว");
     navigate("/login");
+    setUserRole('');
+    setUserEmail('');
   }
 
 
@@ -123,7 +128,7 @@ function Sidebar() {
                   </Link>
                 </li>
                 <li>
-                  <Link to='/' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
+                  <Link to='/request-form' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
                     <TiDocumentText class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">ฟอร์มคำร้อง</span>
                   </Link>

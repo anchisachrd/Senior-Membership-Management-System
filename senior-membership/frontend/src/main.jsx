@@ -32,6 +32,7 @@ import MemberList from './pages/staff/MemberList.jsx'
 import NotifyDeathList from './pages/staff/NotifyDeathList.jsx'
 import NotifyQuitList from './pages/staff/NotifyQuitList.jsx'
 import MemberProfile from './pages/staff/MemberProfile.jsx'
+import RequestForm from './pages/heir/RequestForm.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/heir_register' element={ <HeirRegister />} />
         <Route path='/home' element={ <Home />} />
         <Route path='/profile' element={ <Profile />} />
+        <Route path='/request-form' element={<RequestForm />} />
       </Route>
 
       <Route  element={ <SidebarStaff />}>

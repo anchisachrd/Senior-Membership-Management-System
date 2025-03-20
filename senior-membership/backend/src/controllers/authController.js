@@ -6,7 +6,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const NODE_ENV = process.env.NODE_ENV;
 
 
 export const loginUserByEmail = async (req, res, next) => {
@@ -109,6 +108,11 @@ export const loginUserByEmail = async (req, res, next) => {
 
 
 }
+
+export const logoutUser = (req, res) => {
+  res.clearCookie('token'); // ลบ JWT Cookie
+  res.json({ message: 'Logged out successfully' });
+};
 
 export const ChangePassword = async (req, res, next) => {
   const { accountId, oldPassword, newPassword } = req.body;
