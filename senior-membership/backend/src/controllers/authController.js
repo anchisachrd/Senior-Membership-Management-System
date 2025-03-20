@@ -6,15 +6,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const NODE_ENV = process.env.NODE_ENV;
 
 
 export const loginUserByEmail = async (req, res, next) => {
 
   const { email, password } = req.body;
   const hashedInputPassword = await bcrypt.hash(password, 10);
-console.log("🔍 Hashed Input Password:", hashedInputPassword);
-
-
+  // console.log("🔍 Hashed Input Password:", hashedInputPassword);
 
   try {
     // 1. Fetch account by email
@@ -24,15 +23,13 @@ console.log("🔍 Hashed Input Password:", hashedInputPassword);
       return res.status(400).json({ message: "Invalid email" });
     }
 
-    console.log("🔑 Entered Password:", password);
-console.log("🔒 Stored Hash:", account.password_hash);
+    // console.log("🔑 Entered Password:", password);
+    // console.log("🔒 Stored Hash:", account.password_hash);
 
-
-    // 2. Validate the password
     const isPasswordValid = await bcrypt.compare(password.trim(), account.password_hash.trim());
 
     // console.log("Password hash length:", account.password_hash.length);
-    console.log("✅ Is Password Valid?", isPasswordValid);
+    // console.log("✅ Is Password Valid?", isPasswordValid);
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid password" });
     }
@@ -40,6 +37,7 @@ console.log("🔒 Stored Hash:", account.password_hash);
       return res.status(400).json({ message: "You can not login, You are Candidate." });
     }
 
+    
     if (account.role === 'member') {
       const member = await authServices.getMemberIdbyAccountId(account.account_id);
       var info = {
@@ -72,13 +70,6 @@ console.log("🔒 Stored Hash:", account.password_hash);
       var role_id = employee.employee_id
     }
 
-
-    // 3. Check if the account is active
-    // if (!account.is_active) {
-    //   return res.status(403).json({ message: "Account is inactive. Please contact support." });
-    // }
-
-    // 4. Generate JWT token
     const accessToken = jwt.sign(
       {
         "userInfo": {
@@ -93,22 +84,23 @@ console.log("🔒 Stored Hash:", account.password_hash);
       { expiresIn: "1h" }
     )
 
-    // 5. Return success response with token
-    // return res.json(
-    //   {
-    //     message: "Login successful",
-    //     accessToken
-    //   }
-    // );
 
-    req.token = accessToken;
     req.user = {
       accountId: account.account_id,
       email: account.email,
-      role: account.role
+      role: account.role,
+      role_id,
+      info
     };
 
-    next();
+    res.cookie('token', accessToken, {
+      httpOnly: true,  
+      secure: false, 
+      sameSite: 'Lax',
+  });
+
+    res.json({ message: "Login successful" , token: accessToken, user: req.user } );
+
 
   } catch (error) {
     console.error("Login error:", error.message);

@@ -1,86 +1,84 @@
 import React, { useState, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   IoNotificationsOutline,
   IoDocumentTextOutline,
   IoNotificationsCircleOutline,
   IoPeopleOutline,
-  IoHomeOutline
+  IoHomeOutline,
 } from "react-icons/io5";
-import { LuPiggyBank, LuUserRoundCog } from "react-icons/lu";
-import { MdOutlineDashboard } from "react-icons/md";
+import { LuPiggyBank } from "react-icons/lu";
+import { MdOutlineDashboard, MdLogout } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
-import { FaRegCircleCheck } from "react-icons/fa6";
-import { MdLogout } from "react-icons/md";
+import { FaRegCircleCheck, FaUserTie } from "react-icons/fa6";
 import { Link } from "react-router";
 import { verifyUser } from "../api/verifyApi";
 
-import { FaUserTie } from "react-icons/fa6";
-
 function SidebarStaff() {
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState('')
-  const [userEmail, setUserEmail] = useState('')
-  const [userTitle, setUserTitle] = useState('')
-  const [userFirstName, setUserFirstName] = useState('')
-  const [userLastName, setUserLastName] = useState('')
-  const [userThaiRole, setUserThaiRole] = useState('')
+  const [userRole, setUserRole] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userTitle, setUserTitle] = useState("");
+  const [userFirstName, setUserFirstName] = useState("");
+  const [userLastName, setUserLastName] = useState("");
+  const [userThaiRole, setUserThaiRole] = useState("");
+
+  // Dropdown states (each dropdown has its own state)
+  const [openExample, setOpenExample] = useState(false);       // For "อนุมัติเอกสาร" (committee)
+  const [openNotify, setOpenNotify] = useState(false);         // For "การแจ้งเตือน" (staff)
+  const [openCandidate, setOpenCandidate] = useState(false);   // For "จัดการผู้สมัคร" (staff)
 
   useEffect(() => {
     fetchUserProfile();
   }, [userEmail]);
 
-
   const fetchUserProfile = async () => {
     try {
       const data = await verifyUser();
-      setUserRole(data.role)
-      setUserEmail(data.email)
-      setUserTitle(data.info.title)
-      setUserFirstName(data.info.first_name)
-      setUserLastName(data.info.last_name)
+      setUserRole(data.role);
+      setUserEmail(data.email);
+      setUserTitle(data.info.title);
+      setUserFirstName(data.info.first_name);
+      setUserLastName(data.info.last_name);
 
-      if (data.role === 'staff') {
-        setUserThaiRole('เจ้าหน้าที่')
+      if (data.role === "staff") {
+        setUserThaiRole("เจ้าหน้าที่");
       }
-      if (data.role === 'committee') {
-        setUserThaiRole('กรรมการ')
+      if (data.role === "committee") {
+        setUserThaiRole("กรรมการ");
       }
-
-      // console.log(data)
     } catch (error) {
-      console.error('Fetch Protected Data Error:', error);
+      console.error("Fetch Protected Data Error:", error);
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("userToken");
-    setUserRole('');
-    setUserEmail('');
+    setUserRole("");
+    setUserEmail("");
     alert("ออกจากระบบเรียบร้อยแล้ว");
-    navigate("/login");;
+    navigate("/login");
   };
 
   return (
     <div className="ibm-plex-sans-thai-medium">
+      {/* Mobile Toggle Button */}
       <button
-        data-drawer-target="sidebar-multi-level-sidebar"
-        data-drawer-toggle="sidebar-multi-level-sidebar"
+        // Removed data attributes used by Flowbite
         aria-controls="sidebar-multi-level-sidebar"
         type="button"
-        class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
       >
-        <span class="sr-only">Open sidebar</span>
+        <span className="sr-only">Open sidebar</span>
         <svg
-          class="w-6 h-6"
+          className="w-6 h-6"
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            clip-rule="evenodd"
-            fill-rule="evenodd"
+            clipRule="evenodd"
+            fillRule="evenodd"
             d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
           ></path>
         </svg>
@@ -88,39 +86,43 @@ function SidebarStaff() {
 
       <aside
         id="default-sidebar"
-        class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar"
       >
-        <div class="h-full px-4 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-100 flex flex-col">
-          <a href="" class="flex items-center mb-3">
-            <img src="public/logo.png" class="h-auto max-w-full" alt="Logo" />
-
+        <div className="h-full px-4 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-100 flex flex-col">
+          <a href="" className="flex items-center mb-3">
+            <img src="public/logo.png" className="h-auto max-w-full" alt="Logo" />
           </a>
 
-          <div class="flex justify-center items-center rounded-lg dark:text-gray-700 group mb-0">
-            <span class="font-bold">สำหรับ {userThaiRole}</span>
+          <div className="flex justify-center items-center rounded-lg dark:text-gray-700 group mb-0">
+            <span className="font-bold">สำหรับ {userThaiRole}</span>
           </div>
 
           {/* Sidebar Menu */}
-          <ul class="space-y-2 font-medium flex-grow mt-4">
+          <ul className="space-y-2 font-medium flex-grow mt-4">
+            {/* === If user role is NOT staff (committee or something else) === */}
             {userRole !== "staff" ? (
               <div>
                 <li>
-                  <Link to='/home' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <IoHomeOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">หน้าแรก</span>
+                  <Link
+                    to="/home"
+                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                  >
+                    <IoHomeOutline className="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <span className="ms-3 mt-1 dark:group-hover:text-white">
+                      หน้าแรก
+                    </span>
                   </Link>
                 </li>
                 <li>
                   <a
                     href="#"
-                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <MdOutlineDashboard
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">
+                    <span className="ms-3 mt-1 dark:group-hover:text-white">
                       Dashboard
                     </span>
                   </a>
@@ -128,54 +130,56 @@ function SidebarStaff() {
                 <li>
                   <a
                     href="#"
-                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <IoNotificationsOutline
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">
+                    <span className="ms-3 mt-1 dark:group-hover:text-white">
                       แจ้งเตือน
                     </span>
                   </a>
                 </li>
+
+                {/* === "อนุมัติเอกสาร" DROPDOWN === */}
                 <li>
                   <button
                     type="button"
-                    class="flex items-center w-full p-3 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 group"
-                    aria-controls="dropdown-example"
-                    data-collapse-toggle="dropdown-example"
+                    onClick={() => setOpenExample(!openExample)}
+                    className="flex items-center w-full p-3 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                   >
                     <TiDocumentText
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="flex-1 ms-3 mt-1 text-left rtl:text-right whitespace-nowrap dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white">
+                    <span className="flex-1 ms-3 mt-1 text-left whitespace-nowrap dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white">
                       อนุมัติเอกสาร
                     </span>
                     <svg
-                      class="w-3 h-3 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
+                      className={`w-3 h-3 ml-auto transition-transform  text-gray-400${
+                        openExample ? "rotate-180" : ""
+                      }`}
                       fill="none"
                       viewBox="0 0 10 6"
                     >
                       <path
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="m1 1 4 4 4-4"
                       />
                     </svg>
                   </button>
-                  <ul id="dropdown-example" class="hidden py-3 space-y-2">
+                  {/* Toggle hidden/block based on state */}
+                  <ul
+                    className={`py-3 space-y-2 ${openExample ? "block" : "hidden"}`}
+                  >
                     <li>
                       <Link
                         to="/committee_candidateList"
-                        class="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                        className="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                       >
-                        <span class="ms-3 mt-1 dark:group-hover:text-white">
+                        <span className="ms-3 mt-1 dark:group-hover:text-white">
                           เอกสารการสมัคร
                         </span>
                       </Link>
@@ -183,190 +187,228 @@ function SidebarStaff() {
                     <li>
                       <a
                         href="#"
-                        class="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                        className="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                       >
-                        <span class="ms-3 mt-1 dark:group-hover:text-white">
+                        <span className="ms-3 mt-1 dark:group-hover:text-white">
                           เอกสารการเสียชีวิต
                         </span>
                       </a>
                     </li>
                   </ul>
                 </li>
+
                 <li>
-             
                   <Link
                     to="/final-approval"
-                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <IoDocumentTextOutline
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">
+                    <span className="ms-3 mt-1 dark:group-hover:text-white">
                       สรุปผลการอนุมัติ
                     </span>
                   </Link>
                 </li>
               </div>
             ) : (
+              /* === If user role is STAFF === */
               <div>
                 <li>
                   <li>
-                    <Link to='/home' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                      <IoHomeOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                      <span class="ms-3 mt-1 dark:group-hover:text-white">หน้าแรก</span>
+                    <Link
+                      to="/home"
+                      className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    >
+                      <IoHomeOutline className="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                      <span className="ms-3 mt-1 dark:group-hover:text-white">
+                        หน้าแรก
+                      </span>
                     </Link>
                   </li>
                   <a
                     href="#"
-                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <MdOutlineDashboard
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">
+                    <span className="ms-3 mt-1 dark:group-hover:text-white">
                       Dashboard
                     </span>
                   </a>
                 </li>
+
                 <li>
                   <Link
                     to="/finance-report"
-                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <LuPiggyBank
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">
+                    <span className="ms-3 mt-1 dark:group-hover:text-white">
                       บัญชีชมรม
                     </span>
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="/staff_sendNotify"
-                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
-                  >
-                    <IoNotificationsCircleOutline
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
-                    />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">
-                      การส่งแจ้งเตือน
-                    </span>
-                  </Link>
-                </li>
+
                 <li>
                   <Link
                     to="/staff_checkPayment"
-                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <FaRegCircleCheck
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">
+                    <span className="ms-3 mt-1 dark:group-hover:text-white">
                       การตรวจสอบสลิป
                     </span>
                   </Link>
                 </li>
+
+                {/* === "การแจ้งเตือน" DROPDOWN === */}
                 <li>
                   <button
                     type="button"
-                    class="flex items-center w-full p-3 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 group"
-                    aria-controls="dropdown-example"
-                    data-collapse-toggle="dropdown-example"
+                    onClick={() => setOpenNotify(!openNotify)}
+                    className="flex items-center w-full p-3 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                   >
-                    <IoPeopleOutline
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                    <IoNotificationsCircleOutline
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="flex-1 ms-3 mt-1 text-left rtl:text-right whitespace-nowrap dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white">
-                      จัดการบุคคล
+                    <span className="flex-1 ms-3 mt-1 text-left whitespace-nowrap dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white">
+                      การแจ้งเตือน
                     </span>
                     <svg
-                      class="w-3 h-3 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
+                      className={`w-3 h-3 ml-auto transition-transform text-gray-400 ${
+                        openNotify ? "rotate-180" : ""
+                      }`}
                       fill="none"
                       viewBox="0 0 10 6"
                     >
                       <path
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="m1 1 4 4 4-4"
                       />
                     </svg>
                   </button>
-                  <ul id="dropdown-example" class="hidden py-3 space-y-2">
+                  <ul
+                    className={`py-3 space-y-2 ${openNotify ? "block" : "hidden"}`}
+                  >
                     <li>
                       <Link
-                        to="/staff_candidateList"
-                        class="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                        to="/member-list/notify-death"
+                        className="flex items-center ml-10 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                       >
-                        <span class="ms-3 mt-1 dark:group-hover:text-white">
-                          จัดการผู้สมัคร
+                        <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
+                          แจ้งเสียชีวิต
                         </span>
                       </Link>
                     </li>
                     <li>
-                      <a
-                        href="#"
-                        class="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                      <Link
+                        to="/member-list/notify-quit"
+                        className="flex items-center ml-10 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                       >
-                        <span class="ms-3 mt-1 dark:group-hover:text-white">
-                          จัดการสมาชิก
+                        <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
+                          แจ้งลาออก
                         </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        class="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
-                      >
-                        <span class="ms-3 mt-1 dark:group-hover:text-white">
-                          จัดการทายาท
-                        </span>
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </li>
+
                 <li>
-                  <a
-                    href="#"
-                    class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                  <Link
+                    to="/member-list"
+                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
-                    <IoDocumentTextOutline
-                      class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
-                      aria-hidden="true"
+                    <IoPeopleOutline
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                     />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">
-                      การแจ้งเสียชีวิต
+                    <span className="ms-3 mt-1 dark:group-hover:text-white">
+                      ข้อมูลสมาชิกปัจจุบัน
                     </span>
-                  </a>
+                  </Link>
+                </li>
+
+                {/* === "จัดการผู้สมัคร" DROPDOWN === */}
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setOpenCandidate(!openCandidate)}
+                    className="flex items-center w-full p-3 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    <IoPeopleOutline
+                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                    />
+                    <span className="flex-1 ms-3 mt-1 text-left whitespace-nowrap dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white">
+                      จัดการผู้สมัคร
+                    </span>
+                    <svg
+                      className={`w-3 h-3 ml-auto transition-transform text-gray-400 ${
+                        openCandidate ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 4 4 4-4"
+                      />
+                    </svg>
+                  </button>
+                  <ul
+                    className={`py-3 space-y-2 ${openCandidate ? "block" : "hidden"}`}
+                  >
+                    <li>
+                      <Link
+                        to="/staff_candidateList"
+                        className="flex items-center ml-10 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                      >
+                        <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
+                          ตรวจสอบข้อมูลสมัคร
+                        </span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/staff_candidateList"
+                        className="flex items-center ml-10 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                      >
+                        <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
+                          ไม่ผ่านการอนุมัติ
+                        </span>
+                      </Link>
+                    </li>
+                  </ul>
                 </li>
               </div>
             )}
           </ul>
 
           {/* ปุ่มออกจากระบบ */}
-          <div class="mt-auto">
-
-            <div class="flex items-center px-3 py-2 rounded-lg dark:text-gray-600 group mb-1">
-              <FaUserTie class="w-3 h-3 text-gray-600 " />
-              <span class="ms-3 mt-1">คุณ{userFirstName} {userLastName}</span>
+          <div className="mt-auto">
+            <div className="flex items-center px-3 py-2 rounded-lg dark:text-gray-600 group mb-1">
+              <FaUserTie className="w-3 h-3 text-gray-600" />
+              <span className="ms-3 mt-1">
+                คุณ{userFirstName} {userLastName}
+              </span>
             </div>
 
             <a
               onClick={handleLogout}
-              class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+              className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group cursor-pointer"
             >
-              <MdLogout class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-              <span class="ms-3 mt-1 dark:group-hover:text-white">
+              <MdLogout className="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+              <span className="ms-3 mt-1 dark:group-hover:text-white">
                 ออกจากระบบ
               </span>
             </a>

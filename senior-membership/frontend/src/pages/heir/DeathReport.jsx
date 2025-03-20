@@ -1,20 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { verifyUser } from '../../api/verifyApi';
+import { getMembersForHeir } from "../../api/heirApi"
 
 function FormPage({ setStep }) {
     // const [isChecked, setIsChecked] = useState(false);
+    const [member, setMember] = useState([]);
+    const [heirId, setHeirId] = useState(null);
+    const [userRole, setUserRole] = useState('')
+    const [userEmail, setUserEmail] = useState('')
+    const [userRoleId, setUserRoleId] = useState('')
 
-    // const handleCheckboxChange = (e) => {
-    //     setIsChecked(e.target.checked);
-    // };
 
-    // const handleSubmit = () => {
-    //     if (isChecked) {
-    //         alert('แบบฟอร์มเสร็จสิ้น!');
-    //         setStep(2);
-    //     }
-    // };
+    const fetchUserProfile = async () => {
+        try {
+            const data = await verifyUser();
+            setUserRole(data.role)
+            setUserEmail(data.email)
+            setUserRoleId(data.role_id)
+            if (data.role != "heir") {
+                navigate("/login");
+              }
+
+        } catch (error) {
+            console.error("Fetch Protected Data Error:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserProfile();
+    }, [userEmail]);
+
+
+
+    useEffect(() => {
+        const fetchMember = async () => {
+            try {
+                const data = await getMembersForHeir(userRoleId);
+                setMember(data);
+            } catch (error) {
+                console.error("Error fetching members:", error);
+            }
+        };
+        fetchMember();
+    }, [userRoleId]);
 
     return (
         <div>
@@ -27,54 +56,6 @@ function FormPage({ setStep }) {
                         <div class="grid gap-6 mb-6 md:grid-cols-3">
                             <div>
                                 <label
-                                    htmlFor="title_name_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900"
-                                >
-                                    คำนำหน้า
-                                </label>
-                                <select
-                                    id="title_name_member"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-                                >
-                                    <option selected>เลือกคำนำหน้า</option>
-                                    <option value="mr">นาย</option>
-                                    <option value="miss">นางสาว</option>
-                                    <option value="mrs">นาง</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label
-                                    htmlFor="first_name_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
-                                    ชื่อจริง
-                                </label>
-                                <input
-                                    type="text"
-                                    id="first_name_member"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                                    placeholder="กรอกชื่อของผู้สมัคร"
-                                />
-                            </div>
-
-                            <div>
-                                <label
-                                    htmlFor="last_name_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
-                                    นามสกุล
-                                </label>
-                                <input
-                                    type="text"
-                                    id="last_name_member"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                                    placeholder="กรอกนามสกุลของผู้สมัคร"
-                                />
-                            </div>
-
-                            <div>
-                                <label
                                     htmlFor="id_number_member"
                                     class="block mb-2 text-sm font-medium text-gray-900 "
                                 >
@@ -83,20 +64,37 @@ function FormPage({ setStep }) {
                                 <input
                                     type="text"
                                     id="id_number_member"
+                                    value={member.member_id}
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                                    placeholder="กรอกเลขบัตรประชาชน"
+                                    placeholder="กรอกเลข"
                                 />
                             </div>
 
                             <div>
                                 <label
-                                    htmlFor="birth_day_member"
+                                    htmlFor="full_name_member"
                                     class="block mb-2 text-sm font-medium text-gray-900 "
                                 >
-                                    วัน/เดือน/ปี เกิด
+                                    ชื่อผู้เสียชีวิต
                                 </label>
                                 <input
-                                    id="birth_day_member"
+                                    type="text"
+                                    id="full_name_member"
+                                    value={member.member_name}
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
+                                    placeholder="กรอกชื่อของผู้สมัคร"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="death_day_member"
+                                    class="block mb-2 text-sm font-medium text-gray-900 "
+                                >
+                                    วัน/เดือน/ปี ที่เสียชีวิตตามใบมรณบัตร
+                                </label>
+                                <input
+                                    id="death_day_member"
                                     type="date"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
                                     placeholder="เลือกวันเกิด"
@@ -217,7 +215,7 @@ function DeathReport() {
 
             if (data.role != 'heir') {
                 navigate('/login')
-        }
+            }
 
         } catch (error) {
             console.error('Fetch Protected Data Error:', error);

@@ -29,6 +29,9 @@ import FinaceReport from './pages/staff/FinaceReport.jsx'
 import FinalResultApproval from './components/FinalResultApproval.jsx'
 import FinalResultDetail from './components/FinalResultDetail.jsx'
 import MemberList from './pages/staff/MemberList.jsx'
+import NotifyDeathList from './pages/staff/NotifyDeathList.jsx'
+import NotifyQuitList from './pages/staff/NotifyQuitList.jsx'
+import MemberProfile from './pages/staff/MemberProfile.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -55,8 +58,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/staff_detailCheckPayment' element={ < DetailCheckPayment/>} />
         <Route path='/finance-report' element = {<FinaceReport/>}/>
         <Route path='/final-approval'element = {<FinalResultApproval/>}/>
-        <Route path='/member-list' element = {<MemberList/>} />
+       
         <Route path='/home_staff' element={ <HomeForStaff />} />
+        <Route path='/member-list' element = {<MemberList/>} />
+      <Route path='/member-list/notify-death' element={<NotifyDeathList/>}/>
+      <Route path='/member-list/notify-quit' element={<NotifyQuitList/>}/>
+      <Route path="/member/:id" element={<MemberProfile />} />
 
       </Route>
       
@@ -65,6 +72,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/register' element={ <Register />} />
       <Route path='/edit_info' element={ <EditInfo />} />
       <Route path="/final-approval/detail/:candidateId" element={<FinalResultDetail />} />
+
+     
+
 
     </Routes>
   </BrowserRouter>,

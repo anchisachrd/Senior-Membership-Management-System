@@ -22,8 +22,7 @@ router.post("/login", authController.loginUserByEmail, (req, res) => {
 
 router.get('/verify', authMiddleware.verifyJWT, (req, res) => {
     res.json({
-      message: 'You have accessed a protected route!',
-      user: req.user, // นำข้อมูลที่ middleware เก็บมาใช้
+      message: "User verified", user: req.user
     });
 });
 

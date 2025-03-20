@@ -37,8 +37,8 @@ function CheckPayment() {
       setUserRole(data.role)
       setUserEmail(data.email)
 
-      if (data.role != 'staff') {
-        navigate('/login')
+      if (data.role != "staff") {
+        navigate("/login");
       }
 
     } catch (error) {

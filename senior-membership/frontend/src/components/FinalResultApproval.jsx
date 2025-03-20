@@ -12,12 +12,6 @@ function FinalResultApproval() {
   const [userEmail, setUserEmail] = useState('')
   const [userRoleId, setUserRoleId] = useState('')
 
-  const handleRowClick = (candidateId) => {
-    console.log("Navigating to:", candidateId); // Debugging log
-    navigate(`/candidateProfile/${candidateId}`, {
-      state: { context: "committeeCandidateProfile" },
-    });
-  };
 
   const fetchUserProfile = async () => {
       try {
@@ -35,6 +29,13 @@ function FinalResultApproval() {
       fetchUserProfile();
   
     }, [userEmail]);
+
+  const handleRowClick = (candidateId) => {
+    console.log("Navigating to:", candidateId); // Debugging log
+    navigate(`/candidateProfile/${candidateId}`, {
+      state: { context: "committeeCandidateProfile" },
+    });
+  };
 
   useEffect(() => {
     const fetchFinalResults = async () => {

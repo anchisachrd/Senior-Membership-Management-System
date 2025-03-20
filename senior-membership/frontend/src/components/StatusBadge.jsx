@@ -8,6 +8,8 @@ const statusColors = {
   "ผ่าน": "bg-green-600 text-white",
   "ไม่ผ่าน": "bg-red-500 text-white",
   "รอตรวจเอกสาร": "bg-yellow-400 text-gray-800",
+  "ใช้งานอยู่": "bg-green-600 text-white",
+  "เสียชีวิต":  "bg-red-600 text-white",
 };
 
 function StatusBadge({ status }) {

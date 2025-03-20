@@ -985,7 +985,7 @@ function HeirRegister() {
             setUserRole(data.role)
             setUserEmail(data.email)
 
-            if (userRole != 'heir') {
+            if (userRole !== 'heir') {
               navigate('/login')
             }
       

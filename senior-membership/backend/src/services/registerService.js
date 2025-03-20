@@ -8,6 +8,7 @@ import * as candidateModel from "../models/candidateModel.js";
 import * as peopleModel from "../models/peopleModel.js";
 import * as docVerificationModel from "../models/docVerificationModel.js";
 import * as emailService from "../utils/emailService.js";
+import * as memberModel from "../models/memberModel.js"
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import path from "path";
@@ -322,24 +323,29 @@ export const sendEmailMembership = async (candidateId, reason) => {
   const heirPassword = generateRandomPassword();
   const hashedPassword = hashPassword(heirPassword);
   console.log( "eamil: ", email, heir_email)
-  if (final_approval_status === "อนุมัติ") {
-    const candidatePassContent = emailService.generateApprovalEmail(full_name);
-    await emailService.sendEmail(email, candidateSubject, candidatePassContent);
 
-    await accountModel.activateCandidateAccount(candidateId);
-    await candidateModel.activateMember(candidateId)
+  if (final_approval_status === "อนุมัติ") {
+
+    const candidatePassContent = emailService.generateApprovalEmail(full_name);
+    const heirPassContent = emailService.generatePasswordEmailTemplate(
+      heir_name,
+      heirPassword
+    );
+
     await accountModel.updateHeirPasswordByCandidateId(
       candidateId,
       hashedPassword
     );
 
-    const heirPassContent = emailService.generatePasswordEmailTemplate(
-      heir_name,
-      heirPassword
-    );
+    await candidateModel.updateIsMember(candidateId, true)
+    await accountModel.activateMemberAccount(candidateId);
+    await memberModel.addMember(candidateId)
+   
+    await emailService.sendEmail(email, candidateSubject, candidatePassContent);
     await emailService.sendEmail(heir_email, heirSubject, heirPassContent);
 
   } else if (final_approval_status === "ไม่อนุมัติ") {
+    await candidateModel.updateIsMember(candidateId, false)
     const candidateFailContent = emailService.generateRejectionEmail(
       full_name,
       reason

@@ -22,7 +22,6 @@ function Sidebar() {
     fetchUserProfile();
   }, [userEmail]);
 
-
   const fetchUserProfile = async () => {
     try {
       const data = await verifyUser();
@@ -38,9 +37,6 @@ function Sidebar() {
       if (data.role === 'heir') {
         setUserThaiRole('ทายาท')
       }
-
-      console.log(data)
-
 
     } catch (error) {
       console.error('Fetch Protected Data Error:', error);

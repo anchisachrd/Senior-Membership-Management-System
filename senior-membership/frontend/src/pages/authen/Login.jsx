@@ -23,24 +23,21 @@ function Login() {
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
 
     try {
-      // Replace with  backend API URL
       const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values), // Send email and password
+        credentials: "include",
+        body: JSON.stringify(values),
       });
 
       if (!response.ok) {
-        // Extract error message from the response
         const errorData = await response.json();
         throw new Error(errorData.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
       }
 
-
       const data = await response.json();
-      localStorage.setItem("userToken", data.token);
 
       // แปลง token
       const userInfo = jwtDecode(data.token)
@@ -49,8 +46,11 @@ function Login() {
       if (userInfo.userInfo.role === 'member' || userInfo.userInfo.role === 'heir'){
         navigate("/home");
       }
-      if (userInfo.userInfo.role === 'staff' || userInfo.userInfo.role === 'committee'){
-        navigate("/home_staff");
+      if (userInfo.userInfo.role === 'staff'){
+        navigate("/staff_candidateList");
+      }
+      if (userInfo.userInfo.role === 'committee'){
+        navigate("/committee_candidateList");
       }
      
 
