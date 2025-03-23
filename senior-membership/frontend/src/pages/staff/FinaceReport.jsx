@@ -34,7 +34,6 @@ function FinanceReport() {
         setUserEmail(data.email)
 
         if (data.role != 'staff') {
-          localStorage.removeItem("userToken");
           navigate('/login')
         }
   

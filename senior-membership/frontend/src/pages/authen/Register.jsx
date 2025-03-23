@@ -118,13 +118,13 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
 
   return (
     <div>
-      <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl">
-        <div className="p-8">
-          <p className="block mt-1 mb-7 text-xl font-bold text-grey-600">
+      <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl">
+        <div class="p-8">
+          <p class="block mt-1 mb-7 text-xl font-bold text-grey-600">
             1. ข้อมูลส่วนตัวของผู้สมัคร
           </p>
 
-          <div className="grid gap-6 mb-6 md:grid-cols-3">
+          <div class="grid gap-6 mb-6 md:grid-cols-3">
             {/* Title */}
             <div>
               <label
@@ -265,7 +265,7 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                     }
                     placeholderText="วว/ดด/ปป"
                     dateFormat="dd/MM/yyyy"
-                    className={`bg-light  text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                    class={`bg-light  text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
           ${form.errors.candidate_dob && form.touched.candidate_dob
                         ? "bg-red-100"
                         : "border border-gray-400 text-black"
@@ -316,7 +316,7 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
           </div>
 
           {/* Occupation & Phone */}
-          <div className="grid gap-6 mb-4 md:grid-cols-2">
+          <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
               <label
                 htmlFor="candidate_occupation"
@@ -406,7 +406,7 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
           </div>
 
           {/* Password / Confirm Password */}
-          <div className="grid gap-6 mb-4 md:grid-cols-2">
+          <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
               <label
                 htmlFor="candidate_password"
@@ -458,7 +458,7 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
             </div>
           </div>
 
-          <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
+          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
 
           {/* Address */}
           <p className="block mb-5 text-base font-bold text-grey-600">
@@ -466,7 +466,7 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
           </p>
 
           {/* HouseNumber, Moo, Soi */}
-          <div className="grid gap-6 mb-5 md:grid-cols-3">
+          <div class="grid gap-6 mb-5 md:grid-cols-3">
             <div>
               <label
                 htmlFor="candidate_house_number"
@@ -540,7 +540,7 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
           </div>
 
           {/* Street, Subdistrict, District, Province, Postal */}
-          <div className="grid gap-6 mb-4 md:grid-cols-2">
+          <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
               <label
                 htmlFor="candidate_street"
@@ -647,7 +647,7 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
           </div>
 
           {/* Postal Code */}
-          <div className="grid gap-6 mb-3 md:grid-cols-2">
+          <div class="grid gap-6 mb-3 md:grid-cols-2">
             <div>
               <label
                 htmlFor="candidate_postal_code"
@@ -763,14 +763,14 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
   return (
     <div>
       {/* Personal Information of Heir */}
-      <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl">
-        <div className="p-8">
-          <p className="block mt-1 mb-7 text-xl font-bold text-grey-600">
+      <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl">
+        <div class="p-8">
+          <p class="block mt-1 mb-7 text-xl font-bold text-grey-600">
             3. ข้อมูลส่วนตัวของทายาท
           </p>
 
           {/* Heir Title, First Name, Last Name */}
-          <div className="grid gap-6 mb-6 md:grid-cols-3">
+          <div class="grid gap-6 mb-6 md:grid-cols-3">
             {/* Heir Title */}
             <div>
               <label
@@ -943,7 +943,7 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
           </div>
 
           {/* Heir Occupation, Relationship, Phone, Email */}
-          <div className="grid gap-6 mb-3 md:grid-cols-2">
+          <div class="grid gap-6 mb-3 md:grid-cols-2">
             {/* Heir Occupation */}
             <div>
               <label
@@ -1067,7 +1067,7 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
             </div>
           </div>
 
-          <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
+          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
 
           {/* Heir Address */}
           <p className="block mb-5 text-base font-bold text-grey-600">
@@ -1075,23 +1075,23 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
           </p>
 
           {/* Checkbox - same address */}
-          <div className="mb-5">
-            <label className="inline-flex items-center">
+          <div class="mb-5">
+            <label class="inline-flex items-center">
               <Field
                 type="checkbox"
                 name="sameAddress"
                 checked={values.sameAddress}
                 onChange={handleCheckboxChange}
-                className="mr-2"
+                class="mr-2"
               />
-              <span className="text-sm font-bold text-gray-900">
+              <span class="text-sm font-bold text-gray-900">
                 ที่อยู่ปัจจุบันเหมือนกับผู้สมัคร
               </span>
             </label>
           </div>
 
           {/* Heir Address Fields */}
-          <div className="grid gap-6 mb-5 md:grid-cols-3">
+          <div class="grid gap-6 mb-5 md:grid-cols-3">
             {/* Heir House Number */}
             <div>
               <label
@@ -1171,7 +1171,7 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
             </div>
           </div>
 
-          <div className="grid gap-6 mb-4 md:grid-cols-2">
+          <div class="grid gap-6 mb-4 md:grid-cols-2">
             {/* Heir Street */}
             <div>
               <label
@@ -1287,7 +1287,7 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
             </div>
           </div>
 
-          <div className="grid gap-6 mb-3 md:grid-cols-2">
+          <div class="grid gap-6 mb-3 md:grid-cols-2">
             {/* Heir Postal Code */}
             <div>
               <label
@@ -1370,10 +1370,10 @@ function Confirm() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-1 place-items-center">
+          <div class="grid gap-6 md:grid-cols-1 place-items-center">
             <button
               type="button"
-              className="text-gray-900 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center me-2 mb-2 mt-5"
+              class="text-gray-900 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center me-2 mb-2 mt-5"
             >
               <Link to="/login">กลับไปยังหน้าเข้าสู่ระบบ</Link>
             </button>
@@ -1381,6 +1381,7 @@ function Confirm() {
         </div>
       </div>
     </div>
+   
   );
 }
 
@@ -1530,9 +1531,9 @@ function Register() {
   return (
     <div>
       {/* Navigation Bar */}
-      <nav className="bg-white">
-        <div className="max-w-screen-3xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <img src="logo.png" className="h-16" alt="Logo" />
+      <nav class="bg-white">
+        <div class="max-w-screen-3xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <img src="logo.png" class="h-16" alt="Logo" />
         </div>
       </nav>
 
@@ -1552,12 +1553,12 @@ function Register() {
             validateForm,
             setTouched,
           }) => (
-            <Form className="p-8">
-              <div className="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
-                <div className="2xl:flex">
-                  <div className="ibm-plex-sans-thai-medium">
+            <Form class="p-8">
+              <div class="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
+                <div class="2xl:flex">
+                  <div class="ibm-plex-sans-thai-medium">
                     {/* Form Title */}
-                    <div className="text-center text-3xl text-black mb-8 font-bold">
+                    <div class="text-center text-3xl text-black mb-8 font-bold">
                       ลงทะเบียนชมรมผู้สูงอายุ
                     </div>
 
@@ -1582,18 +1583,18 @@ function Register() {
                     )}
 
                     {/* Navigation Buttons */}
-                    <div className="mt-14">
-                      <div className="w-full max-w-md mx-auto bg-gray-100 border-2 border-gray-200 rounded-md">
-                        <div className="flex items-center justify-between gap-3 p-3 bg-white rounded">
+                    <div class="mt-14">
+                      <div class="w-full max-w-md mx-auto bg-gray-100 border-2 border-gray-200 rounded-md">
+                        <div class="flex items-center justify-between gap-3 p-3 bg-white rounded">
                           {/* Back Button (Hidden on Step 1) */}
                           {step !== 1 ? (
                             <button
                               type="button"
                               onClick={() => setStep(step - 1)}
-                              className="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
+                              class="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
                             >
                               <svg
-                                className="rotate-180"
+                                class="rotate-180"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="22"
                                 height="23"
@@ -1615,7 +1616,7 @@ function Register() {
                           )}
 
                           {/* Step Indicators */}
-                          <ul className="flex gap-1 items-center">
+                          <ul class="flex gap-1 items-center">
                             <li
                               className={`w-2 h-2 rounded-full ${
                                 step === 1 ? "bg-gray-600" : "bg-gray-300"
@@ -1654,7 +1655,7 @@ function Register() {
                                   }
                                 });
                               }}
-                              className="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
+                              class="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
                             >
                               หน้าถัดไป
                               <svg
@@ -1698,7 +1699,7 @@ function Register() {
                                     }
                                   });
                                 }}
-                                className="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
+                                class="flex items-center gap-1.5 text-base font-medium py-2.5 text-gray-700 hover:text-gray-600"
                               >
                                 เสร็จสิ้น
                                 <svg
@@ -1722,18 +1723,18 @@ function Register() {
                               {isModalOpen && (
                                 <div
                                   id="popup-modal"
-                                  className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
+                                  class="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
                                 >
-                                  <div className="relative p-4 w-full max-w-md max-h-full">
-                                    <div className="relative bg-white rounded-lg shadow dark:bg-gray-100">
+                                  <div class="relative p-4 w-full max-w-md max-h-full">
+                                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-100">
                                       {/* Close Button */}
                                       <button
                                         type="button"
-                                        className="absolute top-3 end-2.5 text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8"
+                                        class="absolute top-3 end-2.5 text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8"
                                         onClick={() => setIsModalOpen(false)}
                                       >
                                         <svg
-                                          className="w-3 h-3"
+                                          class="w-3 h-3"
                                           xmlns="http://www.w3.org/2000/svg"
                                           fill="none"
                                           viewBox="0 0 14 14"
@@ -1751,9 +1752,9 @@ function Register() {
                                         </span>
                                       </button>
                                       {/* Modal Content */}
-                                      <div className="p-4 md:p-5 text-center">
+                                      <div class="p-4 md:p-5 text-center">
                                         <svg
-                                          className="mx-auto mb-4 text-gray-800 w-12 h-12"
+                                          class="mx-auto mb-4 text-gray-800 w-12 h-12"
                                           xmlns="http://www.w3.org/2000/svg"
                                           fill="none"
                                           viewBox="0 0 20 20"
@@ -1766,16 +1767,16 @@ function Register() {
                                             d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                                           />
                                         </svg>
-                                        <p className="mb-1 text-lg font-bold text-gray-800">
+                                        <p class="mb-1 text-lg font-bold text-gray-800">
                                           ยืนยันการลงทะเบียน
                                         </p>
-                                        <p className="mb-5 text-base font-normal text-gray-800">
+                                        <p class="mb-5 text-base font-normal text-gray-800">
                                           โปรดตรวจสอบข้อมูลให้ถูกต้องก่อนกดยืนยัน
                                         </p>
                                         {/* Confirm Button */}
                                         <button
                                           type="submit"
-                                          className="text-gray-900 bg-white border border-lime-200 hover:bg-lime-100 font-medium rounded-lg text-sm px-5 py-2.5"
+                                          class="text-gray-900 bg-white border border-lime-200 hover:bg-lime-100 font-medium rounded-lg text-sm px-5 py-2.5"
                                         >
                                           ยืนยัน
                                         </button>
@@ -1783,7 +1784,7 @@ function Register() {
                                         <button
                                           type="button"
                                           onClick={() => setIsModalOpen(false)}
-                                          className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white border border-red-200 hover:bg-red-100 rounded-lg"
+                                          class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white border border-red-200 hover:bg-red-100 rounded-lg"
                                         >
                                           ยกเลิก
                                         </button>

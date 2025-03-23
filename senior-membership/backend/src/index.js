@@ -8,16 +8,18 @@ import authRoutes from "./routes/authRoutes.js" // <-- login
 import memberRoutes from './routes/memberRoutes.js'
 import heirRoutes from './routes/heirRoutes.js'
 import deathReportRoutes from './routes/deathReportRoutes.js'
-
+import cookieParser from 'cookie-parser'
 
 
 
 const app = express();
 const port = 3000;
-
-app.use(cors());
 app.use(express.json());
-
+app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 
 
 // Candidate routes

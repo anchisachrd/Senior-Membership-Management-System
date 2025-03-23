@@ -12,9 +12,7 @@ export const loginUserByEmail = async (req, res, next) => {
 
   const { email, password } = req.body;
   const hashedInputPassword = await bcrypt.hash(password, 10);
-console.log("🔍 Hashed Input Password:", hashedInputPassword);
-
-
+  // console.log("🔍 Hashed Input Password:", hashedInputPassword);
 
   try {
     // 1. Fetch account by email
@@ -24,15 +22,13 @@ console.log("🔍 Hashed Input Password:", hashedInputPassword);
       return res.status(400).json({ message: "Invalid email" });
     }
 
-    console.log("🔑 Entered Password:", password);
-console.log("🔒 Stored Hash:", account.password_hash);
+    // console.log("🔑 Entered Password:", password);
+    // console.log("🔒 Stored Hash:", account.password_hash);
 
-
-    // 2. Validate the password
     const isPasswordValid = await bcrypt.compare(password.trim(), account.password_hash.trim());
 
     // console.log("Password hash length:", account.password_hash.length);
-    console.log("✅ Is Password Valid?", isPasswordValid);
+    // console.log("✅ Is Password Valid?", isPasswordValid);
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid password" });
     }
@@ -40,9 +36,11 @@ console.log("🔒 Stored Hash:", account.password_hash);
       return res.status(400).json({ message: "You can not login, You are Candidate." });
     }
 
-     // 3. Check if the account is active
-    
+    // if (account.is_active === false){
+    //   return res.status(400).json({ message: "your account not active" });
+    // }
 
+    
     if (account.role === 'member') {
       const member = await authServices.getMemberIdbyAccountId(account.account_id);
       var info = {
@@ -93,22 +91,23 @@ console.log("🔒 Stored Hash:", account.password_hash);
       { expiresIn: "1h" }
     )
 
-    // 5. Return success response with token
-    // return res.json(
-    //   {
-    //     message: "Login successful",
-    //     accessToken
-    //   }
-    // );
 
-    req.token = accessToken;
     req.user = {
       accountId: account.account_id,
       email: account.email,
-      role: account.role
+      role: account.role,
+      role_id,
+      info
     };
 
-    next();
+    res.cookie('token', accessToken, {
+      httpOnly: true,  
+      secure: false, 
+      sameSite: 'Lax',
+  });
+
+    res.json({ message: "Login successful" , token: accessToken, user: req.user } );
+
 
   } catch (error) {
     console.error("Login error:", error.message);
@@ -117,6 +116,11 @@ console.log("🔒 Stored Hash:", account.password_hash);
 
 
 }
+
+export const logoutUser = (req, res) => {
+  res.clearCookie('token'); // ลบ JWT Cookie
+  res.json({ message: 'Logged out successfully' });
+};
 
 export const ChangePassword = async (req, res, next) => {
   const { accountId, oldPassword, newPassword } = req.body;

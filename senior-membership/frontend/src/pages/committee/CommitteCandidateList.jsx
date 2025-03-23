@@ -12,15 +12,19 @@ function CommitteCandidateList() {
   const [userEmail, setUserEmail] = useState('')
   const [userRoleId, setUserRoleId] = useState('')
 
-  // สำหรับเช็ค role
 
 
   const fetchUserProfile = async () => {
     try {
       const data = await verifyUser();
+
       setUserRole(data.role)
       setUserEmail(data.email)
       setUserRoleId(data.role_id)
+
+      if (data.role !== 'committee') {
+        navigate('/login');
+      }
 
     } catch (error) {
       console.error('Fetch Protected Data Error:', error);

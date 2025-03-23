@@ -40,6 +40,10 @@ function Profile() {
             setUserEmail(data.email)
             setUserAccountId(data.accountId)
 
+            if (data.role !== 'member' && data.role !== 'heir') {
+                navigate('/login');
+              }
+
             if (data.role === "member") {
                 const response = await fetch(`http://localhost:3000/api/auth/get_address?memberId=${data.role_id}`, {
                     method: "GET",
@@ -143,6 +147,8 @@ function Profile() {
                     occupation: data3.occupation
                 });
             }
+
+
 
             
             

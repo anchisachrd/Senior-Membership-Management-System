@@ -22,8 +22,7 @@ router.post("/login", authController.loginUserByEmail, (req, res) => {
 
 router.get('/verify', authMiddleware.verifyJWT, (req, res) => {
     res.json({
-      message: 'You have accessed a protected route!',
-      user: req.user, // นำข้อมูลที่ middleware เก็บมาใช้
+      message: "User verified", user: req.user
     });
 });
 
@@ -38,5 +37,7 @@ router.get('/get_info', authController.getInfoPeopleByMemberId);
 
 router.get('/get_address_heir', authController.getAddressByHeirId);
 router.get('/get_info_heir', authController.getInfoPeopleByHeirId);
+
+router.post('/logout', authController.logoutUser)
 
 export default router;

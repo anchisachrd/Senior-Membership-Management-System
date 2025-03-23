@@ -10,7 +10,7 @@ import {
 import { LuPiggyBank } from "react-icons/lu";
 import { MdOutlineDashboard, MdLogout } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
-import { FaRegCircleCheck, FaUserTie } from "react-icons/fa6";
+import { FaRegCircleCheck, FaUserTie, FaUsers } from "react-icons/fa6";
 import { Link } from "react-router";
 import { verifyUser } from "../api/verifyApi";
 
@@ -52,13 +52,18 @@ function SidebarStaff() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    setUserRole("");
-    setUserEmail("");
+  const handleLogout = async () => {
+    await fetch('http://localhost:3000/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+  });
+  
+    console.log("Logged out!");
     alert("ออกจากระบบเรียบร้อยแล้ว");
     navigate("/login");
-  };
+    setUserRole('');
+    setUserEmail('');
+  }
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -127,7 +132,7 @@ function SidebarStaff() {
                     </span>
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a
                     href="#"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
@@ -139,7 +144,7 @@ function SidebarStaff() {
                       แจ้งเตือน
                     </span>
                   </a>
-                </li>
+                </li> */}
 
                 {/* === "อนุมัติเอกสาร" DROPDOWN === */}
                 <li>

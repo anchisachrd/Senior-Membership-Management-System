@@ -60,21 +60,6 @@ function HomeHeir() {
   )
 }
 
-function HomeStaff() {
-  return (
-    <div class='mx-3'>
-      Home Staff
-    </div>
-  )
-}
-
-function HomeCommittee() {
-  return (
-    <div class='mx-3'>
-      Home Committee
-    </div>
-  )
-}
 
 
 function Home() {
@@ -94,8 +79,14 @@ function Home() {
       const data = await verifyUser();
       setUserRole(data.role)
       setUserEmail(data.email)
+
+      if (data.role !== 'member' && data.role !== 'heir') {
+        navigate('/login');
+      }
+
     } catch (error) {
       console.error('Fetch Protected Data Error:', error);
+      navigate('/login');
     }
   };
 
@@ -107,8 +98,6 @@ function Home() {
 
         {userRole === 'member' && <HomeMember />}
         {userRole === 'heir' && <HomeHeir />}
-        {userRole === 'staff' && <HomeStaff />}
-        {userRole === 'committee' && <HomeCommittee />}
 
 
       </div>

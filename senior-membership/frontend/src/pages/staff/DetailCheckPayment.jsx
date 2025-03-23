@@ -23,7 +23,6 @@ function DetailCheckPayment() {
        setUserEmail(data.email)
 
        if (data.role != 'staff' && data.role != 'member' ) {
-        localStorage.removeItem("userToken");
         alert("คุณไม่สามารถเข้าสู่หน้านี้ได้")
         navigate('/login')
       }

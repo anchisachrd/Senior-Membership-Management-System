@@ -21,10 +21,9 @@ function SendNotify() {
             setUserRole(data.role)
             setUserEmail(data.email)
 
-            if (userRole != 'staff') {
-                localStorage.removeItem("userToken");
+            if (data.role !== 'staff') {
                 navigate('/login')
-              }
+            }
 
         } catch (error) {
             console.error('Fetch Protected Data Error:', error);

@@ -8,7 +8,6 @@ function MemberTable({ members, title, handleRowClick, notFoundText }) {
     const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
     return filterDob;
   };
-
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">

@@ -36,6 +36,7 @@ import CommitteDeathList from "./pages/committee/CommitteeDeathList.jsx";
 import ClubAccount from "./pages/staff/ClubAccount.jsx";
 import Dashboard from "./components/DashBoard.jsx";
 import SummaryReport from "./pages/member/SummaryReport.jsx";
+import RequestForm from './pages/heir/RequestForm.jsx'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -50,6 +51,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/heir_register" element={<HeirRegister />} />
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path='/request-form' element={<RequestForm />} />
         <Route
           path="/staff_detailCheckPayment"
           element={<DetailCheckPayment />}

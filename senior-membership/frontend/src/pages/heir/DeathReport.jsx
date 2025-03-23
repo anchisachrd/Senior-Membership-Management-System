@@ -79,7 +79,7 @@ function DeathReport() {
       } finally {
         setLoading(false);
       }
-    };
+
 
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
@@ -228,6 +228,7 @@ function DeathReport() {
       </div>
     </div>
   );
+}
 }
 
 export default DeathReport;
