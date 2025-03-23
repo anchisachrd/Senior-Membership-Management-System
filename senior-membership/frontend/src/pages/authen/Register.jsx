@@ -952,6 +952,7 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
 // =============== STEP 3: Confirm Page ===============
 function Confirm() {
   return (
+    <div class='ibm-plex-sans-thai-medium'>
     <div class="p-8">
       <div class="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
         <div class="p-10 bg-white border border-lime-200 rounded-lg shadow dark:bg-lime-600 dark:border-lime-500 overflow-hidden">
@@ -975,6 +976,7 @@ function Confirm() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -326,6 +326,23 @@ function Form2({ isChecked, setIsChecked, infoHeir, infoMember }) {
   )
 }
 
+function StatusPage() {
+  return (
+      <div>
+          <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-12">
+              <div class="p-6">
+                  <div class="flex items-center">
+                      <div class="text-base text-black font-bold me-2">สถานะของการยื่นคำร้องขอรับเงิน:</div>
+                      <div class="text-base text-black">กำลังดำเนินการ</div>
+                  </div>
+              </div>
+
+          </div>
+
+      </div>
+  )
+}
+
 function RequestForm() {
 
   const [userEmail, setUserEmail] = useState('')
@@ -402,12 +419,18 @@ function RequestForm() {
     <div class='ibm-plex-sans-thai-medium'>
       <div class="p-12 sm:ml-64">
         <div class="relative mt-8 flex justify-center items-center text-2xl text-black font-bold">
-          ฟอร์มคำร้อง
+          {step !== 3 ? (
+            <p>ฟอร์มคำร้อง</p>
+          ) : (
+            <p>ท่านกรอกฟอร์มคำร้องเสร็จสิ้นแล้ว</p>
+          )}
+          
         </div>
 
         {step === 1 && <Form1 isChecked={isChecked1} setIsChecked={setIsChecked1} infoHeir={infoHeir} infoMember={infoMember} />}
         {step === 2 && <Form2 isChecked={isChecked2} setIsChecked={setIsChecked2} infoHeir={infoHeir} infoMember={infoMember} />}
 
+        {step !== 3 ? (
         <div class="mt-14">
           <div class="w-full max-w-md mx-auto bg-gray-100 border-2 border-gray-200 rounded-md">
             <div class="flex items-center justify-between gap-3 p-3 bg-white rounded">
@@ -564,7 +587,12 @@ function RequestForm() {
                             </p>
 
                             <button
-                              type="submit"
+                              type="button"
+                              onClick={() => {
+                                setIsModalOpen(false)
+                                setStep(step + 1)
+                                }
+                              }
                               class="text-gray-900 bg-white border border-lime-200 hover:bg-lime-100 font-medium rounded-lg text-sm px-5 py-2.5"
                             >
                               ยืนยัน
@@ -584,9 +612,13 @@ function RequestForm() {
                   )}
                 </div>
               )}
+
             </div>
           </div>
         </div>
+        ) : (
+          <StatusPage />
+        )}
 
       </div>
     </div>

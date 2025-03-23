@@ -10,7 +10,7 @@ import {
 import { LuPiggyBank } from "react-icons/lu";
 import { MdOutlineDashboard, MdLogout } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
-import { FaRegCircleCheck, FaUserTie } from "react-icons/fa6";
+import { FaRegCircleCheck, FaUserTie, FaUsers } from "react-icons/fa6";
 import { Link } from "react-router";
 import { verifyUser } from "../api/verifyApi";
 
@@ -96,7 +96,7 @@ function SidebarStaff() {
       >
         <div className="h-full px-4 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-100 flex flex-col">
           <a href="" className="flex items-center mb-3">
-            <img src="public/logo.png" className="h-auto max-w-full" alt="Logo" />
+            <img src="logo.png" className="h-auto max-w-full" alt="Logo" />
           </a>
 
           <div className="flex justify-center items-center rounded-lg dark:text-gray-700 group mb-0">
@@ -132,7 +132,7 @@ function SidebarStaff() {
                     </span>
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a
                     href="#"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
@@ -144,7 +144,7 @@ function SidebarStaff() {
                       แจ้งเตือน
                     </span>
                   </a>
-                </li>
+                </li> */}
 
                 {/* === "อนุมัติเอกสาร" DROPDOWN === */}
                 <li>

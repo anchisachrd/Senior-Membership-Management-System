@@ -209,7 +209,7 @@ function HeirInfo({ data }) {
                   </label>
                   <input
                     type="text"
-                    value={data.address.house_num}
+                    value={data.address.house_number}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
                     readOnly
                   />

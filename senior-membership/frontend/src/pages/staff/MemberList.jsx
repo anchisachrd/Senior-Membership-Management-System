@@ -22,7 +22,7 @@ function MemberList() {
       setUserRole(data.role)
       setUserEmail(data.email)
 
-      if (data.role != "committee") {
+      if (data.role !== "staff") {
         navigate("/login");
       }
 
