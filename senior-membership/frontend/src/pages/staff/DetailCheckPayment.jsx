@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react'
+import React, { useEffect, useState} from 'react'
 import { useNavigate } from "react-router-dom";
 import { verifyUser } from '../../api/verifyApi';
 
@@ -22,7 +22,7 @@ function DetailCheckPayment() {
        setUserRole(data.role)
        setUserEmail(data.email)
 
-       if (data.role != 'staff') {
+       if (data.role != 'staff' && data.role != 'member' ) {
         localStorage.removeItem("userToken");
         alert("คุณไม่สามารถเข้าสู่หน้านี้ได้")
         navigate('/login')
@@ -54,11 +54,10 @@ function DetailCheckPayment() {
 
 
               <div class="text-lg text-black mx-3 mt-6 font-base"> <b>ชื่อผู้โอนเงิน:</b> นางสาวศรุตา จรูญกีรติโรจน์</div>
-              <div class="text-lg text-black mx-3 mt-2 font-base"> <b>ธนาคารผู้รับเงิน:</b> ธนาคารกรุงศรีอยุธยา</div>
-              <div class="text-lg text-black mx-3 mt-2 font-base"> <b>ธนาคารผู้โอนเงิน:</b> ธนาคารกสิกรไทย</div>
-              <div class="text-lg text-black mx-3 mt-2 font-base"> <b>วันที่โอนเงิน:</b> วันที่ 27 เดือนมกราคม 2568</div>
-              <div class="text-lg text-black mx-3 mt-2 font-base"> <b>เวลาที่โอนเงิน:</b> 06:22 น.</div>
-              <div class="text-lg text-black mx-3 mt-2 font-base"> <b>จำนวนเงิน:</b> 50 บาท</div>
+              <div class="text-lg text-black mx-3 mt-3 font-base"> <b>ธนาคารผู้โอนเงิน:</b> ธนาคารกสิกรไทย</div>
+              <div class="text-lg text-black mx-3 mt-3 font-base"> <b>วันที่โอนเงิน:</b> 27-12-2568</div>
+              <div class="text-lg text-black mx-3 mt-3 font-base"> <b>เวลาที่โอนเงิน:</b> 06:22 น.</div>
+              <div class="text-lg text-black mx-3 mt-3 font-base"> <b>จำนวนเงิน:</b> 100 บาท</div>
 
             </div>
           </div>

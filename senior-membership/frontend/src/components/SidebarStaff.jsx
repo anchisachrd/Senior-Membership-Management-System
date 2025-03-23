@@ -91,7 +91,7 @@ function SidebarStaff() {
       >
         <div className="h-full px-4 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-100 flex flex-col">
           <a href="" className="flex items-center mb-3">
-            <img src="public/logo.png" className="h-auto max-w-full" alt="Logo" />
+            <img src="logo.png" className="h-auto max-w-full" alt="Logo" />
           </a>
 
           <div className="flex justify-center items-center rounded-lg dark:text-gray-700 group mb-0">
@@ -185,14 +185,14 @@ function SidebarStaff() {
                       </Link>
                     </li>
                     <li>
-                      <a
-                        href="#"
+                      <Link
+                        to="/committee/death-list"
                         className="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                       >
                         <span className="ms-3 mt-1 dark:group-hover:text-white">
-                          เอกสารการเสียชีวิต
+                        เอกสารการเสียชีวิต
                         </span>
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </li>

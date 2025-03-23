@@ -35,15 +35,7 @@ export const getAccountByEmail = async (email) => {
   return rows[0]; // Returns the first matching row
 };
 
-export const getEmailById = async (accountId) => {
-  const { rows } = await query(
-    `SELECT email 
-       FROM accounts 
-       WHERE account_id = $1`,
-    [accountId]
-  );
-  return rows[0]; // Returns the first matching row
-};
+
 
 export const updateHeirPasswordByCandidateId = async (
   candidateId,
@@ -77,43 +69,6 @@ export const activateMemberAccount = async (candidateId) => {
 
 
 
-// Get all accounts with a specific role
-export const getAccountsByRole = async (role) => {
-  const { rows } = await query(`SELECT * FROM accounts WHERE role = $1`, [
-    role,
-  ]);
-  return rows;
-};
-
-// Update account status to active
-export const activateAccount = async (accountId) => {
-  const { rows } = await query(
-    `UPDATE accounts SET is_active = TRUE, updated_at = CURRENT_TIMESTAMP WHERE account_id = $1 RETURNING *`,
-    [accountId]
-  );
-  return rows[0];
-};
-
-// Deactivate account
-export const deactivateAccount = async (accountId) => {
-  const { rows } = await query(
-    `UPDATE accounts SET is_active = FALSE, updated_at = CURRENT_TIMESTAMP WHERE account_id = $1 RETURNING *`,
-    [accountId]
-  );
-  return rows[0];
-};
-
-export const updateRole = async (accountId) => {
-  const { rows } = await query(
-    `UPDATE accounts 
-         SET role = 'member' 
-         WHERE account_id = $1 
-         RETURNING *`,
-    [accountId]
-  );
-  return rows[0];
-};
-
 export const updatePassword = async (accountId, password_hash) => {
   const { rows } = await query(
     `UPDATE accounts 
@@ -125,15 +80,3 @@ export const updatePassword = async (accountId, password_hash) => {
   return rows[0];
 };
 
-export const getCandidateEmail = async (candidateId) => {
-  const { rows } = await query(
-    `
-      SELECT a.email 
-      FROM candidates c
-      JOIN accounts a ON c.account_id = a.account_id
-      WHERE c.candidate_id = $1;
-      `,
-    [candidateId]
-  );
-  return rows[0];
-};

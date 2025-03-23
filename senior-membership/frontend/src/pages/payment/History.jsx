@@ -49,51 +49,62 @@ function History() {
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
               <tr>
+              <th scope="col" class="px-6 py-3">
+                 ์No.
+                </th>
+                
                 <th scope="col" class="px-6 py-3">
                   วัน/เดือน/ปี
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  ศพที่/เลขที่
+                  รหัสสมาชิกที่เสียชีวิต
                 </th>
                 <th scope="col" class="px-6 py-3">
                   รายชื่อผู้เสียชีวิต
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  เงินบำรุงรักษาศพ
+                  เงินสงเคราะห์
                 </th>
                 <th scope="col" class="px-6 py-3">
                   สถานะการชำระเงิน
                 </th>
+    
 
               </tr>
             </thead>
 
             <tbody>
-              <tr onClick={handleRowClick} class="cursor-pointer bg-white border-b dark:bg-gray-200 dark:border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-200 text-gray-900">
+              <tr onClick={handleRowClick} class="bg-white border-b hover:bg-gray-50 text-gray-900 cursor-pointer">
+              <th scope="row" class="px-8 py-4 font-medium">
+                  1
+                </th>
                 <th scope="row" class="px-8 py-4 font-medium">
                   27/01/2568
                 </th>
                 <td class="px-6 py-4">
-                  1/0234
+                  12
                 </td>
                 <td class="px-6 py-4">
                   ศรุตา จรูญกีรติโรจน์
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 ">
                   100
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 text-green-600">
                   ชำระสำเร็จ
                 </td>
 
               </tr>
 
-              <tr class="cursor-pointer bg-white border-b dark:bg-gray-200 dark:border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-200 text-gray-900">
+              <tr class="bg-white border-b hover:bg-gray-50 text-gray-900 cursor-pointer">
+              <th scope="row" class="px-8 py-4 font-medium">
+                  2
+                </th>
                 <th scope="row" class="px-8 py-4 font-medium">
                   15/02/2568
                 </th>
                 <td class="px-6 py-4">
-                  2/0999
+                  3
                 </td>
                 <td class="px-6 py-4">
                   พอยเบ ง่วงนอนงับ
@@ -102,7 +113,7 @@ function History() {
                   100
                 </td>
                 <td class="px-6 py-4">
-                  <button onClick={handlePayClick} class="bg-white hover:bg-gray-100 text-gray-800 py-1 px-2 border border-gray-400 rounded-lg shadow">
+                  <button onClick={handlePayClick} class="bg-blue-600 hover:bg-blue-800 text-white py-1 px-2  rounded-lg shadow">
                     กดปุ่มเพื่อชำระเงิน
                   </button>
                 </td>

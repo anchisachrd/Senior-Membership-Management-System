@@ -3,15 +3,15 @@ import axios from "axios";
 // Base URL for API
 const apiUrl = "http://localhost:3000/api/members";
 
-export const verifySlip = async (slipFile, memberId, amount, deathId) => {
+export const verifySlip = async (slipFile, memberId, amount, reportId) => {
   try {
     const formData = new FormData();
     formData.append("slip", slipFile); // Field name must match backend
     formData.append("memberId", memberId);
     formData.append("amount", amount);
-    formData.append("deathId", deathId);
+    formData.append("reportId", reportId);
 
-    console.log("✅ Sending Data:", { memberId, amount, deathId });
+    console.log("✅ Sending Data:", { memberId, amount, reportId });
 
     // Send request to backend
     const response = await axios.post(`${apiUrl}/verify-slip`, formData, {
@@ -74,6 +74,16 @@ export const getMemberInfo = async (memberId) => {
     return res.data;
   } catch (error) {
     console.error("Error fetching member info:", error);
+    throw error;
+  }
+};
+
+export const getReviewedDeathList = async () => {
+  try {
+    const res = await axios.get(`${apiUrl}/reviewed/death-list`);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching death list:", error);
     throw error;
   }
 };

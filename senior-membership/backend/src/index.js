@@ -7,6 +7,7 @@ import path from 'path';
 import authRoutes from "./routes/authRoutes.js" // <-- login
 import memberRoutes from './routes/memberRoutes.js'
 import heirRoutes from './routes/heirRoutes.js'
+import deathReportRoutes from './routes/deathReportRoutes.js'
 
 
 
@@ -25,6 +26,7 @@ app.use('/api/approval-details', approvalRoutes);
 // ✅ เพิ่ม slipRoutes ใน app.js
 app.use('/api/members', memberRoutes );
 app.use('/api/heirs', heirRoutes);
+app.use('/api/death-report', deathReportRoutes);
 // Login
 app.use('/api/auth', authRoutes);
 
@@ -40,6 +42,11 @@ app.use(
 app.use(
   '/slips',
   express.static(path.join(process.cwd(), 'src', 'uploads', 'slips'))
+);
+
+app.use(
+  '/death-docs',
+  express.static(path.join(process.cwd(), 'src', 'uploads', 'death-docs'))
 );
 
 

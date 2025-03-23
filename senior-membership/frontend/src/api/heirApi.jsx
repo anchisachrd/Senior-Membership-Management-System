@@ -12,3 +12,5 @@ export const getMembersForHeir = async (heirId) => {
       throw error;
     }
   };
+
+  

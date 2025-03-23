@@ -52,7 +52,11 @@ function CheckPayment() {
     navigate(`/staff_detailCheckPayment/${historyId}`);
   };
 
-  //FIXME - แก้สีตาราง
+  const onChangeDate = (data_date) => {
+    const dobFromData = new Date(data_date);
+    const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
+    return filterDob;
+  };
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -64,10 +68,11 @@ function CheckPayment() {
             <thead className="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
               <tr>
                 <th className="px-6 py-3">No.</th>
-                <th className="px-6 py-3">History ID</th>
-                <th className="px-6 py-3">Member ID</th>
-                <th className="px-6 py-3">สถานะการตรวจสอบ</th>
-                <th className="px-6 py-3">เวลา</th>
+                <th className="px-6 py-3">วันที่/เวลา</th>
+                <th className="px-6 py-3">ชื่อสมาชิก</th>
+                <th className="px-6 py-3">ชื่อผู้เสียชีวิต</th>
+                <th className="px-6 py-3">จำนวนเงิน</th>
+                <th className="px-6 py-3">สถานะการตรวจสอบสลิป</th>
               </tr>
             </thead>
             <tbody>
@@ -75,16 +80,17 @@ function CheckPayment() {
                 <tr
                   key={slip.history_id}
                   onClick={() => handleRowClick(slip.history_id)}
-                  className="cursor-pointer bg-white border-b dark:bg-gray-200 dark:border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-200 text-gray-900"
+                  className="bg-white border-b hover:bg-gray-50 text-gray-900 cursor-pointer"
                 >
                   <td className="px-6 py-4">{index + 1}</td>
-                  <td className="px-6 py-4">{slip.history_id}</td>
-                  <td className="px-6 py-4">{slip.member_id}</td>
+                  <td className="px-6 py-4"> {onChangeDate(slip.updated_at)}</td>
+                  <td className="px-6 py-4">{slip.member_name}</td>
+                  <td className="px-6 py-4">{slip.death_name}</td>
+                  <td className="px-6 py-4">{slip.amount}</td>
                   <td className={`px-6 py-4 ${slip.slip_data?.success ? "text-green-600" : "text-red-600"
                     }`}>
                     {slip.slip_data?.success ? 'สลิปโอนเงินถูกต้อง' : slip.error_msg}
                   </td>
-                  <td className="px-6 py-4">{slip.created_at}</td>
                 </tr>
               ))}
             </tbody>

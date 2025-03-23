@@ -9,14 +9,15 @@ const router = express.Router();
 router.get("/active", memberController.getActiveMembers);
 router.get("/notify/death", memberController.getDeathMembers);
 router.get("/notify/quit", memberController.getQuitMembers);
+router.get("/reviewed/death-list", memberController.getReviewdDeathList);
+
+router.get("/slip", slipController.getAllSlipHistories);
+router.post("/verify-slip", uploadSlip, slipController.verifyAndSaveSlip);
+router.get("/history/:memberId", slipController.getSlipHistoriesByMember);
+router.get("/slip/summary", slipFunction.getAccountSummary);
+router.get("/slip/passed", slipFunction.getAllPassedSlips);
+
+// Then put your "/:memberId" route last
 router.get("/:memberId", memberController.getMemberInfo);
-
-
-router.post('/verify-slip', uploadSlip,slipController.verifyAndSaveSlip );
-router.get('/slip', slipController.getAllSlipHistories);
-router.get('/history/:memberId', slipController.getSlipHistoriesByMember);
-
-router.get('/slip/summary', slipFunction.getAccountSummary);
-router.get('/slip/passed', slipFunction.getAllPassedSlips);
 
 export default router;
