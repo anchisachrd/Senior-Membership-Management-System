@@ -10,7 +10,7 @@ router.get("/committee/:committeeId/pending", deathReportController.getDeathPend
 router.get("/member/:memberId", deathReportController.getDeathReportDetails);
 router.get("/check-status/:heirId", deathReportController.checkDeathReportStatus);
 router.put("/submit", uploadDeathDocs ,deathReportController.createDeathReport);
-router.put("/staff/review/:reportId", deathReportController.updateReviewDeathReport)
-
+router.put("/staff/review/:reportId", deathReportController.updateReviewDeathReport);
+router.put("/committee/death-approval/:reportId", deathReportController.approveDeathReport)
 
 export default router;

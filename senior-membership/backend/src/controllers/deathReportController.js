@@ -1,5 +1,6 @@
 import * as deathReportService from "../services/deathReportService.js";
 import * as deathModel from "../models/deathReport.js";
+import * as deathApprovalService from "../services/deathApprovalService.js"
 import { query } from "../db.js";
 
 export const createDeathReport = async (req, res) => {
@@ -114,3 +115,14 @@ export const updateReviewDeathReport = async (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     }
   };
+
+  export const approveDeathReport = async (req, res) => {
+    try {
+      const { reportId } = req.params;
+      const updated = await deathApprovalService.checkCommitteesVote(reportId)
+      return res.json(updated)
+    }catch(error){
+      console.error("❌ Error update death approval:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }

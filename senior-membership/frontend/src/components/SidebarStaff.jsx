@@ -120,8 +120,8 @@ function SidebarStaff() {
                   </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                <Link
+                    to="/dashboard"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <MdOutlineDashboard
@@ -130,7 +130,7 @@ function SidebarStaff() {
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       Dashboard
                     </span>
-                  </a>
+                  </Link>
                 </li>
                 {/* <li>
                   <a
@@ -231,8 +231,8 @@ function SidebarStaff() {
                       </span>
                     </Link>
                   </li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/dashboard"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <MdOutlineDashboard
@@ -241,12 +241,12 @@ function SidebarStaff() {
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       Dashboard
                     </span>
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
                   <Link
-                    to="/finance-report"
+                    to="/club-account"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <LuPiggyBank

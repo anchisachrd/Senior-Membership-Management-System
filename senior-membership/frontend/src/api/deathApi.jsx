@@ -28,3 +28,8 @@ export const submitDeathReport = async (memberId, heirId) => {
   
     return response.data;
   };
+
+  export const approveDeathReport = async (reportId) => {
+    const response = await axios.put(`${apiUrl}/committee/death-approval/${reportId}`)
+    return response.data;
+  }

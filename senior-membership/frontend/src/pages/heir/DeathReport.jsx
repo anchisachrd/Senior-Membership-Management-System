@@ -79,6 +79,7 @@ function DeathReport() {
       } finally {
         setLoading(false);
       }
+    }
 
 
   const handleCheckboxChange = (e) => {
@@ -228,7 +229,7 @@ function DeathReport() {
       </div>
     </div>
   );
-}
+
 }
 
 export default DeathReport;

@@ -3,7 +3,7 @@ import axios from "axios";
 import DocumentPreview from "./DocumentPreview";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DeathDocPreview from "./DeathDocPreview";
-import { submitStaffReview } from "../api/deathApi";
+import { submitStaffReview, approveDeathReport } from "../api/deathApi";
 import { verifyUser } from "../api/verifyApi";
 
 function DeathReportDetail() {
@@ -75,7 +75,7 @@ function DeathReportDetail() {
     );
   }
 
-  const handleApprove = async () => {
+  const handleApproveReview = async () => {
     try {
       await submitStaffReview(deathReport.report_id, userRoleId);
       alert("✅ ผ่านการตรวจสอบเรียบร้อยแล้ว");
@@ -85,7 +85,21 @@ function DeathReportDetail() {
     }
   };
 
-  const handleReject = () => {
+  const handleRejectReview = async() => {
+    alert("❌ ไม่ผ่านการตรวจสอบ กรุณาตรวจสอบเอกสารอีกครั้ง");
+  };
+
+  const handleCommitteeApprove= async () => {
+    try{
+    await approveDeathReport(deathReport.report_id)
+    alert("✅ ผ่านการตรวจสอบเรียบร้อยแล้ว");
+    }catch(error){
+      alert("❌ มีข้อผิดพลาดในการส่งผลการตรวจสอบ");
+    }
+    
+  };
+
+  const handleCommitteeReject= () => {
     alert("❌ ไม่ผ่านการตรวจสอบ กรุณาตรวจสอบเอกสารอีกครั้ง");
   };
 
@@ -158,15 +172,15 @@ function DeathReportDetail() {
         <div className="flex justify-center mt-8 space-x-4">
           {userRole === "staff" && (
             <>
-              <button onClick={handleApprove} className="px-6 py-2 text-white bg-green-600 rounded-lg">ผ่านการตรวจสอบ</button>
-              <button onClick={handleReject} className="px-6 py-2 text-white bg-red-600 rounded-lg">ไม่ผ่านการตรวจสอบ</button>
+              <button onClick={handleApproveReview} className="px-6 py-2 text-white bg-green-600 rounded-lg">ผ่านการตรวจสอบ</button>
+              <button onClick={handleRejectReview} className="px-6 py-2 text-white bg-red-600 rounded-lg">ไม่ผ่านการตรวจสอบ</button>
             </>
           )}
 
           {userRole === "committee" && (
             <>
-              <button onClick={handleApprove} className="px-6 py-2 text-white bg-green-600 rounded-lg">ผ่านอนุมัติ</button>
-              <button onClick={handleReject} className="px-6 py-2 text-white bg-red-600 rounded-lg">ไม่ผ่านอนุมัติ</button>
+              <button onClick={handleCommitteeApprove} className="px-6 py-2 text-white bg-green-600 rounded-lg">ผ่านอนุมัติ</button>
+              <button onClick={handleCommitteeReject} className="px-6 py-2 text-white bg-red-600 rounded-lg">ไม่ผ่านอนุมัติ</button>
             </>
           )}
         </div>

@@ -52,10 +52,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path='/request-form' element={<RequestForm />} />
-        <Route
-          path="/staff_detailCheckPayment"
-          element={<DetailCheckPayment />}
-        />
+       
       </Route>
 
       <Route element={<SidebarStaff />}>
@@ -84,6 +81,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/member-list/notify-quit" element={<NotifyQuitList />} />
         <Route path="/member/:memberId" element={<MemberProfile />} />
         <Route path="/club-account/" element={<ClubAccount/>}/>
+        <Route
+          path="/staff_detailCheckPayment"
+          element={<DetailCheckPayment />}
+        />
       </Route>
 
       {/* หน้าที่ไม่ต้องมี side bar */}

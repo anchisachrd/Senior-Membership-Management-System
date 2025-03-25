@@ -45,6 +45,7 @@ export const updateDeathReportStatus = async (
     staff_status = $1,
     reviewed_by = $2,
     staff_comment = $3,
+    final_approval = 'รอการพิจารณา',
     reviewed_at = NOW()
     WHERE report_id = $4
     RETURNING*;`,
@@ -90,3 +91,15 @@ AND da.committee_id = $1;
   );
   return rows;
 };
+
+export const updateFinalApprovalStatus = async (reportId, status) => {
+  const { rows } = await query(
+    `UPDATE death_reports
+       SET final_approval_status = $1
+       WHERE report_id = $2
+       RETURNING *`,
+    [status, reportId]
+  );
+  return rows[0];
+};
+

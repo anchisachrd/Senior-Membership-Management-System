@@ -6,6 +6,8 @@ import * as employeeModel from "../models/employeeModel.js"
 import path from "path";
 import { query } from '../db.js'
 
+
+
 export const creatDeathReport = async (deathReport) => {
     const { member_id, heir_id, death_date, documents } = deathReport
     const newReport = await deathReportModel.createReport(member_id, heir_id, death_date)
