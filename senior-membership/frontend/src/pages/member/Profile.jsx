@@ -148,11 +148,6 @@ function Profile() {
                 });
             }
 
-
-
-            
-            
-
         } catch (error) {
             console.error('Fetch Protected Data Error:', error);
         }
@@ -328,8 +323,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="job_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900"
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     อาชีพ
                                 </label>
                                 <input
@@ -343,8 +337,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="phone_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     หมายเลขโทรศัพท์
                                 </label>
                                 <input
@@ -359,8 +352,7 @@ function Profile() {
                         <div class="mb-4">
                             <label
                                 for="email_member"
-                                class="block mb-2 text-sm font-medium text-gray-900 "
-                            >
+                                class="block mb-2 text-sm font-medium text-gray-900">
                                 อีเมล
                             </label>
                             <input
@@ -373,7 +365,6 @@ function Profile() {
                     </div>
                 </div>
 
-
                 <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-5 mb-5">
                     <div class="p-8">
                         <p class="block mb-5 mt-0 text-xl leading-tight font-bold text-grey-600">
@@ -384,8 +375,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="home_number_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     บ้านเลขที่
                                 </label>
                                 <input
@@ -399,8 +389,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="moo_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     หมู่ที่
                                 </label>
                                 <input
@@ -414,8 +403,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="soi_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     ซอย
                                 </label>
                                 <input
@@ -431,8 +419,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="road_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     ถนน
                                 </label>
                                 <input
@@ -446,8 +433,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="sub_district_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     ตำบล/แขวง
                                 </label>
                                 <input
@@ -461,8 +447,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="district_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     อำเภอ/เขต
                                 </label>
                                 <input
@@ -476,8 +461,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="province_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900"
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     จังหวัด
                                 </label>
                                 <input
@@ -493,8 +477,7 @@ function Profile() {
                             <div>
                                 <label
                                     for="zip_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
+                                    class="block mb-2 text-sm font-medium text-gray-900">
                                     รหัสไปรษณีย์
                                 </label>
                                 <input

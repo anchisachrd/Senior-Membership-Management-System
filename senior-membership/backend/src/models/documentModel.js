@@ -49,7 +49,7 @@ export const deleteDocument = async (documentId) => {
 
 export const getDocumentsByCandidateId = async (candidateId) => {
   const sql = `
-    SELECT document_id, doc_path, doc_type
+    SELECT document_id, doc_path, doc_type, entity_type
     FROM documents
     WHERE entity_id = $1 AND entity_type = 'candidate';
   `;
@@ -59,7 +59,7 @@ export const getDocumentsByCandidateId = async (candidateId) => {
 
 export const getDocumentsByHeirId = async (heirId) => {
   const sql = `
-    SELECT document_id, doc_path, doc_type
+    SELECT document_id, doc_path, doc_type, entity_type
     FROM documents
     WHERE entity_id = $1 AND entity_type = 'heir';
   `;

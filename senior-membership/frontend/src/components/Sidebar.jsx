@@ -89,9 +89,9 @@ function Sidebar() {
                   </Link>
                 </li>
                 <li>
-                  <Link to='/' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
+                  <Link to='/report-summary' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
                     <IoDocumentTextOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">ข้อมูลข่าวสาร</span>
+                    <span class="ms-3 mt-1 dark:group-hover:text-white">สรุปการเงินชมรม</span>
                   </Link>
                 </li>
                 <li>

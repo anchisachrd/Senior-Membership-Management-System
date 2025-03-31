@@ -1,181 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { verifyUser } from '../../api/verifyApi';
-import { getMembersForHeir } from "../../api/heirApi"
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { verifyUser } from "../../api/verifyApi";
+import axios from "axios";
+import { getMembersForHeir } from "../../api/heirApi";
+import { submitDeathReport } from "../../api/deathApi";
+import { validateDeathReport } from "../authen/Validation";
+import { Formik, Form } from "formik";
+import FileUpload from "../../components/FileUpload";
 
-function FormPage({ setStep }) {
-    // const [isChecked, setIsChecked] = useState(false);
-    const [member, setMember] = useState([]);
-    const [heirId, setHeirId] = useState(null);
-    const [userRole, setUserRole] = useState('')
-    const [userEmail, setUserEmail] = useState('')
-    const [userRoleId, setUserRoleId] = useState('')
-
-
-    const fetchUserProfile = async () => {
-        try {
-            const data = await verifyUser();
-            setUserRole(data.role)
-            setUserEmail(data.email)
-            setUserRoleId(data.role_id)
-            if (data.role !== "heir") {
-                navigate("/login");
-              }
-
-        } catch (error) {
-            console.error("Fetch Protected Data Error:", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchUserProfile();
-    }, [userEmail]);
-
-
-
-    useEffect(() => {
-        const fetchMember = async () => {
-            try {
-                const data = await getMembersForHeir(userRoleId);
-                setMember(data);
-            } catch (error) {
-                console.error("Error fetching members:", error);
-            }
-        };
-        fetchMember();
-    }, [userRoleId]);
-
-    return (
-        <div>
-            <div class="relative mt-8 flex justify-center items-center text-2xl text-black font-bold">
-                ฟอร์มแจ้งเสียชีวิต
-            </div>
-            <div class="mb-8 overflow-hidden">
-                <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-12">
-                    <div class="p-12">
-                        <div class="grid gap-6 mb-6 md:grid-cols-3">
-                            <div>
-                                <label
-                                    htmlFor="id_number_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
-                                    เลขรหัสสมาชิก
-                                </label>
-                                <input
-                                    type="text"
-                                    id="id_number_member"
-                                    value={member.member_id}
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                                    placeholder="กรอกเลข"
-                                />
-                            </div>
-
-                            <div>
-                                <label
-                                    htmlFor="full_name_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
-                                    ชื่อผู้เสียชีวิต
-                                </label>
-                                <input
-                                    type="text"
-                                    id="full_name_member"
-                                    value={member.member_name}
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                                    placeholder="กรอกชื่อของผู้สมัคร"
-                                />
-                            </div>
-
-                            <div>
-                                <label
-                                    htmlFor="death_day_member"
-                                    class="block mb-2 text-sm font-medium text-gray-900 "
-                                >
-                                    วัน/เดือน/ปี ที่เสียชีวิตตามใบมรณบัตร
-                                </label>
-                                <input
-                                    id="death_day_member"
-                                    type="date"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                                    placeholder="เลือกวันเกิด"
-                                />
-                            </div>
-                        </div>
-
-                        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500"></hr>
-
-                        <div>
-                            <label
-                                htmlFor="copy_house_heir"
-                                class="block mb-2 text-sm font-medium text-gray-900"
-                            >
-                                สำเนาใบมรณบัตรของผู้เสียชีวิต
-                            </label>
-                            <input
-                                type="file"
-                                id="copy_house_heir"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                                placeholder="กรอกหมายเลขโทรศัพท์ของผู้สมัคร"
-                            />
-                        </div>
-
-                        <div class="mt-5">
-                            <label
-                                htmlFor="copy_id_heir"
-                                class="block mb-2 text-sm font-medium text-gray-900"
-                            >
-                                สำเนาทะเบียนบ้านของผู้เสียชีวิต ที่ประทับตราคำว่า "ตาย"
-                            </label>
-                            <input
-                                type="file"
-                                id="copy_id_heir"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                                placeholder="กรอกหมายเลขโทรศัพท์ของผู้สมัคร"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 overflow-hidden rounded-3xl shadow-sm mt-12 mx-14">
-                    <div class="flex items-center p-4">
-                        <input
-                            id="default-checkbox"
-                            type="checkbox"
-                            value=""
-                            // checked={isChecked}
-                            // onChange={handleCheckboxChange}
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <label
-                            htmlFor="default-checkbox"
-                            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-900"
-                        >
-                            ข้าพเจ้ายินยอมในการให้ข้อมูลสำหรับการแจ้งเสียชีวิตในครั้งนี้
-                        </label>
-                    </div>
-                </div>
-
-                <div class="relative mt-14 flex justify-center items-center">
-                    <button
-                        type="button"
-                        // onClick={handleSubmit}
-                        // disabled={!isChecked}
-                        class={`focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 me-9 mb-2 disabled:cursor-not-allowed 
-                            ? 'bg-lime-800 hover:bg-lime-700'
-                            : 'bg-gray-400 cursor-not-allowed'
-                            }`}
-                    >
-                        เสร็จสิ้น
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 function StatusPage() {
     return (
-        <div>
+        
+        <div className="p-12 sm:ml-64">
             <div class="relative mt-8 flex justify-center items-center text-2xl text-black font-bold">
                 ท่านกรอกฟอร์มแจ้งเสียชีวิตเสร็จสิ้นแล้ว
             </div>
@@ -193,41 +30,206 @@ function StatusPage() {
         </div>
     )
 }
-
 function DeathReport() {
-    const [step, setStep] = useState(1);
-    const navigate = useNavigate();
-    // สำหรับเช็ค role
-    const [userRole, setUserRole] = useState('')
-    const [userEmail, setUserEmail] = useState('')
+  const [isChecked, setIsChecked] = useState(false);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+  const [member, setMember] = useState(null); // Ensure it's initialized as null
+  const [userRole, setUserRole] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userRoleId, setUserRoleId] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchUserProfile();
-    }, [userEmail]);
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role);
+      setUserEmail(data.email);
+      setUserRoleId(data.role_id);
+
+      if (data.role !== "heir") {
+        navigate("/login"); // Redirect if not an heir
+      } else {
+        fetchMember(data.role_id);
+      }
+    } catch (error) {
+      console.error("Fetch Protected Data Error:", error);
+    }
+  };
+
+  const fetchMember = async (heirId) => {
+    try {
+        // Query your members table for the member linked to this heir
+        const fetchedMember = await getMembersForHeir(heirId);
+        setMember(fetchedMember || {});  // fallback to empty if none
+  
+        // Check status: has this heir already submitted a death report?
+        const statusRes = await axios.get(
+          `http://localhost:3000/api/death-report/check-status/${heirId}`
+        );
+        // Suppose the response is { alreadySubmitted: boolean }
+        setAlreadySubmitted(statusRes.data.alreadySubmitted);
+      } catch (error) {
+        console.error("Error fetching member / status:", error);
+        setMember({});
+      } finally {
+        setLoading(false);
+      }
+    }
 
 
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
 
-    const fetchUserProfile = async () => {
-        try {
-            const data = await verifyUser();
-            setUserRole(data.role)
-            setUserEmail(data.email)
+  const handleFormSubmission = async (values) => {
+    try {
+      const formData = new FormData();
+      formData.append("member_id", member.member_id); // from getMembersForHeir
+      formData.append("heir_id", userRoleId);         // numeric heir ID
+      formData.append("death_date", values.death_date);
+      formData.append("death_certificate", values.death_certificate);
+      formData.append("death_house_registration", values.death_house_registration);
 
-            if (data.role != 'heir') {
-                navigate('/login')
-            }
+      await axios.put("http://localhost:3000/api/death-report/submit", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-        } catch (error) {
-            console.error('Fetch Protected Data Error:', error);
-        }
-    };
+      alert("แจ้งเสียชีวิตสำเร็จ!");
+      setAlreadySubmitted(true); // Immediately show the status page
+      // Optionally: navigate("/");
+    } catch (error) {
+      console.error("Error submitting death report:", error);
+      alert("มีข้อผิดพลาดในการแจ้งเสียชีวิต");
+    }
+  };
 
-    return (
-        <div class="p-12 sm:ml-64">
-            {step === 1 && <FormPage setStep={setStep} />}
-            {step === 2 && <StatusPage />}
+
+  // ✅ **Prevent Render Errors** - Show Loading if `member` is null or empty
+  if (!member || Object.keys(member).length === 0) {
+    return <div className="text-center p-12 text-xl">กำลังโหลดข้อมูล...</div>;
+  }
+
+  if (alreadySubmitted) {
+    return <StatusPage />;
+  }
+
+  return (
+    <div className="p-12 sm:ml-64">
+      <div className="relative mt-8 flex justify-center items-center text-2xl text-black font-bold">
+        ฟอร์มแจ้งเสียชีวิต
+      </div>
+
+      <div className="mb-8 overflow-hidden">
+        <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-12">
+          <div className="p-12">
+            <Formik
+              initialValues={{
+                death_date: "",
+                death_certificate: null,
+                death_house_registration: null,
+              }}
+              validationSchema={validateDeathReport}
+              onSubmit={handleFormSubmission}
+            >
+              {({  values, setFieldValue, errors, touched }) => (
+                <Form>
+                  {/* Member Details (Readonly) */}
+                  <div className="grid gap-6 mb-6 md:grid-cols-3">
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-gray-900">
+                        เลขรหัสสมาชิก
+                      </label>
+                      <input
+                        type="text"
+                        value={member?.member_id || "N/A"}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                        readOnly
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-gray-900">
+                        ชื่อผู้เสียชีวิต
+                      </label>
+                      <input
+                        type="text"
+                        value={member?.member_name || "N/A"}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                        readOnly
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-gray-900">
+                        วัน/เดือน/ปี ที่เสียชีวิตตามใบมรณบัตร
+                      </label>
+                      <input
+                        type="date"
+                        name="death_date"
+                        className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 ${
+                          errors.death_date && touched.death_date
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                        onChange={(event) =>
+                          setFieldValue("death_date", event.target.value)
+                        }
+                      />
+                      {errors.death_date && touched.death_date && (
+                        <div className="text-red-500 text-sm mt-1">
+                          {errors.death_date}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <hr className="h-px my-8 bg-gray-200 border-0"></hr>
+
+                  {/* File Uploads */}
+                  <FileUpload
+                    label="สำเนาใบมรณบัตรของผู้เสียชีวิต"
+                    name="death_certificate"
+                    value={values.death_certificate}
+                    onChange={(file) =>
+                      setFieldValue("death_certificate", file)
+                    }
+                    error={errors.death_certificate}
+                    touched={touched.death_certificate}
+                  />
+
+                  <FileUpload
+                    label="สำเนาทะเบียนบ้านของผู้เสียชีวิต ที่ประทับตราคำว่า 'ตาย'"
+                    name="death_house_registration"
+                    value={values.death_house_registration}
+                    onChange={(file) =>
+                      setFieldValue("death_house_registration", file)
+                    }
+                    error={errors.death_house_registration}
+                    touched={touched.death_house_registration}
+                  />
+
+                  <div className="relative mt-14 flex justify-center items-center">
+                    <button
+                      type="submit"
+                      className="focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 bg-lime-800 hover:bg-lime-700"
+                    >
+                      ส่งข้อมูล
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
+
 }
 
 export default DeathReport;

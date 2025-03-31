@@ -110,3 +110,9 @@ export const validationSchemaStep2 = Yup.object({
 //   heir_id_card: fileValidation, 
 //   // 'heir_rename_doc' is optional
 });
+
+export const validateDeathReport = Yup.object({
+  death_date: Yup.date().required('กรุณาระบุวันเสียชีวิต'),
+  death_certificate: fileValidation,
+  death_house_registration: fileValidation
+  });

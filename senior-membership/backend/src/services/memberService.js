@@ -7,11 +7,11 @@ export const fetchActiveMembers = async () => {
 };
 
 export const fetchDeathMembers = async () => {
-  return await memberModel.getMemberByStatus("เสียชีวิต");
+  return await memberModel.getNotificationListByStatus("เสียชีวิต");
 };
 
 export const fetchQuitMembers = async () => {
-  return await memberModel.getMemberByStatus("ขอลาออก");
+  return await memberModel.getNotificationListByStatus("ขอลาออก");
 };
 
 export const fetchMemberDetails = async (memberId) => {
@@ -23,7 +23,7 @@ export const fetchMemberDetails = async (memberId) => {
   const candidateId = memberData.candidate_id;
   const candidateData = await fetchAllCandidateAndHeirData(candidateId);
 
-  const slipHistory = await slipModel.getHistoryByMemberId(memberId)
+  // const slipHistory = await slipModel.getHistoryByMemberId(memberId)
 
   const memberInfo = {
     ...candidateData,

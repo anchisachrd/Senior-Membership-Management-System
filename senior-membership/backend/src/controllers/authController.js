@@ -12,7 +12,7 @@ export const loginUserByEmail = async (req, res, next) => {
 
   const { email, password } = req.body;
   const hashedInputPassword = await bcrypt.hash(password, 10);
-  // console.log("🔍 Hashed Input Password:", hashedInputPassword);
+  console.log("🔍 Hashed Input Password:", hashedInputPassword);
 
   try {
     // 1. Fetch account by email
@@ -22,8 +22,8 @@ export const loginUserByEmail = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid email" });
     }
 
-    // console.log("🔑 Entered Password:", password);
-    // console.log("🔒 Stored Hash:", account.password_hash);
+     console.log("🔑 Entered Password:", password);
+     console.log("🔒 Stored Hash:", account.password_hash);
 
     const isPasswordValid = await bcrypt.compare(password.trim(), account.password_hash.trim());
 
@@ -73,6 +73,10 @@ export const loginUserByEmail = async (req, res, next) => {
       var role_id = employee.employee_id
     }
 
+
+   
+
+    // 4. Generate JWT token
     const accessToken = jwt.sign(
       {
         "userInfo": {

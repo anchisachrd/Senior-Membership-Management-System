@@ -1,4 +1,5 @@
 import * as memberService from "../services/memberService.js";
+import * as memberModel from "../models/memberModel.js"
 
 export const getActiveMembers = async (req, res) => {
   try {
@@ -44,6 +45,16 @@ export const getDeathMembers = async (req, res) => {
         console.error("Error fetching member data:", error);
         return res.status(500).json({ message: "Internal Server Error" });
       }
+  }
+
+  export const getReviewdDeathList = async (req, res) => {
+    try {
+      const members = await memberModel.getReviewedDeathMember();
+      res.json(members);
+    } catch (error) {
+      console.error("Error fetching death members:", error);
+      res.status(500).json({ message: "Failed to fetch death members" });
+    }
   }
 
 

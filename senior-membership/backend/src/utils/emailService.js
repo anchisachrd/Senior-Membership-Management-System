@@ -102,7 +102,7 @@ export const generatePasswordEmailTemplate = (recipientName, password) => `
 
 export const generateConfirmationEmail = (candidateName) => {
     return `
-      <h1>ลงทะเบียนชมรมผู้สูลอายุสำเร็จ</h1>
+      <h1>ลงทะเบียนชมรมผู้สูงอายุสำเร็จ</h1>
       <p>เรียนคุณ <b>${candidateName}</b>,</p>
       <p>เราขอแจ้งให้ทราบว่าเราได้รับข้อมูลการสมัครของคุณเรียบร้อยแล้ว</p>
       <p>หากคุณมีคุณสมบัติตรงตามข้อกำหนดของเรา ทางเราจะติดต่อกลับไป</p>

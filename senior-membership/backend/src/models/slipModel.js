@@ -1,20 +1,42 @@
 import { query } from "../db.js";
 
-export const createSlipHistory = async (memberId,  deathId, amount, slipData, slipPath, status, errorCode, errorMsg) => {
+export const createSlipHistory = async (memberId,  reportId, amount, slipData, slipPath, status, errorCode, errorMsg) => {
   const { rows } = await query(
     `
-      INSERT INTO slip_history (member_id, death_id, amount, slip_data, slip_path, status, error_code, error_msg)
+      INSERT INTO slip_history (member_id, report_id, amount, slip_data, slip_path, status, error_code, error_msg)
       VALUES ($1, $2, $3, $4, $5,  $6, $7, $8)
       RETURNING *;
     `,
-    [memberId, deathId, amount, slipData, slipPath, status, errorCode, errorMsg]
+    [memberId, reportId, amount, slipData, slipPath, status, errorCode, errorMsg]
   );
   return rows[0];
 };
 
 export const getAllHistory = async () => {
   const { rows } = await query(
-    "SELECT * FROM slip_history ORDER BY created_at DESC"
+    `SELECT sh.*,
+
+  -- คนที่โอนเงิน (สมาชิก)
+  p_sender.title || p_sender.first_name || ' ' || p_sender.last_name AS member_name,
+
+  -- ผู้เสียชีวิต
+  p_death.title || p_death.first_name || ' ' || p_death.last_name AS death_name
+
+FROM slip_history sh
+
+
+JOIN members m_sender ON sh.member_id = m_sender.member_id
+JOIN candidates c_sender ON m_sender.candidate_id = c_sender.candidate_id
+JOIN people p_sender ON c_sender.person_id = p_sender.person_id
+
+
+LEFT JOIN death_reports dr ON sh.report_id = dr.report_id
+
+LEFT JOIN members m_death ON dr.member_id = m_death.member_id
+LEFT JOIN candidates c_death ON m_death.candidate_id = c_death.candidate_id
+LEFT JOIN people p_death ON c_death.person_id = p_death.person_id
+
+ORDER BY sh.created_at DESC`
   );
   return rows;
 };
@@ -33,20 +55,20 @@ export const getHistoryByMemberId = async (memberId) => {
   return rows;
 };
 
-export const getSlipHistoryByMemberAndDeath = async (memberId, deathId) => {
+export const getSlipHistoryByMemberAndDeath = async (memberId, reportId) => {
   const { rows } = await query(
     `SELECT *
      FROM slip_history
-     WHERE member_id = $1 AND death_id = $2
+     WHERE member_id = $1 AND report_id = $2
      LIMIT 1`,
-    [memberId, deathId]
+    [memberId, reportId]
   );
   return rows[0];
 };
 
 export const updateSlipHistory = async (
   memberId,
-  deathId,
+  reportId,
   slipData,
   slipPath,
   status,
@@ -62,9 +84,9 @@ export const updateSlipHistory = async (
          error_msg = $7,
          updated_at = NOW()
      WHERE member_id = $1
-       AND death_id = $2
+       AND report_id = $2
      RETURNING *;`,
-    [memberId, deathId, slipData, slipPath, status, errorCode, errorMsg]
+    [memberId, reportId, slipData, slipPath, status, errorCode, errorMsg]
   );
   return rows[0];
 };
@@ -88,3 +110,5 @@ export const getAllPassedSlips = async () => {
   `);
   return rows;
 };
+
+

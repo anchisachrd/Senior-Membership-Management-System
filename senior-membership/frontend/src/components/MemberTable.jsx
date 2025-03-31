@@ -8,7 +8,6 @@ function MemberTable({ members, title, handleRowClick, notFoundText }) {
     const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
     return filterDob;
   };
-  
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
@@ -21,10 +20,10 @@ function MemberTable({ members, title, handleRowClick, notFoundText }) {
                 <th className="text-center align-middle py-4 px-4">No.</th>
                 <th className="text-center align-middle py-4 px-4">รหัสสมาชิก</th>
                 <th className="text-center align-middle py-4 px-4">ชื่อสมาชิก</th>
-                <th className="text-center align-middle py-4 px-4">เลขบัตรประชาชน</th>
-                <th className="text-center align-middle py-4 px-4">เบอร์โทรศัพท์</th>
-                <th className="text-center align-middle py-4 px-4">วันที่เริ่มเป็นสมาชิก</th>
                 <th className="text-center align-middle py-4 px-4">สถานะสมาชิก</th>
+                <th className="text-center align-middle py-4 px-4">วัน/เดือน/ปี ที่เสียชีวิต</th>
+                <th className="text-center align-middle py-4 px-4">สถานะการตรวจสอบเอกสาร</th>
+                <th className="text-center align-middle py-4 px-4">สถานะอนุมัติจากกรรมการ</th>
               </tr>
             </thead>
 
@@ -41,11 +40,11 @@ function MemberTable({ members, title, handleRowClick, notFoundText }) {
                     <td className="text-center py-4 px-4">
                       {member.title} {member.first_name} {member.last_name}
                     </td>
-                    <td className="text-center py-4 px-4">{member.national_id}</td>
-                    <td className="text-center py-4 px-4">{member.phone}</td>
-                    <td className="text-center py-4 px-4">{onChangeDate(member.start_date)}</td>
+                    <td className="text-center py-4 px-4"><StatusBadge status={member.member_status} /></td>
+                    <td className="text-center py-4 px-4">{onChangeDate(member.death_date)}</td>
+                    <td className="text-center py-4 px-4"><StatusBadge status={member.staff_status} /></td>
                     <td className="text-center">
-                      <StatusBadge status={member.member_status} />
+                      <StatusBadge status={member.final_approval} />
                     </td>
                   </tr>
                 ))

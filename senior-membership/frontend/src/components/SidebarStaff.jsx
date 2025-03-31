@@ -120,8 +120,8 @@ function SidebarStaff() {
                   </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                <Link
+                    to="/dashboard"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <MdOutlineDashboard
@@ -130,21 +130,8 @@ function SidebarStaff() {
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       Dashboard
                     </span>
-                  </a>
+                  </Link>
                 </li>
-                {/* <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
-                  >
-                    <IoNotificationsOutline
-                      className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
-                    />
-                    <span className="ms-3 mt-1 dark:group-hover:text-white">
-                      แจ้งเตือน
-                    </span>
-                  </a>
-                </li> */}
 
                 {/* === "อนุมัติเอกสาร" DROPDOWN === */}
                 <li>
@@ -190,14 +177,14 @@ function SidebarStaff() {
                       </Link>
                     </li>
                     <li>
-                      <a
-                        href="#"
+                      <Link
+                        to="/committee/death-list"
                         className="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                       >
                         <span className="ms-3 mt-1 dark:group-hover:text-white">
-                          เอกสารการเสียชีวิต
+                        เอกสารการเสียชีวิต
                         </span>
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </li>
@@ -231,8 +218,8 @@ function SidebarStaff() {
                       </span>
                     </Link>
                   </li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/dashboard"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <MdOutlineDashboard
@@ -241,12 +228,12 @@ function SidebarStaff() {
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       Dashboard
                     </span>
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
                   <Link
-                    to="/finance-report"
+                    to="/club-account"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
                     <LuPiggyBank

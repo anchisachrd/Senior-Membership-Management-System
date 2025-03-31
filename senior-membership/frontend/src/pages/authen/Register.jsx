@@ -7,39 +7,107 @@ import { Link } from "react-router";
 // Import the API helper
 import { createCandidate } from "../../api/candidateApi";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { validationSchemaStep1, validationSchemaStep2 } from "./Validation"
+import { validationSchemaStep1, validationSchemaStep2 } from "./Validation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FileUpload from "../../components/FileUpload";
 
 // Define the provinces as a reusable array
 const provinces = [
-  "กระบี่", "กรุงเทพมหานคร", "กาญจนบุรี", "กาฬสินธุ์", "กำแพงเพชร",
-  "ขอนแก่น", "จันทบุรี", "ฉะเชิงเทรา", "ชลบุรี", "ชัยนาท",
-  "ชัยภูมิ", "ชุมพร", "เชียงราย", "เชียงใหม่", "ตรัง",
-  "ตราด", "ตาก", "นครนายก", "นครปฐม", "นครพนม",
-  "นครราชสีมา", "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส",
-  "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี", "ประจวบคีรีขันธ์",
-  "ปราจีนบุรี", "ปัตตานี", "พระนครศรีอยุธยา", "พะเยา", "พังงา",
-  "พัทลุง", "พิจิตร", "พิษณุโลก", "เพชรบุรี", "เพชรบูรณ์",
-  "แพร่", "ภูเก็ต", "มหาสารคาม", "มุกดาหาร", "แม่ฮ่องสอน",
-  "ยโสธร", "ยะลา", "ร้อยเอ็ด", "ระนอง", "ระยอง",
-  "ราชบุรี", "ลพบุรี", "ลำปาง", "ลำพูน", "เลย",
-  "ศรีสะเกษ", "สกลนคร", "สงขลา", "สตูล", "สมุทรปราการ",
-  "สมุทรสงคราม", "สมุทรสาคร", "สระแก้ว", "สระบุรี", "สิงห์บุรี",
-  "สุโขทัย", "สุพรรณบุรี", "สุราษฎร์ธานี", "สุรินทร์", "หนองคาย",
-  "หนองบัวลำภู", "อ่างทอง", "อำนาจเจริญ", "อุดรธานี", "อุตรดิตถ์",
-  "อุทัยธานี", "อุบลราชธานี"
+  "กระบี่",
+  "กรุงเทพมหานคร",
+  "กาญจนบุรี",
+  "กาฬสินธุ์",
+  "กำแพงเพชร",
+  "ขอนแก่น",
+  "จันทบุรี",
+  "ฉะเชิงเทรา",
+  "ชลบุรี",
+  "ชัยนาท",
+  "ชัยภูมิ",
+  "ชุมพร",
+  "เชียงราย",
+  "เชียงใหม่",
+  "ตรัง",
+  "ตราด",
+  "ตาก",
+  "นครนายก",
+  "นครปฐม",
+  "นครพนม",
+  "นครราชสีมา",
+  "นครศรีธรรมราช",
+  "นครสวรรค์",
+  "นนทบุรี",
+  "นราธิวาส",
+  "น่าน",
+  "บึงกาฬ",
+  "บุรีรัมย์",
+  "ปทุมธานี",
+  "ประจวบคีรีขันธ์",
+  "ปราจีนบุรี",
+  "ปัตตานี",
+  "พระนครศรีอยุธยา",
+  "พะเยา",
+  "พังงา",
+  "พัทลุง",
+  "พิจิตร",
+  "พิษณุโลก",
+  "เพชรบุรี",
+  "เพชรบูรณ์",
+  "แพร่",
+  "ภูเก็ต",
+  "มหาสารคาม",
+  "มุกดาหาร",
+  "แม่ฮ่องสอน",
+  "ยโสธร",
+  "ยะลา",
+  "ร้อยเอ็ด",
+  "ระนอง",
+  "ระยอง",
+  "ราชบุรี",
+  "ลพบุรี",
+  "ลำปาง",
+  "ลำพูน",
+  "เลย",
+  "ศรีสะเกษ",
+  "สกลนคร",
+  "สงขลา",
+  "สตูล",
+  "สมุทรปราการ",
+  "สมุทรสงคราม",
+  "สมุทรสาคร",
+  "สระแก้ว",
+  "สระบุรี",
+  "สิงห์บุรี",
+  "สุโขทัย",
+  "สุพรรณบุรี",
+  "สุราษฎร์ธานี",
+  "สุรินทร์",
+  "หนองคาย",
+  "หนองบัวลำภู",
+  "อ่างทอง",
+  "อำนาจเจริญ",
+  "อุดรธานี",
+  "อุตรดิตถ์",
+  "อุทัยธานี",
+  "อุบลราชธานี",
 ];
 
 const jobs = [
-  'ข้าราชการ', 'พนักงานราชการ', 'พนักงานกระทรวง', 'ลูกจ้างชั่วคราว', 'อื่นๆ'
+  "ข้าราชการ",
+  "พนักงานราชการ",
+  "พนักงานกระทรวง",
+  "ลูกจ้างชั่วคราว",
+  "อื่นๆ",
 ];
 
 const relationships = [
-  'บุตร', 'คู่สมรส', 'บิดา', 'มารดา', 'พี่น้องร่วมบิดามารดาเดียวกัน' 
+  "บุตร",
+  "คู่สมรส",
+  "บิดา",
+  "มารดา",
+  "พี่น้องร่วมบิดามารดาเดียวกัน",
 ];
-
 
 // =============== STEP 1: Candidate Page ===============
 function RegisterPage1({ values, errors, touched, setFieldValue }) {
@@ -59,98 +127,134 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
           <div class="grid gap-6 mb-6 md:grid-cols-3">
             {/* Title */}
             <div>
-              <label htmlFor="candidate_title" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_title"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 คำนำหน้า
               </label>
               <Field
                 as="select"
                 name="candidate_title"
                 id="candidate_title"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.candidate_title && touched.candidate_title
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.candidate_title === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.candidate_title && touched.candidate_title
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.candidate_title === ""
                       ? "text-gray-400"
                       : "text-black"
                   }`}
-
               >
-                <option value="" hidden>เลือกคำนำหน้า</option>
+                <option value="" hidden>
+                  เลือกคำนำหน้า
+                </option>
                 <option value="นาย">นาย</option>
                 <option value="นางสาว">นางสาว</option>
                 <option value="นาง">นาง</option>
               </Field>
-              <ErrorMessage name="candidate_title" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_title"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* First Name */}
             <div>
-              <label htmlFor="candidate_first_name" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_first_name"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ชื่อจริง
               </label>
               <Field
                 type="text"
                 name="candidate_first_name"
                 id="candidate_first_name"
-                class={`bg-light ${errors.candidate_first_name && touched.candidate_first_name
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_first_name && touched.candidate_first_name
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกชื่อของผู้สมัคร"
               />
-              <ErrorMessage name="candidate_first_name" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_first_name"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Last Name */}
             <div>
-              <label htmlFor="candidate_last_name" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_last_name"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 นามสกุล
               </label>
               <Field
                 type="text"
                 name="candidate_last_name"
                 id="candidate_last_name"
-                class={`bg-light ${errors.candidate_last_name && touched.candidate_last_name
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_last_name && touched.candidate_last_name
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกนามสกุลของผู้สมัคร"
               />
-              <ErrorMessage name="candidate_last_name" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_last_name"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* National ID */}
             <div>
-              <label htmlFor="candidate_national_id" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_national_id"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 เลขบัตรประชาชน
               </label>
               <Field
                 type="text"
                 name="candidate_national_id"
                 id="candidate_national_id"
-                class={`bg-light ${errors.candidate_national_id && touched.candidate_national_id
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_national_id && touched.candidate_national_id
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกเลขบัตรประชาชน"
               />
-              <ErrorMessage name="candidate_national_id" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_national_id"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* DOB */}
             <div>
-              <label htmlFor="candidate_dob" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_dob"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 วัน/เดือน/ปี เกิด
               </label>
               <Field
                 type="date"
                 name="candidate_dob"
                 id="candidate_dob"
-                class={`bg-light ${errors.candidate_dob && touched.candidate_dob
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
-
+                className={`bg-light ${
+                  errors.candidate_dob && touched.candidate_dob
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
               {/* <Field name="candidate_dob">
                 {({ field, form }) => (
@@ -169,248 +273,360 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                   />
                 )}
               </Field> */}
-              <ErrorMessage name="candidate_dob" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_dob"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Gender */}
             <div>
-              <label htmlFor="candidate_gender" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_gender"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 เพศ
               </label>
               <Field
                 as="select"
                 name="candidate_gender"
                 id="candidate_gender"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.candidate_dob && touched.candidate_dob
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.candidate_dob === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.candidate_dob && touched.candidate_dob
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.candidate_dob === ""
                       ? "text-gray-400"
                       : "text-black"
                   }`}
               >
-                <option value="" hidden>เลือกเพศ</option>
+                <option value="" hidden>
+                  เลือกเพศ
+                </option>
                 <option value="M">ชาย</option>
                 <option value="F">หญิง</option>
               </Field>
-              <ErrorMessage name="candidate_gender" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_gender"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           {/* Occupation & Phone */}
           <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
-              <label htmlFor="candidate_occupation" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_occupation"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 อาชีพ
               </label>
               <Field
                 as="select"
                 name="candidate_occupation"
                 id="candidate_occupation"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.candidate_occupation && touched.candidate_occupation
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.candidate_occupation === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.candidate_occupation && touched.candidate_occupation
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.candidate_occupation === ""
                       ? "text-gray-400"
                       : "text-black"
                   }`}
               >
-                <option value="" hidden>เลือกอาชีพ</option>
+                <option value="" hidden>
+                  เลือกอาชีพ
+                </option>
                 {jobs.map((job) => (
                   <option key={job} value={job}>
                     {job}
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="candidate_occupation" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_occupation"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             <div>
-              <label htmlFor="candidate_phone" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_phone"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 หมายเลขโทรศัพท์
               </label>
               <Field
                 type="text"
                 name="candidate_phone"
                 id="candidate_phone"
-                class={`bg-light ${errors.candidate_phone && touched.candidate_phone
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_phone && touched.candidate_phone
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกหมายเลขโทรศัพท์"
               />
-              <ErrorMessage name="candidate_phone" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_phone"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           {/* Email */}
-          <div class="mb-4">
-            <label htmlFor="candidate_email" class="block mb-2 text-sm font-medium text-gray-900">
+          <div className="mb-4">
+            <label
+              htmlFor="candidate_email"
+              className="block mb-2 text-sm font-medium text-gray-900"
+            >
               อีเมล
             </label>
             <Field
               type="email"
               name="candidate_email"
               id="candidate_email"
-              class={`bg-light ${errors.candidate_email && touched.candidate_email
-                ? "bg-red-100"
-                : "border border-gray-400"
-                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+              className={`bg-light ${
+                errors.candidate_email && touched.candidate_email
+                  ? "bg-red-100"
+                  : "border border-gray-400"
+              } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               placeholder="กรอกอีเมลของผู้สมัคร"
             />
-            <ErrorMessage name="candidate_email" component="div" class="text-red-600 text-sm mt-1" />
+            <ErrorMessage
+              name="candidate_email"
+              component="div"
+              className="text-red-600 text-sm mt-1"
+            />
           </div>
 
           {/* Password / Confirm Password */}
           <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
-              <label htmlFor="candidate_password" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_password"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 รหัสผ่าน
               </label>
               <Field
                 type="password"
                 name="candidate_password"
                 id="candidate_password"
-                class={`bg-light ${errors.candidate_password && touched.candidate_password
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_password && touched.candidate_password
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกรหัสผ่าน"
               />
-              <ErrorMessage name="candidate_password" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_password"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
             <div>
-              <label htmlFor="candidate_confirm_password" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_confirm_password"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ยืนยันรหัสผ่าน
               </label>
               <Field
                 type="password"
                 name="candidate_confirm_password"
                 id="candidate_confirm_password"
-                class={`bg-light ${errors.candidate_confirm_password && touched.candidate_confirm_password
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_confirm_password &&
+                  touched.candidate_confirm_password
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกรหัสผ่านให้ตรงกัน"
               />
-              <ErrorMessage name="candidate_confirm_password" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_confirm_password"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
 
           {/* Address */}
-          <p class="block mb-5 text-base font-bold text-grey-600">ที่อยู่ปัจจุบัน</p>
+          <p className="block mb-5 text-base font-bold text-grey-600">
+            ที่อยู่ปัจจุบัน
+          </p>
 
           {/* HouseNumber, Moo, Soi */}
           <div class="grid gap-6 mb-5 md:grid-cols-3">
             <div>
-              <label htmlFor="candidate_house_number" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_house_number"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 บ้านเลขที่
               </label>
               <Field
                 type="text"
                 name="candidate_house_number"
                 id="candidate_house_number"
-                class={`bg-light ${errors.candidate_house_number && touched.candidate_house_number
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_house_number &&
+                  touched.candidate_house_number
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_house_number" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_house_number"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
             <div>
-              <label htmlFor="candidate_moo" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_moo"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 หมู่ที่
               </label>
               <Field
                 type="text"
                 name="candidate_moo"
                 id="candidate_moo"
-                class={`bg-light ${errors.candidate_moo && touched.candidate_moo
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_moo && touched.candidate_moo
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_moo" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_moo"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
             <div>
-              <label htmlFor="candidate_soi" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_soi"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ซอย
               </label>
               <Field
                 type="text"
                 name="candidate_soi"
                 id="candidate_soi"
-                class={`bg-light ${errors.candidate_soi && touched.candidate_soi
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_soi && touched.candidate_soi
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_soi" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_soi"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           {/* Street, Subdistrict, District, Province, Postal */}
           <div class="grid gap-6 mb-4 md:grid-cols-2">
             <div>
-              <label htmlFor="candidate_street" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_street"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ถนน
               </label>
               <Field
                 type="text"
                 name="candidate_street"
                 id="candidate_street"
-                class={`bg-light ${errors.candidate_street && touched.candidate_street
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_street && touched.candidate_street
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_street" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_street"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
             <div>
-              <label htmlFor="candidate_subdistrict" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_subdistrict"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ตำบล/แขวง
               </label>
               <Field
                 type="text"
                 name="candidate_subdistrict"
                 id="candidate_subdistrict"
-                class={`bg-light ${errors.candidate_subdistrict && touched.candidate_subdistrict
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_subdistrict && touched.candidate_subdistrict
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_subdistrict" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_subdistrict"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             <div>
-              <label htmlFor="candidate_district" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_district"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 อำเภอ/เขต
               </label>
               <Field
                 type="text"
                 name="candidate_district"
                 id="candidate_district"
-                class={`bg-light ${errors.candidate_district && touched.candidate_district
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_district && touched.candidate_district
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_district" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_district"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
             <div>
-              <label htmlFor="candidate_province" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_province"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 จังหวัด
               </label>
               <Field
                 as="select"
                 name="candidate_province"
                 id="candidate_province"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.candidate_province && touched.candidate_province
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.candidate_province === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.candidate_province && touched.candidate_province
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.candidate_province === ""
                       ? "text-gray-500"
                       : "text-black"
                   }`}
@@ -422,75 +638,93 @@ function RegisterPage1({ values, errors, touched, setFieldValue }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="candidate_province" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_province"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           {/* Postal Code */}
           <div class="grid gap-6 mb-3 md:grid-cols-2">
             <div>
-              <label htmlFor="candidate_postal_code" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="candidate_postal_code"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 รหัสไปรษณีย์
               </label>
               <Field
                 type="text"
                 name="candidate_postal_code"
                 id="candidate_postal_code"
-                class={`bg-light ${errors.candidate_postal_code && touched.candidate_postal_code
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.candidate_postal_code && touched.candidate_postal_code
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="candidate_postal_code" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="candidate_postal_code"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           {/* House Registration Upload */}
-      <FileUpload
-        label="สำเนาทะเบียนบ้าน"
-        name="candidate_house_registration"
-        value={values.candidate_house_registration}
-        onChange={handleFileChange}
-        error={errors.candidate_house_registration}
-        touched={touched.candidate_house_registration}
-      />
+          <FileUpload
+            label="สำเนาทะเบียนบ้าน"
+            name="candidate_house_registration"
+            value={values.candidate_house_registration}
+            onChange={(file) =>
+              setFieldValue("candidate_house_registration", file)
+            }
+            error={errors.candidate_house_registration}
+            touched={touched.candidate_house_registration}
+          />
 
-      {/* ID Card Upload */}
-      <FileUpload
-        label="สำเนาบัตรประชาชน"
-        name="candidate_id_card"
-        value={values.candidate_id_card}
-        onChange={handleFileChange}
-        error={errors.candidate_id_card}
-        touched={touched.candidate_id_card}
-      />
+          {/* ID Card Upload */}
+          <FileUpload
+            label="สำเนาบัตรประชาชน"
+            name="candidate_id_card"
+            value={values.candidate_id_card}
+            onChange={(file) =>
+              setFieldValue("candidate_id_card", file)
+            }
+            error={errors.candidate_id_card}
+            touched={touched.candidate_id_card}
+          />
 
-      {/* Rename Document Upload */}
-      <FileUpload
-        label="ใบเปลี่ยนชื่อ (ถ้ามี)"
-        name="candidate_rename_doc"
-        value={values.candidate_rename_doc}
-        onChange={handleFileChange}
-        error={errors.candidate_rename_doc}
-        touched={touched.candidate_rename_doc}
-      />
+          {/* Rename Document Upload */}
+          <FileUpload
+            label="ใบเปลี่ยนชื่อ (ถ้ามี)"
+            name="candidate_rename_doc"
+            value={values.candidate_rename_doc}
+            onChange={(file) =>
+              setFieldValue("candidate_rename_doc", file)
+            }
+            error={errors.candidate_rename_doc}
+            touched={touched.candidate_rename_doc}
+          />
 
-      {/* Medical Certificate Upload */}
-      <FileUpload
-        label="ใบรับรองแพทย์"
-        name="candidate_med_certification"
-        value={values.candidate_med_certification}
-        onChange={handleFileChange}
-        error={errors.candidate_med_certification}
-        touched={touched.candidate_med_certification}
-      />
-
+          {/* Medical Certificate Upload */}
+          <FileUpload
+            label="ใบรับรองแพทย์"
+            name="candidate_med_certification"
+            value={values.candidate_med_certification}
+            onChange={(file) =>
+              setFieldValue("candidate_med_certification", file)
+            }
+            error={errors.candidate_med_certification}
+            touched={touched.candidate_med_certification}
+          />
         </div>
       </div>
     </div>
   );
 }
-
 
 // =============== STEP 2: Heir Page ===============
 function RegisterPage2({ values, setFieldValue, errors, touched }) {
@@ -498,8 +732,6 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
     const { name, files } = e.target;
     setFieldValue(name, files[0]);
   };
-
-
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -541,105 +773,159 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
           <div class="grid gap-6 mb-6 md:grid-cols-3">
             {/* Heir Title */}
             <div>
-              <label htmlFor="heir_title" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_title"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 คำนำหน้า
               </label>
               <Field
                 as="select"
                 name="heir_title"
                 id="heir_title"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.heir_title && touched.heir_title
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.heir_title === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.heir_title && touched.heir_title
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.heir_title === ""
                       ? "text-gray-400"
                       : "text-black"
                   }`}
               >
-                <option class="text-gray-100" value="">เลือกคำนำหน้า</option>
+                <option className="text-gray-100" value="">
+                  เลือกคำนำหน้า
+                </option>
                 <option value="นาย">นาย</option>
                 <option value="นางสาว">นางสาว</option>
                 <option value="นาง">นาง</option>
               </Field>
-              <ErrorMessage name="heir_title" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_title"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir First Name */}
             <div>
-              <label htmlFor="heir_first_name" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_first_name"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ชื่อจริง
               </label>
               <Field
                 type="text"
                 name="heir_first_name"
                 id="heir_first_name"
-                class={`bg-light ${errors.heir_first_name && touched.heir_first_name ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_first_name && touched.heir_first_name
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกชื่อของทายาท"
               />
-              <ErrorMessage name="heir_first_name" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_first_name"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Last Name */}
             <div>
-              <label htmlFor="heir_last_name" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_last_name"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 นามสกุล
               </label>
               <Field
                 type="text"
                 name="heir_last_name"
                 id="heir_last_name"
-                class={`bg-light ${errors.heir_last_name && touched.heir_last_name ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_last_name && touched.heir_last_name
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกนามสกุลของทายาท"
               />
-              <ErrorMessage name="heir_last_name" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_last_name"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir National ID */}
             <div>
-              <label htmlFor="heir_national_id" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_national_id"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 เลขบัตรประชาชน
               </label>
               <Field
                 type="text"
                 name="heir_national_id"
                 id="heir_national_id"
-                class={`bg-light ${errors.heir_national_id && touched.heir_national_id ? " bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_national_id && touched.heir_national_id
+                    ? " bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="กรอกเลขบัตรประชาชน"
               />
-              <ErrorMessage name="heir_national_id" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_national_id"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir DOB */}
             <div>
-              <label htmlFor="heir_dob" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_dob"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 วัน/เดือน/ปี เกิด
               </label>
               <Field
                 type="date"
                 name="heir_dob"
                 id="heir_dob"
-                class={`bg-light ${errors.heir_dob && touched.heir_dob ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_dob && touched.heir_dob
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
               />
-              <ErrorMessage name="heir_dob" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_dob"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Gender */}
             <div>
-              <label htmlFor="heir_gender" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_gender"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 เพศ
               </label>
               <Field
                 as="select"
                 name="heir_gender"
                 id="heir_gender"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.heir_gender && touched.heir_gender
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.heir_gender === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.heir_gender && touched.heir_gender
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.heir_gender === ""
                       ? "text-gray-400"
                       : "text-black"
                   }`}
@@ -648,7 +934,11 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                 <option value="M">ชาย</option>
                 <option value="F">หญิง</option>
               </Field>
-              <ErrorMessage name="heir_gender" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_gender"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
@@ -656,17 +946,21 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
           <div class="grid gap-6 mb-3 md:grid-cols-2">
             {/* Heir Occupation */}
             <div>
-              <label htmlFor="heir_occupation" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_occupation"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 อาชีพ
               </label>
               <Field
                 as="select"
                 name="heir_occupation"
                 id="heir_occupation"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.heir_occupation && touched.heir_occupation
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.heir_occupation === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.heir_occupation && touched.heir_occupation
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.heir_occupation === ""
                       ? "text-gray-400"
                       : "text-black"
                   }`}
@@ -678,22 +972,30 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="heir_occupation" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_occupation"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Relationship */}
             <div>
-              <label htmlFor="heir_relationship" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_relationship"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ความเกี่ยวข้อง
               </label>
               <Field
                 as="select"
                 name="heir_relationship"
                 id="heir_relationship"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.heir_relationship && touched.heir_relationship
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.heir_relationship === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.heir_relationship && touched.heir_relationship
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.heir_relationship === ""
                       ? "text-gray-400"
                       : "text-black"
                   }`}
@@ -705,46 +1007,72 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="heir_relationship" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_relationship"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Phone */}
             <div>
-              <label htmlFor="heir_phone" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_phone"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 หมายเลขโทรศัพท์
               </label>
               <Field
                 type="text"
                 name="heir_phone"
                 id="heir_phone"
-                class={`bg-light ${errors.heir_phone && touched.heir_phone ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_phone && touched.heir_phone
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="หมายเลขโทรศัพท์"
               />
-              <ErrorMessage name="heir_phone" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_phone"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Email */}
             <div>
-              <label htmlFor="heir_email" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_email"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 อีเมล
               </label>
               <Field
                 type="email"
                 name="heir_email"
                 id="heir_email"
-                class={`bg-light ${errors.heir_email && touched.heir_email ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_email && touched.heir_email
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="อีเมล"
               />
-              <ErrorMessage name="heir_email" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_email"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-500" />
 
           {/* Heir Address */}
-          <p class="block mb-5 text-base font-bold text-grey-600">ที่อยู่ปัจจุบัน</p>
+          <p className="block mb-5 text-base font-bold text-grey-600">
+            ที่อยู่ปัจจุบัน
+          </p>
 
           {/* Checkbox - same address */}
           <div class="mb-5">
@@ -766,117 +1094,179 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
           <div class="grid gap-6 mb-5 md:grid-cols-3">
             {/* Heir House Number */}
             <div>
-              <label htmlFor="heir_house_number" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_house_number"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 บ้านเลขที่
               </label>
               <Field
                 type="text"
                 name="heir_house_number"
                 id="heir_house_number"
-                class={`bg-light ${errors.heir_house_number && touched.heir_house_number
-                  ? "bg-red-100"
-                  : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_house_number && touched.heir_house_number
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_house_number" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_house_number"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Moo */}
             <div>
-              <label htmlFor="heir_moo" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_moo"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 หมู่ที่
               </label>
               <Field
                 type="text"
                 name="heir_moo"
                 id="heir_moo"
-                class={`bg-light ${errors.heir_moo && touched.heir_moo ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_moo && touched.heir_moo
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_moo" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_moo"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Soi */}
             <div>
-              <label htmlFor="heir_soi" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_soi"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ซอย
               </label>
               <Field
                 type="text"
                 name="heir_soi"
                 id="heir_soi"
-                class={`bg-light ${errors.heir_soi && touched.heir_soi ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_soi && touched.heir_soi
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_soi" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_soi"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           <div class="grid gap-6 mb-4 md:grid-cols-2">
             {/* Heir Street */}
             <div>
-              <label htmlFor="heir_street" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_street"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ถนน
               </label>
               <Field
                 type="text"
                 name="heir_street"
                 id="heir_street"
-                class={`bg-light ${errors.heir_street && touched.heir_street ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_street && touched.heir_street
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_street" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_street"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Subdistrict */}
             <div>
-              <label htmlFor="heir_subdistrict" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_subdistrict"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 ตำบล/แขวง
               </label>
               <Field
                 type="text"
                 name="heir_subdistrict"
                 id="heir_subdistrict"
-                class={`bg-light ${errors.heir_subdistrict && touched.heir_subdistrict ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_subdistrict && touched.heir_subdistrict
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_subdistrict" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_subdistrict"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir District */}
             <div>
-              <label htmlFor="heir_district" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_district"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 อำเภอ/เขต
               </label>
               <Field
                 type="text"
                 name="heir_district"
                 id="heir_district"
-                class={`bg-light ${errors.heir_district && touched.heir_district ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_district && touched.heir_district
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_district" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_district"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
 
             {/* Heir Province */}
             <div>
-              <label htmlFor="heir_province" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_province"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 จังหวัด
               </label>
               <Field
                 as="select"
                 name="heir_province"
                 id="heir_province"
-                class={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
-                  ${errors.heir_province && touched.heir_province
-                    ? "border-none bg-red-100 text-gray-500"
-                    : values.heir_province === ""
+                className={`bg-light border border-gray-400 text-sm rounded-lg w-full p-2 focus:ring-blue-500 focus:border-blue-500
+                  ${
+                    errors.heir_province && touched.heir_province
+                      ? "border-none bg-red-100 text-gray-500"
+                      : values.heir_province === ""
                       ? "text-gray-400"
                       : "text-black"
                   }`}
@@ -889,80 +1279,94 @@ function RegisterPage2({ values, setFieldValue, errors, touched }) {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="heir_province" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_province"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
           <div class="grid gap-6 mb-3 md:grid-cols-2">
             {/* Heir Postal Code */}
             <div>
-              <label htmlFor="heir_postal_code" class="block mb-2 text-sm font-medium text-gray-900">
+              <label
+                htmlFor="heir_postal_code"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
                 รหัสไปรษณีย์
               </label>
               <Field
                 type="text"
                 name="heir_postal_code"
                 id="heir_postal_code"
-                class={`bg-light ${errors.heir_postal_code && touched.heir_postal_code ? "bg-red-100" : "border border-gray-400"
-                  } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
+                className={`bg-light ${
+                  errors.heir_postal_code && touched.heir_postal_code
+                    ? "bg-red-100"
+                    : "border border-gray-400"
+                } text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-blue-500 focus:border-blue-500`}
                 disabled={values.sameAddress}
               />
-              <ErrorMessage name="heir_postal_code" component="div" class="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="heir_postal_code"
+                component="div"
+                className="text-red-600 text-sm mt-1"
+              />
             </div>
           </div>
 
-             {/* House Registration Upload */}
-      <FileUpload
-        label="สำเนาทะเบียนบ้าน"
-        name="heir_house_registration"
-        value={values.heir_house_registration}
-        onChange={handleFileChange}
-        error={errors.heir_house_registration}
-        touched={touched.heir_house_registration}
-      />
+          {/* House Registration Upload */}
+          <FileUpload
+            label="สำเนาทะเบียนบ้าน"
+            name="heir_house_registration"
+            value={values.heir_house_registration}
+            onChange={(file) => setFieldValue("heir_house_registration", file)}
+            error={errors.heir_house_registration}
+            touched={touched.heir_house_registration}
+          />
 
-      {/* ID Card Upload */}
-      <FileUpload
-        label="สำเนาบัตรประชาชน"
-        name="heir_id_card"
-        value={values.heir_id_card}
-        onChange={handleFileChange}
-        error={errors.heir_id_card}
-        touched={touched.heir_id_card}
-      />
+          {/* ID Card Upload */}
+          <FileUpload
+            label="สำเนาบัตรประชาชน"
+            name="heir_id_card"
+            value={values.heir_id_card}
+            onChange={(file) => setFieldValue("heir_id_card", file)}
+            error={errors.heir_id_card}
+            touched={touched.heir_id_card}
+          />
 
-      {/* Rename Document Upload */}
-      <FileUpload
-        label="ใบเปลี่ยนชื่อ (ถ้ามี)"
-        name="heir_rename_doc"
-        value={values.heir_rename_doc}
-        onChange={handleFileChange}
-        error={errors.heir_rename_doc}
-        touched={touched.heir_rename_doc}
-      />
-
-
+          {/* Rename Document Upload */}
+          <FileUpload
+            label="ใบเปลี่ยนชื่อ (ถ้ามี)"
+            name="heir_rename_doc"
+            value={values.heir_rename_doc}
+            onChange={(file) => setFieldValue("heir_rename_doc", file)}
+            error={errors.heir_rename_doc}
+            touched={touched.heir_rename_doc}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-
 // =============== STEP 3: Confirm Page ===============
 function Confirm() {
   return (
-    <div class='ibm-plex-sans-thai-medium'>
-    <div class="p-8">
-      <div class="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
-        <div class="p-10 bg-white border border-lime-200 rounded-lg shadow dark:bg-lime-600 dark:border-lime-500 overflow-hidden">
-          <div class="grid gap-6 md:grid-cols-1 place-items-center">
-            <FaCircleCheck class="mt-1 w-10 h-10 text-white" aria-hidden="true" />
-            <p class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+    <div className="p-8">
+      <div className="max-w-screen-lg mx-auto md:max-w-3xl place-items-center">
+        <div className="p-10 bg-white border border-lime-200 rounded-lg shadow dark:bg-lime-600 dark:border-lime-500 overflow-hidden">
+          <div className="grid gap-6 md:grid-cols-1 place-items-center">
+            <FaCircleCheck
+              className="mt-1 w-10 h-10 text-white"
+              aria-hidden="true"
+            />
+            <p className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               คุณลงทะเบียนชมรมผู้สูงอายุสำเร็จเรียบร้อยแล้ว
             </p>
-            <p class="mb-2 font-normal text-white">
-              ผลการลงทะเบียนชมรมผู้สูงอายุของคุณ ทางชมรมจะแจ้งไปยังอีเมลที่คุณได้กรอกลงไป
+            <p className="mb-2 font-normal text-white">
+              ผลการลงทะเบียนชมรมผู้สูงอายุของคุณ
+              ทางชมรมจะแจ้งไปยังอีเมลที่คุณได้กรอกลงไป
             </p>
           </div>
 
@@ -977,7 +1381,7 @@ function Confirm() {
         </div>
       </div>
     </div>
-    </div>
+   
   );
 }
 
@@ -1035,7 +1439,6 @@ function Register() {
     heir_id_card: null,
     heir_rename_doc: null,
     sameAddress: false,
-
   };
 
   // Determine current validation schema based on step
@@ -1122,7 +1525,6 @@ function Register() {
       console.error("Error during registration:", error);
 
       actions.setSubmitting(false);
-
     }
   };
 
@@ -1216,12 +1618,14 @@ function Register() {
                           {/* Step Indicators */}
                           <ul class="flex gap-1 items-center">
                             <li
-                              class={`w-2 h-2 rounded-full ${step === 1 ? "bg-gray-600" : "bg-gray-300"
-                                }`}
+                              className={`w-2 h-2 rounded-full ${
+                                step === 1 ? "bg-gray-600" : "bg-gray-300"
+                              }`}
                             ></li>
                             <li
-                              class={`w-2 h-2 rounded-full ${step === 2 ? "bg-gray-600" : "bg-gray-300"
-                                }`}
+                              className={`w-2 h-2 rounded-full ${
+                                step === 2 ? "bg-gray-600" : "bg-gray-300"
+                              }`}
                             ></li>
                           </ul>
 
@@ -1232,10 +1636,11 @@ function Register() {
                               onClick={() => {
                                 validateForm().then((errors) => {
                                   // Extract relevant errors for the current step
-                                  const stepErrors = Object.keys(errors).filter((key) =>
-                                    step === 1
-                                      ? key.startsWith('candidate')
-                                      : key.startsWith('heir')
+                                  const stepErrors = Object.keys(errors).filter(
+                                    (key) =>
+                                      step === 1
+                                        ? key.startsWith("candidate")
+                                        : key.startsWith("heir")
                                   );
                                   if (stepErrors.length === 0) {
                                     setStep(step + 1);
@@ -1275,17 +1680,21 @@ function Register() {
                                 type="button"
                                 onClick={() => {
                                   validateForm().then((errors) => {
-                                    const step2Errors = Object.keys(errors).filter((key) =>
-                                      key.startsWith('heir')
-                                    );
+                                    const step2Errors = Object.keys(
+                                      errors
+                                    ).filter((key) => key.startsWith("heir"));
                                     if (step2Errors.length === 0) {
                                       setIsModalOpen(true);
                                     } else {
                                       setTouched(
-                                        Object.keys(errors).reduce((acc, key) => {
-                                          if (key.startsWith('heir')) acc[key] = true;
-                                          return acc;
-                                        }, {})
+                                        Object.keys(errors).reduce(
+                                          (acc, key) => {
+                                            if (key.startsWith("heir"))
+                                              acc[key] = true;
+                                            return acc;
+                                          },
+                                          {}
+                                        )
                                       );
                                     }
                                   });
@@ -1338,7 +1747,9 @@ function Register() {
                                             d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                                           />
                                         </svg>
-                                        <span class="sr-only">Close modal</span>
+                                        <span className="sr-only">
+                                          Close modal
+                                        </span>
                                       </button>
                                       {/* Modal Content */}
                                       <div class="p-4 md:p-5 text-center">
@@ -1392,7 +1803,9 @@ function Register() {
               </div>
               {/* Optional: Display global form submission errors */}
               {errors.global && (
-                <div class="mt-4 text-red-500 text-center">{errors.global}</div>
+                <div className="mt-4 text-red-500 text-center">
+                  {errors.global}
+                </div>
               )}
             </Form>
           )}

@@ -8,7 +8,7 @@ import { getErrorMessage } from '../utils/erroMessage.js';
 export const slipController = {
   verifyAndSaveSlip: async (req, res) => {
     try {
-      const { memberId, deathId } = req.body;
+      const { memberId, reportId } = req.body;
       const filePath = req.file.path;
 
       //TODO - แก้ให้ amount ยังไม่บันทึกถ้า slip ยังไม่ถูกต้อง
@@ -33,14 +33,14 @@ export const slipController = {
         slipDataForDb = JSON.stringify(error.errorResponse || {});
       }
 
-      // 2) Check existing slip for (memberId, deathId)
-      const existingSlip = await slipModel.getSlipHistoryByMemberAndDeath(memberId, deathId);
+      // 2) Check existing slip for (memberId, reportId)
+      const existingSlip = await slipModel.getSlipHistoryByMemberAndDeath(memberId, reportId);
 
       // 3) No existing record => just insert
       if (!existingSlip) {
         const newSlip = await slipModel.createSlipHistory(
           memberId,
-          deathId,
+          reportId,
           amount,
           slipDataForDb,
           filePath, 
@@ -75,7 +75,7 @@ export const slipController = {
           // It's a different fail slip => update
           const updatedSlip = await slipModel.updateSlipHistory(
             memberId,
-            deathId,
+            reportId,
             amount,
             slipDataForDb,
             filePath,
@@ -92,7 +92,7 @@ export const slipController = {
         // status === 'pass' => user finally uploaded a correct slip
         const updatedSlip = await slipModel.updateSlipHistory(
           memberId,
-          deathId,
+          reportId,
           slipDataForDb,
           filePath,
           'pass',     // we know it's pass

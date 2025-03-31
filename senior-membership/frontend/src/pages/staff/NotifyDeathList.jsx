@@ -49,7 +49,7 @@ function NotifyDeathList() {
     }, [userRole]);
   
     const handleRowClick = (memberId) => {
-      navigate(`/memberProfile/${memberId}`);
+      navigate(`/member/${memberId}`);
     };
   
     return <MemberTable members={members} title="การตรวจสอบข้อมูลการแจ้งเสียชีวิต"  handleRowClick={handleRowClick} notFoundText="ไม่มีการแจ้งเสียชีวิต"/>;
