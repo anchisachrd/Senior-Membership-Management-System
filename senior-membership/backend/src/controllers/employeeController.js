@@ -26,8 +26,8 @@ export const registerEmployee = async (req, res) => {
 export const deleteEmployee = async (req, res) => {
 
     const employee = {
-        account_id: req.body.accountId,
-        employee_id: req.body.employeeId
+        account_id: req.params.accountId,
+        employee_id: req.params.employeeId
     }
     try {
         await employeeService.deleteEmployee(employee);

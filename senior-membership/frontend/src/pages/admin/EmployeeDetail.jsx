@@ -153,12 +153,26 @@ function GetEmployeeDetail(employee) {
 function UpdateEmployeeDetail(employee) {
 
   const [updateEmployee, setUpdateEmployee] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [modalDescription, setModalDescription] = useState("");
-  const [onConfirmAction, setOnConfirmAction] = useState(() => { });
+  
 
   const navigate = useNavigate();
+
+  const openModal = (title, description, confirmCallback) => {
+    setModalTitle(title);
+    setModalDescription(description);
+    setOnConfirmAction(() => confirmCallback);
+    setIsModalOpen(true);
+  };
+  
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState("");
+    const [modalDescription, setModalDescription] = useState("");
+    const [onConfirmAction, setOnConfirmAction] = useState(() => { });
+  
 
 
   useEffect(() => {
@@ -204,7 +218,6 @@ function UpdateEmployeeDetail(employee) {
       "account_id": employee.employee.account_id,
     }
 
-
     try {
       const response = await fetch("http://localhost:3000/api/employee/emp-update-info", {
         method: "PUT",
@@ -230,21 +243,11 @@ function UpdateEmployeeDetail(employee) {
 
   }
 
-  const openModal = (title, description, confirmCallback) => {
-    setModalTitle(title);
-    setModalDescription(description);
-    setOnConfirmAction(() => confirmCallback);
-    setIsModalOpen(true);
-  };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
 
 
   return (
     <div>
-
       <ConfirmModal
         isOpen={isModalOpen}
         title={modalTitle}
@@ -438,6 +441,23 @@ function EmployeeDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const { employeeId } = useParams();
 
+  const openModal = (title, description, confirmCallback) => {
+    setModalTitle(title);
+    setModalDescription(description);
+    setOnConfirmAction(() => confirmCallback);
+    setIsModalOpen(true);
+  };
+  
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState("");
+    const [modalDescription, setModalDescription] = useState("");
+    const [onConfirmAction, setOnConfirmAction] = useState(() => { });
+    const navigate = useNavigate();
+
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
@@ -462,6 +482,38 @@ function EmployeeDetail() {
     setIsEditing(!isEditing);
   }
 
+  const deleteEmployee = async () => {
+
+    const data = {
+      "account_id": employee.account_id,
+      "employee_id": employee.employee_id
+    }
+
+    console.log(data)
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/employee/emp-delete/${employee.employee_id}/${employee.account_id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+      if (!response.ok) {
+        const errorData = await response.json(); // อ่าน error จาก API
+        console.error("Delete Failed:", errorData);
+
+        return;
+      }
+  
+      alert('ลบข้อมูลพนักงานเรียบร้อยแล้ว');
+      navigate('/manage-employee');
+  
+
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
@@ -473,6 +525,17 @@ function EmployeeDetail() {
           </li>
         </ul>
 
+        <ConfirmModal
+        isOpen={isModalOpen}
+        title={modalTitle}
+        description={modalDescription}
+        onConfirm={() => {
+          onConfirmAction();
+          closeModal();
+        }}
+        onCancel={closeModal}
+      />
+
         <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl relative">
           <div className="p-8">
             <button
@@ -481,6 +544,20 @@ function EmployeeDetail() {
             >
               {isEditing ? 'แก้ไขอยู่' : 'แก้ไข'}
             </button>
+
+            {!isEditing && (
+              <button
+              className='absolute top-4 right-20 text-white font-medium rounded-lg text-sm py-2 px-3 bg-red-700'
+              onClick={() =>
+                openModal(
+                  "ยืนยันการลบข้อมูลพนักงาน",
+                  "ถ้าลบข้อมูลแล้ว ไม่สามารถกู้คืนได้",
+                  () => deleteEmployee()
+                )}>
+              ลบข้อมูล
+            </button>
+            )}
+            
 
             {!isEditing && <GetEmployeeDetail employee={employee} />}
             {isEditing && <UpdateEmployeeDetail employee={employee} />}
