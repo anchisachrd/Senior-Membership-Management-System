@@ -39,6 +39,10 @@ import SummaryReport from "./pages/member/SummaryReport.jsx";
 import RequestForm from './pages/heir/RequestForm.jsx'
 import DeathFinalApprovalDeatil from "./pages/staff/DeathFinalApprovalDeatil.jsx";
 import DeathMemberList from "./pages/staff/DeathMemberList.jsx";
+import EmployeeDetail from "./pages/admin/EmployeeDetail.jsx";
+import ManageEmployee from "./pages/admin/ManageEmployee.jsx";
+import SidebarAdmin from "./components/SidebarAdmin.jsx";
+import AddEmployee from "./pages/admin/AddEmployee.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -95,6 +99,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           element={<DeathMemberList />}
         />
       </Route>
+
+      <Route element={<SidebarAdmin />}>
+        <Route path="/manage-employee" element={<ManageEmployee/>}/>
+        <Route path="/employee-detail/:employeeId" element={<EmployeeDetail/>}/>
+        <Route path="/add-employee" element={<AddEmployee/>}/>
+      </Route>
+
 
       {/* หน้าที่ไม่ต้องมี side bar */}
       <Route path="/login" element={<Login />} />

@@ -14,7 +14,10 @@ router.get("/reviewed/death-list", memberController.getReviewdDeathList);
 
 router.get("/slip", slipController.getAllSlipHistories);
 router.post("/verify-slip", uploadSlip, slipController.verifyAndSaveSlip);
+<<<<<<< HEAD
 router.get("/slip/:memberId/:reportId", slipFunction.getSlipDetailByMemberAndReport);
+=======
+>>>>>>> 764f816cd2a74c76b15eb86f3f574565d8fd663d
 router.get("/history/:memberId", slipController.getSlipHistoriesByMember);
 router.get("/slip/summary", slipFunction.getAccountSummary);
 router.get("/slip/passed", slipFunction.getAllPassedSlips);

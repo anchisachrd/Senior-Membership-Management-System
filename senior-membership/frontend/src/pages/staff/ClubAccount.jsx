@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 
-
 function ClubAccount() {
-
 
   const [ledger, setLedger] = useState({
     totalIncome: 0,

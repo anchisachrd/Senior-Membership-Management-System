@@ -66,7 +66,6 @@ function StatusPage({ deathReport, onResubmit }) {
     </div>
   );
 }
-
 function DeathReport() {
   const [isChecked, setIsChecked] = useState(false);
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);

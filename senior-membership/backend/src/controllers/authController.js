@@ -76,8 +76,15 @@ export const loginUserByEmail = async (req, res, next) => {
       var role_id = employee.employee_id
     }
 
-
-   
+    if (account.role === 'admin') {
+      const admin = await authServices.getAdminIdbyAccountId(account.account_id);
+      var info = {
+        "title": admin.title,
+        "first_name": admin.first_name,
+        "last_name": admin.last_name
+      }
+      var role_id = admin.employee_id
+    }
 
     // 4. Generate JWT token
     const accessToken = jwt.sign(

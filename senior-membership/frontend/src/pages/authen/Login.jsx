@@ -52,6 +52,9 @@ function Login() {
       if (userInfo.userInfo.role === 'committee'){
         navigate("/committee_candidateList");
       }
+      if (userInfo.userInfo.role === 'admin'){
+        navigate("/manage-employee");
+      }
      
 
     } catch (error) {

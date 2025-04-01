@@ -20,6 +20,7 @@ export const createHeirAccount = async (email, role) => {
 
   return rows[0];
 };
+
 export const getAccountById = async (accountId) => {
   const { rows } = await query(`SELECT * FROM accounts WHERE account_id = $1`, [
     accountId,
@@ -80,3 +81,24 @@ export const updatePassword = async (accountId, password_hash) => {
   return rows[0];
 };
 
+export const deleteAccount = async (accountId) => {
+  const { rows } = await query(
+    `DELETE FROM accounts
+    WHERE account_id = $1 
+    RETURNING *;`,
+    [accountId]
+  );
+  return rows;
+
+};
+
+export const updateAccount = async (email, role, account_id) => {
+  const { rows } = await query(
+    `UPDATE accounts a
+    SET email = $1, updated_at = CURRENT_TIMESTAMP, role = $2
+    WHERE account_id = $3 
+    RETURNING *`,
+    [email, role, account_id]
+  )
+  return rows[0];
+};
