@@ -53,7 +53,7 @@ function FinalResultApproval() {
     <div className="ibm-plex-sans-thai-medium">
       <div class="p-12 sm:ml-64">
         <div class="text-xl text-black mx-3 mt-5 mb-8 font-bold">
-          อนุมัติการสมัครสมาชิก
+          ผลการอนุมัติ
         </div>
 
         <div class="mb-8 overflow-hidden">
