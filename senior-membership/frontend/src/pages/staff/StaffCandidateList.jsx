@@ -103,12 +103,6 @@ function StaffCandidateList() {
           </div>
         </div>
 
-        <button
-          type="button"
-          className="focus:outline-none text-white focus:ring-gray-300 font-medium rounded-lg text-base px-4 py-2 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800 mb-7"
-        >
-          <Link to="/staff_cadidateWaitingList">แถวคอยการสมัคร</Link>
-        </button>
 
         <div class="relative overflow-hidden shadow-xl sm:rounded-lg">
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

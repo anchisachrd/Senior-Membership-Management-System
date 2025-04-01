@@ -985,12 +985,13 @@ function HeirRegister() {
             setUserRole(data.role)
             setUserEmail(data.email)
 
-            if (userRole !== 'heir') {
+            if (data.role !== 'heir') {
               navigate('/login')
             }
       
           } catch (error) {
             console.error('Fetch Protected Data Error:', error);
+            navigate('/login')
           }
         };
 

@@ -8,11 +8,13 @@ import {
   IoHomeOutline,
 } from "react-icons/io5";
 import { LuPiggyBank } from "react-icons/lu";
-import { MdOutlineDashboard, MdLogout, MdOutlinePaid } from "react-icons/md";
+import { MdOutlineDashboard, MdLogout, MdOutlinePaid, MdOutlineFilePresent } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
-import { FaRegCircleCheck, FaUserTie, FaUsers } from "react-icons/fa6";
+import { FaRegCircleCheck, FaUserTie } from "react-icons/fa6";
 import { Link } from "react-router";
 import { verifyUser } from "../api/verifyApi";
+import { IoMdInformationCircleOutline } from "react-icons/io";
+import { GrContactInfo } from "react-icons/gr";
 
 
 function SidebarStaff() {
@@ -26,6 +28,19 @@ function SidebarStaff() {
   const [userPaymentInfo, setUserPaymentInfo] = useState({
     is_pay: false,
     type_payment: "",
+  });
+
+  const [notiStaff, setNotiStaff] = useState({
+    waiting_verification: '',
+    waiting_list: '',
+    waiting_staff: '',
+    result_death: '',
+    heir_wait_transfer: ''
+  });
+
+  const [notiCommittee, setNotiCommittee] = useState({
+    waiting_approval: '',
+    waiting_committee: ''
   });
 
   // Dropdown states (each dropdown has its own state)
@@ -45,10 +60,11 @@ function SidebarStaff() {
       setUserTitle(data.info.title);
       setUserFirstName(data.info.first_name);
       setUserLastName(data.info.last_name);
-   
+
 
       if (data.role === "staff") {
         setUserThaiRole("เจ้าหน้าที่");
+        fetchNotiStaff();
       }
       if (data.role === "committee") {
         setUserThaiRole("กรรมการ");
@@ -56,6 +72,7 @@ function SidebarStaff() {
           is_pay: data.info.is_pay,
           type_payment: data.info.type_payment,
         });
+        fetchNotiCommittee();
       }
 
     } catch (error) {
@@ -75,6 +92,50 @@ function SidebarStaff() {
     setUserRole("");
     setUserEmail("");
   };
+
+  const fetchNotiStaff = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/noti/noti-staff", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+      setNotiStaff({
+        waiting_verification: data.waiting_verification,
+        waiting_list: data.waiting_list,
+        waiting_staff: data.waiting_staff,
+        result_death: data.result_death,
+        heir_wait_transfer: data.heir_wait_transfer
+      });
+
+
+    } catch (error) {
+      console.error("Fetch Data Error:", error);
+    }
+  };
+
+  const fetchNotiCommittee = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/noti/noti-committee", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+      setNotiCommittee({
+        waiting_approval: data.waiting_approval,
+        waiting_committee: data.waiting_committee
+      })
+      
+
+
+    } catch (error) {
+      console.error("Fetch Data Error:", error);
+    }
+  };
+
+
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -121,17 +182,6 @@ function SidebarStaff() {
               <div>
                 <li>
                   <Link
-                    to="/home"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
-                  >
-                    <IoHomeOutline className="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span className="ms-3 mt-1 dark:group-hover:text-white">
-                      หน้าแรก
-                    </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     to="/dashboard"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
@@ -153,10 +203,14 @@ function SidebarStaff() {
                     <span className="flex-1 ms-3 mt-1 text-left whitespace-nowrap dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white">
                       อนุมัติเอกสาร
                     </span>
+                    {parseInt(notiCommittee.waiting_approval) + parseInt(notiCommittee.waiting_committee) !== 0 && (
+                      <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full me-5">
+                        {parseInt(notiCommittee.waiting_committee) + parseInt(notiCommittee.waiting_approval)}
+                      </span>
+                    )}
                     <svg
-                      className={`w-3 h-3 ml-auto transition-transform  text-gray-400${
-                        openExample ? "rotate-180" : ""
-                      }`}
+                      className={`w-3 h-3 ml-auto transition-transform  text-gray-400${openExample ? "rotate-180" : ""
+                        }`}
                       fill="none"
                       viewBox="0 0 10 6"
                     >
@@ -171,18 +225,22 @@ function SidebarStaff() {
                   </button>
                   {/* Toggle hidden/block based on state */}
                   <ul
-                    className={`py-3 space-y-2 ${
-                      openExample ? "block" : "hidden"
-                    }`}
+                    className={`py-3 space-y-2 ${openExample ? "block" : "hidden"
+                      }`}
                   >
                     <li>
                       <Link
                         to="/committee_candidateList"
                         className="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                       >
-                        <span className="ms-3 mt-1 dark:group-hover:text-white">
+                        <span className="ms-2 mt-1 dark:group-hover:text-white">
                           เอกสารการสมัคร
                         </span>
+                        {notiCommittee.waiting_approval !== '0' && (
+                          <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
+                            {notiCommittee.waiting_approval}
+                          </span>
+                        )}
                       </Link>
                     </li>
                     <li>
@@ -190,9 +248,14 @@ function SidebarStaff() {
                         to="/committee/death-list"
                         className="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                       >
-                        <span className="ms-3 mt-1 dark:group-hover:text-white">
-                        เอกสารการเสียชีวิต
+                        <span className=" ms-2 mt-1 dark:group-hover:text-white">
+                          เอกสารการเสียชีวิต
                         </span>
+                        {notiCommittee.waiting_committee !== '0' && (
+                          <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
+                            {notiCommittee.waiting_committee}
+                          </span>
+                        )}
                       </Link>
                     </li>
                   </ul>
@@ -210,38 +273,26 @@ function SidebarStaff() {
                   </Link>
                 </li>
 
-                { (userPaymentInfo.is_pay === true && userPaymentInfo.type_payment === "ค่าใช้จ่ายทั่วไปในชมรม") && (
+                {(userPaymentInfo.is_pay === true && userPaymentInfo.type_payment === "ค่าใช้จ่ายทั่วไปในชมรม") && (
                   <li>
-                  <Link
-                    to="/club-expense"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
-                  >
-                    <MdOutlinePaid className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span className="ms-3 mt-1 dark:group-hover:text-white">
-                      แจ้งชำระค่าใช้จ่ายทั่วไป
-                    </span>
-                  </Link>
-                </li>
+                    <Link
+                      to="/club-expense"
+                      className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    >
+                      <MdOutlinePaid className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                      <span className="ms-3 mt-1 dark:group-hover:text-white">
+                        แจ้งชำระค่าใช้จ่ายทั่วไป
+                      </span>
+                    </Link>
+                  </li>
                 )}
 
-                
 
               </div>
             ) : (
               /* === If user role is STAFF === */
               <div>
                 <li>
-                  <li>
-                    <Link
-                      to="/home"
-                      className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
-                    >
-                      <IoHomeOutline className="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                      <span className="ms-3 mt-1 dark:group-hover:text-white">
-                        หน้าแรก
-                      </span>
-                    </Link>
-                  </li>
                   <Link
                     to="/dashboard"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
@@ -283,10 +334,15 @@ function SidebarStaff() {
                     to="/member-list/notify-death"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
-                    <FaRegCircleCheck className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <MdOutlineFilePresent className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       แจ้งเสียชีวิต
                     </span>
+                    {parseInt(notiStaff.waiting_staff) + parseInt(notiStaff.result_death) !== 0 && (
+                      <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
+                        {parseInt(notiStaff.waiting_staff) + parseInt(notiStaff.result_death)}
+                      </span>
+                    )}
                   </Link>
                 </li>
                 <li>
@@ -294,10 +350,15 @@ function SidebarStaff() {
                     to="/death/member-list"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
-                    <FaRegCircleCheck className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <GrContactInfo className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       ข้อมูลสมาชิกที่เสียชีวิต
                     </span>
+                    {notiStaff.heir_wait_transfer !== '0' && (
+                          <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full">
+                            {notiStaff.heir_wait_transfer}
+                          </span>
+                        )}
                   </Link>
                 </li>
 
@@ -306,7 +367,7 @@ function SidebarStaff() {
                     to="/member-list"
                     className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
                   >
-                    <IoPeopleOutline className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <IoMdInformationCircleOutline className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       ข้อมูลสมาชิกปัจจุบัน
                     </span>
@@ -324,10 +385,15 @@ function SidebarStaff() {
                     <span className="flex-1 ms-3 mt-1 text-left whitespace-nowrap dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white">
                       จัดการผู้สมัคร
                     </span>
+                    {parseInt(notiStaff.waiting_verification) + parseInt(notiStaff.waiting_list) !== 0 && (
+                      <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full me-4">
+                        {parseInt(notiStaff.waiting_verification) + parseInt(notiStaff.waiting_list)}
+                      </span>
+                    )}
+
                     <svg
-                      className={`w-3 h-3 ml-auto transition-transform text-gray-400 ${
-                        openCandidate ? "rotate-180" : ""
-                      }`}
+                      className={`w-3 h-3 ml-auto transition-transform text-gray-400 ${openCandidate ? "rotate-180" : ""
+                        }`}
                       fill="none"
                       viewBox="0 0 10 6"
                     >
@@ -341,9 +407,8 @@ function SidebarStaff() {
                     </svg>
                   </button>
                   <ul
-                    className={`py-3 space-y-2 ${
-                      openCandidate ? "block" : "hidden"
-                    }`}
+                    className={`py-3 space-y-2 ${openCandidate ? "block" : "hidden"
+                      }`}
                   >
                     <li>
                       <Link
@@ -353,6 +418,29 @@ function SidebarStaff() {
                         <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
                           ตรวจสอบข้อมูลสมัคร
                         </span>
+                        {notiStaff.waiting_verification !== '0' && (
+                          <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full me-2">
+                            {notiStaff.waiting_verification}
+                          </span>
+                        )}
+
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/staff_cadidateWaitingList"
+                        className="flex items-center ml-10 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                      >
+                        <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
+                          แถวคอยการสมัคร
+                        </span>
+
+                        {notiStaff.waiting_list !== '0' && (
+                          <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-1">
+                          {notiStaff.waiting_list}
+                        </span>
+                        )}
+
                       </Link>
                     </li>
                     <li>

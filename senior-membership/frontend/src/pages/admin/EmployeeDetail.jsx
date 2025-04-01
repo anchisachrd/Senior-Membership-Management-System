@@ -563,10 +563,10 @@ function EmployeeDetail() {
         <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl relative">
           <div className="p-8">
             <button
-              className={`absolute top-4 right-4 text-gray-800 font-medium rounded-lg text-sm py-2 px-3 ${isEditing ? 'bg-gray-400' : 'bg-yellow-400'}`}
+              className={`absolute top-4 right-4 font-medium rounded-lg text-sm py-2 px-3 ${isEditing ? 'bg-red-700 text-white' : 'bg-yellow-400 text-gray-800'}`}
               onClick={handleEditClick}
             >
-              {isEditing ? 'แก้ไขอยู่' : 'แก้ไข'}
+              {isEditing ? 'ยกเลิก' : 'แก้ไข'}
             </button>
 
             {!isEditing && (
