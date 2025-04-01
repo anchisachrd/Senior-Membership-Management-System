@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import DocumentPreview from "./DocumentPreview";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DeathDocPreview from "./DeathDocPreview";
 import { submitStaffReview, approveDeathReport } from "../api/deathApi";
 import { verifyUser } from "../api/verifyApi";
+import ConfirmRejectModal from "./ConfirmRejectModal";
+import ConfirmModal from "./ConfirmModal";
 
 function DeathReportDetail() {
   const { memberId } = useParams(); // Get the heirId from URL params
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [deathReport, setDeathReport] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userRoleId, setUserRoleId] = useState("");
+
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [rejectComment, setRejectComment] = useState("");
 
   useEffect(() => {
     fetchDeathReport();
@@ -30,10 +38,10 @@ function DeathReportDetail() {
       setUserEmail(data.email);
       setUserRoleId(data.role_id);
 
-      if (data.role !== "staff" && data.role !== "committee") {
-        navigate("/login");
-      } else {
+      if (data.role == "staff" || data.role == "committee") {
         fetchDeathReport(data.role_id);
+      } else {
+        navigate("/login");
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
@@ -75,37 +83,69 @@ function DeathReportDetail() {
     );
   }
 
-  const handleApproveReview = async () => {
+  const handleApproveReview = () => {
+    setIsApproveModalOpen(true);
+  };
+
+  const handleRejectReview = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCommitteeApprove = () => {
+    setIsApproveModalOpen(true);
+  };
+
+
+  const handleCommitteeReject = () => {
+    setIsModalOpen(true);
+  };
+
+  const confirmApprove = async () => {
     try {
-      await submitStaffReview(deathReport.report_id, userRoleId);
-      alert("✅ ผ่านการตรวจสอบเรียบร้อยแล้ว");
-      navigate("/member-list/notify-death");
+      if (userRole === "staff") {
+        await submitStaffReview(deathReport.report_id, userRoleId, "ผ่าน", "");
+        alert("✅ ผ่านการตรวจสอบเรียบร้อยแล้ว");
+        navigate("/member-list/notify-death");
+      } else if (userRole === "committee") {
+        await approveDeathReport(deathReport.report_id, userRoleId, "อนุมัติ", '');
+        alert("✅ ผ่านการอนุมัติเรียบร้อยแล้ว");
+        navigate("/committee/death-list/");
+      }
     } catch (error) {
       alert("❌ มีข้อผิดพลาดในการส่งผลการตรวจสอบ");
+    } finally {
+      setIsApproveModalOpen(false);
     }
   };
 
-  const handleRejectReview = async() => {
-    alert("❌ ไม่ผ่านการตรวจสอบ กรุณาตรวจสอบเอกสารอีกครั้ง");
-  };
 
-  const handleCommitteeApprove= async () => {
-    try{
-    await approveDeathReport(deathReport.report_id)
-    alert("✅ ผ่านการตรวจสอบเรียบร้อยแล้ว");
-    }catch(error){
+  const confirmReject = async () => {
+    try {
+      if (userRole === "staff") {
+        await submitStaffReview(deathReport.report_id, userRoleId, "ไม่ผ่าน", rejectComment);
+        alert("❌ ไม่ผ่านการตรวจสอบแล้ว");
+        navigate("/member-list/notify-death");
+      } else if (userRole === "committee") {
+        await approveDeathReport(deathReport.report_id, userRoleId, "ไม่อนุมัติ", rejectComment);
+        alert("❌ ไม่ผ่านการอนุมัติแล้ว");
+        navigate("/committee/death-list/");
+      }
+    } catch (error) {
       alert("❌ มีข้อผิดพลาดในการส่งผลการตรวจสอบ");
+    } finally {
+      setIsModalOpen(false);
     }
-    
   };
 
-  const handleCommitteeReject= () => {
-    alert("❌ ไม่ผ่านการตรวจสอบ กรุณาตรวจสอบเอกสารอีกครั้ง");
-  };
 
   const onChangeDate = (data_date) => {
     const dobFromData = new Date(data_date);
-    const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
+    const filterDob =
+      dobFromData.getDate().toString().padStart(2, "0") +
+      "-" +
+      (dobFromData.getMonth() + 1).toString().padStart(2, "0") +
+      "-" +
+      (dobFromData.getFullYear() + 543);
     return filterDob;
   };
 
@@ -172,19 +212,59 @@ function DeathReportDetail() {
         <div className="flex justify-center mt-8 space-x-4">
           {userRole === "staff" && (
             <>
-              <button onClick={handleApproveReview} className="px-6 py-2 text-white bg-green-600 rounded-lg">ผ่านการตรวจสอบ</button>
-              <button onClick={handleRejectReview} className="px-6 py-2 text-white bg-red-600 rounded-lg">ไม่ผ่านการตรวจสอบ</button>
+              <button
+                onClick={handleApproveReview}
+                className="px-6 py-2 text-white bg-green-600 rounded-lg"
+              >
+                ผ่านการตรวจสอบ
+              </button>
+              <button
+                onClick={handleRejectReview}
+                className="px-6 py-2 text-white bg-red-600 rounded-lg"
+              >
+                ไม่ผ่านการตรวจสอบ
+              </button>
             </>
           )}
 
           {userRole === "committee" && (
             <>
-              <button onClick={handleCommitteeApprove} className="px-6 py-2 text-white bg-green-600 rounded-lg">ผ่านอนุมัติ</button>
-              <button onClick={handleCommitteeReject} className="px-6 py-2 text-white bg-red-600 rounded-lg">ไม่ผ่านอนุมัติ</button>
+              <button
+                onClick={handleCommitteeApprove}
+                className="px-6 py-2 text-white bg-green-600 rounded-lg"
+              >
+                ผ่านอนุมัติ
+              </button>
+              <button
+                onClick={handleCommitteeReject}
+                className="px-6 py-2 text-white bg-red-600 rounded-lg"
+              >
+                ไม่ผ่านอนุมัติ
+              </button>
             </>
           )}
         </div>
       </div>
+      <ConfirmModal
+        isOpen={isApproveModalOpen}
+        title={userRole === "staff" ? "ยืนยันการผ่านการตรวจสอบ" : "ยืนยันการอนุมัติ"}
+        description={
+          userRole === "staff"
+            ? "คุณต้องการยืนยันว่าการแจ้งเสียชีวิตนี้ผ่านการตรวจสอบหรือไม่?"
+            : "คุณต้องการยืนยันการอนุมัติการแจ้งเสียชีวิตนี้หรือไม่?"
+        }
+        onConfirm={confirmApprove}
+        onCancel={() => setIsApproveModalOpen(false)}
+      />
+
+      <ConfirmRejectModal
+        isOpen={isModalOpen}
+        comment={rejectComment}
+        setComment={setRejectComment}
+        onCancel={() => setIsModalOpen(false)}
+        onConfirm={confirmReject}
+      />
+
     </div>
   );
 }

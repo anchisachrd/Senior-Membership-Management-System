@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { mockClubLedgerData } from "../../mock/clubAccount.js"; 
+
 
 
 function ClubAccount() {
+
 
   const [ledger, setLedger] = useState({
     totalIncome: 0,
@@ -12,9 +13,41 @@ function ClubAccount() {
   });
   
   useEffect(() => {
-    setLedger(mockClubLedgerData);
+    const fetchClubLedger = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/club/account-balance");
+        if (!response.ok) throw new Error("Failed to fetch ledger data");
+  
+        const data = await response.json(); // data = { records: [...], totals: {...} }
+        setLedger({
+          records: data.records,
+          totalIncome: data.totals.totalIncome,
+          totalExpense: data.totals.totalExpense,
+          currentBalance: data.totals.currentBalance,
+        });
+      } catch (error) {
+        console.error("Error fetching ledger data:", error);
+      }
+    };
+  
+    fetchClubLedger();
   }, []);
 
+  function formatDateTime(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleString("th-TH", {
+      day: "numeric",
+      month: "short",
+      year: "numeric", // พ.ศ.
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",  // ✅ วินาที
+      hour12: false,
+    }).replace(",", " เวลา") + " น.";
+  }
+  
+  
+  
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -74,7 +107,7 @@ function ClubAccount() {
                     item.type === "รายรับ" ? "text-green-500" : "text-red-500"
                   }`}
                 >
-                  <td className="text-center py-4 px-4 font-medium">{item.datetime}</td>
+                  <td className="text-center py-4 px-4 font-medium">{formatDateTime(item.datetime)}</td>
                   <td className="text-center py-4 px-4">{item.type}</td>
                   <td className="text-center py-4 px-4">{item.name}</td>
                   <td className="text-center py-4 px-4">{item.detail}</td>

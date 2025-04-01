@@ -30,13 +30,23 @@ export const createPerson = async (data) => {
 
   export const getInfoByMemberId = async (memberId) => {
     const { rows } = await query(`
-    SELECT p.title, p.first_name, p.last_name, p.national_id, p.dob, p.phone, p.gender, p.occupation 
-    FROM people p
-    JOIN candidates c ON c.person_id = p.person_id
-	  JOIN members m ON m.candidate_id = c.candidate_id
-    WHERE m.member_id = $1
+      SELECT
+        p.title,
+        p.first_name,
+        p.last_name,
+        p.national_id,
+        p.dob,
+        p.phone,
+        p.gender,
+        p.occupation,
+        dr.death_date
+      FROM people p
+      JOIN candidates c ON c.person_id = p.person_id
+      JOIN members m ON m.candidate_id = c.candidate_id
+      LEFT JOIN death_reports dr ON dr.member_id = m.member_id
+      WHERE m.member_id = $1
     `, [memberId]);
-
+  
     return rows[0];
   };
 

@@ -11,7 +11,7 @@ export const findAllByPosition = async (position) => {
 
 export const getInfoByAccountId = async (accountId) => {
   const { rows } = await query(
-    `SELECT employee_id, title, first_name, last_name
+    `SELECT employee_id, title, first_name, last_name, is_pay, type_payment
       FROM employees 
       WHERE account_id = $1;`,
     [accountId]

@@ -7,12 +7,14 @@ const router = express.Router();
 
 
 router.get("/active", memberController.getActiveMembers);
+router.get("/death", memberController.getDeathMemberList);
 router.get("/notify/death", memberController.getDeathMembers);
 router.get("/notify/quit", memberController.getQuitMembers);
 router.get("/reviewed/death-list", memberController.getReviewdDeathList);
 
 router.get("/slip", slipController.getAllSlipHistories);
 router.post("/verify-slip", uploadSlip, slipController.verifyAndSaveSlip);
+router.get("/slip/:memberId/:reportId", slipFunction.getSlipDetailByMemberAndReport);
 router.get("/history/:memberId", slipController.getSlipHistoriesByMember);
 router.get("/slip/summary", slipFunction.getAccountSummary);
 router.get("/slip/passed", slipFunction.getAllPassedSlips);

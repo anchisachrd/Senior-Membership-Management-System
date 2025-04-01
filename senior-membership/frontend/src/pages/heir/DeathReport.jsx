@@ -8,31 +8,70 @@ import { validateDeathReport } from "../authen/Validation";
 import { Formik, Form } from "formik";
 import FileUpload from "../../components/FileUpload";
 
+function StatusPage({ deathReport, onResubmit }) {
+  let statusMessage = "กำลังดำเนินการตรวจสอบเอกสาร";
+  let comment = "";
+  let showResubmit = false;
 
-function StatusPage() {
-    return (
-        
-        <div className="p-12 sm:ml-64">
-            <div class="relative mt-8 flex justify-center items-center text-2xl text-black font-bold">
-                ท่านกรอกฟอร์มแจ้งเสียชีวิตเสร็จสิ้นแล้ว
+  if (
+    deathReport.staff_status === "ไม่ผ่าน" ||
+    (deathReport.final_approval === "ไม่อนุมัติ" && deathReport.sent_to_heir)
+  ) {
+    statusMessage = "สถานะการตรวจสอบเอกสารของท่านไม่ผ่าน เนื่องจาก";
+    comment =
+      deathReport.staff_status === "ไม่ผ่าน"
+        ? deathReport.staff_comment
+        : deathReport.final_comment;
+    showResubmit = true;
+  } else if (
+    deathReport.final_approval === "อนุมัติ" &&
+    deathReport.sent_to_heir
+  ) {
+    statusMessage =
+      "สถานะการตรวจสอบเอกสารของท่านผ่าน สามารถส่งคำร้องขอรับเงินได้เลย";
+    showResubmit = true;
+  }
+
+  return (
+    <div className="p-12 sm:ml-64">
+      <div className="relative mt-8 flex justify-center items-center text-2xl text-black font-bold">
+        ท่านกรอกฟอร์มแจ้งเสียชีวิตเสร็จสิ้นแล้ว
+      </div>
+
+      <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-12">
+        <div className="p-6">
+          <div className="flex items-start mb-4">
+            <div className="text-base text-black font-bold me-2">
+              {statusMessage}
             </div>
+            {comment && (
+              <div className="text-base text-red-600 break-words">
+                {comment}
+              </div>
+            )}
+          </div>
 
-            <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-12">
-                <div class="p-6">
-                    <div class="flex items-center">
-                        <div class="text-base text-black font-bold me-2">สถานะของการแจ้งเสียชีวิต:</div>
-                        <div class="text-base text-black">กำลังดำเนินการ</div>
-                    </div>
-                </div>
-
+          {showResubmit && (
+            <div className="mt-4 flex justify-center">
+              <button
+                onClick={onResubmit}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg"
+              >
+                ส่งข้อมูลใหม่
+              </button>
             </div>
-
+          )}
         </div>
-    )
+      </div>
+    </div>
+  );
 }
+
 function DeathReport() {
   const [isChecked, setIsChecked] = useState(false);
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+  const [deathReport, setDeathReport] = useState(null);
+
   const [member, setMember] = useState(null); // Ensure it's initialized as null
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -63,24 +102,24 @@ function DeathReport() {
 
   const fetchMember = async (heirId) => {
     try {
-        // Query your members table for the member linked to this heir
-        const fetchedMember = await getMembersForHeir(heirId);
-        setMember(fetchedMember || {});  // fallback to empty if none
-  
-        // Check status: has this heir already submitted a death report?
-        const statusRes = await axios.get(
-          `http://localhost:3000/api/death-report/check-status/${heirId}`
-        );
-        // Suppose the response is { alreadySubmitted: boolean }
-        setAlreadySubmitted(statusRes.data.alreadySubmitted);
-      } catch (error) {
-        console.error("Error fetching member / status:", error);
-        setMember({});
-      } finally {
-        setLoading(false);
-      }
-    }
+      // Query your members table for the member linked to this heir
+      const fetchedMember = await getMembersForHeir(heirId);
+      setMember(fetchedMember || {}); // fallback to empty if none
 
+      // Check status: has this heir already submitted a death report?
+      const statusRes = await axios.get(
+        `http://localhost:3000/api/death-report/check-status/${heirId}`
+      );
+      // Suppose the response is { alreadySubmitted: boolean }
+      setAlreadySubmitted(statusRes.data.alreadySubmitted);
+      setDeathReport(statusRes.data.deathReport);
+    } catch (error) {
+      console.error("Error fetching member / status:", error);
+      setMember({});
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
@@ -90,32 +129,48 @@ function DeathReport() {
     try {
       const formData = new FormData();
       formData.append("member_id", member.member_id); // from getMembersForHeir
-      formData.append("heir_id", userRoleId);         // numeric heir ID
+      formData.append("heir_id", userRoleId); // numeric heir ID
       formData.append("death_date", values.death_date);
       formData.append("death_certificate", values.death_certificate);
-      formData.append("death_house_registration", values.death_house_registration);
+      formData.append(
+        "death_house_registration",
+        values.death_house_registration
+      );
 
-      await axios.put("http://localhost:3000/api/death-report/submit", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.put(
+        "http://localhost:3000/api/death-report/submit",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       alert("แจ้งเสียชีวิตสำเร็จ!");
-      setAlreadySubmitted(true); // Immediately show the status page
-      // Optionally: navigate("/");
+      // ✅ Immediately fetch the updated status
+      const statusRes = await axios.get(
+        `http://localhost:3000/api/death-report/check-status/${userRoleId}`
+      );
+      setAlreadySubmitted(true);
+      setDeathReport(statusRes.data.deathReport); // set the new status report
+      setAlreadySubmitted(true);
     } catch (error) {
       console.error("Error submitting death report:", error);
       alert("มีข้อผิดพลาดในการแจ้งเสียชีวิต");
     }
   };
 
-
   // ✅ **Prevent Render Errors** - Show Loading if `member` is null or empty
   if (!member || Object.keys(member).length === 0) {
     return <div className="text-center p-12 text-xl">กำลังโหลดข้อมูล...</div>;
   }
 
-  if (alreadySubmitted) {
-    return <StatusPage />;
+  const handleResubmit = () => {
+    setAlreadySubmitted(false);
+    setDeathReport(null);
+  };
+
+  if (alreadySubmitted && deathReport) {
+    return <StatusPage deathReport={deathReport} onResubmit={handleResubmit} />;
   }
 
   return (
@@ -136,7 +191,7 @@ function DeathReport() {
               validationSchema={validateDeathReport}
               onSubmit={handleFormSubmission}
             >
-              {({  values, setFieldValue, errors, touched }) => (
+              {({ values, setFieldValue, errors, touched }) => (
                 <Form>
                   {/* Member Details (Readonly) */}
                   <div className="grid gap-6 mb-6 md:grid-cols-3">
@@ -229,7 +284,6 @@ function DeathReport() {
       </div>
     </div>
   );
-
 }
 
 export default DeathReport;
