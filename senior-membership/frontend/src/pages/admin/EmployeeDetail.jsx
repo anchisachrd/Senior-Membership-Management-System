@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ConfirmModal from '../../components/ConfirmModal';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from 'yup'
+import { verifyUser } from "../../api/verifyApi";
 
 
 function GetEmployeeDetail(employee) {
@@ -440,6 +441,31 @@ function EmployeeDetail() {
   const [employee, setEmployee] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const { employeeId } = useParams();
+
+  const [userRole, setUserRole] = useState("");
+      const [userEmail, setUserEmail] = useState('')
+         
+      
+          useEffect(() => {
+              fetchUserProfile();
+          }, [userEmail]);
+      
+          const fetchUserProfile = async () => {
+              try {
+                  const data = await verifyUser();
+                  setUserRole(data.role)
+                  setUserEmail(data.email)
+  
+                  if (data.role !== 'admin') {
+                      navigate('/login');
+                    }
+                  
+      
+              } catch (error) {
+                  console.error('Fetch Protected Data Error:', error);
+                  navigate('/login');
+              }
+          };
 
   const openModal = (title, description, confirmCallback) => {
     setModalTitle(title);

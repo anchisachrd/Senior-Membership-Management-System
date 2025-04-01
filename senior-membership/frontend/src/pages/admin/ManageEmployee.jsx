@@ -1,11 +1,37 @@
 import React, { useState, useEffect, } from 'react'
 import { Link, useNavigate } from "react-router-dom";
+import { verifyUser } from "../../api/verifyApi";
 
 
 function ManageEmployee() {
 
     const [employees, setEmployees] = useState([]);
     const navigate = useNavigate();
+
+    const [userRole, setUserRole] = useState("");
+    const [userEmail, setUserEmail] = useState('')
+       
+    
+        useEffect(() => {
+            fetchUserProfile();
+        }, [userEmail]);
+    
+        const fetchUserProfile = async () => {
+            try {
+                const data = await verifyUser();
+                setUserRole(data.role)
+                setUserEmail(data.email)
+
+                if (data.role !== 'admin') {
+                    navigate('/login');
+                  }
+                
+    
+            } catch (error) {
+                console.error('Fetch Protected Data Error:', error);
+                navigate('/login');
+            }
+        };
    
 
 

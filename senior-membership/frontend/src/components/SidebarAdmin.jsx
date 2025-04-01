@@ -8,27 +8,27 @@ import { verifyUser } from "../api/verifyApi";
 function SidebarAdmin() {
     const navigate = useNavigate();
 
+    const [userRole, setUserRole] = useState("");
     const [userEmail, setUserEmail] = useState('')
     const [userFirstName, setUserFirstName] = useState('')
     const [userLastName, setUserLastName] = useState('')
 
-    // useEffect(() => {
-    //     fetchUserProfile();
-    // }, [userEmail]);
+    useEffect(() => {
+        fetchUserProfile();
+    }, [userEmail]);
 
-    // const fetchUserProfile = async () => {
-    //     try {
-    //         const data = await verifyUser();
-    //         setUserRole(data.role)
-    //         setUserEmail(data.email)
-    //         setUserTitle(data.info.title)
-    //         setUserFirstName(data.info.first_name)
-    //         setUserLastName(data.info.last_name)
+    const fetchUserProfile = async () => {
+        try {
+            const data = await verifyUser();
+            setUserRole(data.role)
+            setUserEmail(data.email)
+            setUserFirstName(data.info.first_name)
+            setUserLastName(data.info.last_name)
 
-    //     } catch (error) {
-    //         console.error('Fetch Protected Data Error:', error);
-    //     }
-    // };
+        } catch (error) {
+            console.error('Fetch Protected Data Error:', error);
+        }
+    };
 
     const handleLogout = async () => {
         await fetch('http://localhost:3000/api/auth/logout', {
@@ -42,7 +42,6 @@ function SidebarAdmin() {
         setUserRole('');
         setUserEmail('');
     }
-
 
     return (
 

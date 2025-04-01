@@ -1,17 +1,44 @@
 import React, { useEffect, useState } from 'react'
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from 'yup'
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ConfirmModal from '../../components/ConfirmModal';
+import { verifyUser } from "../../api/verifyApi";
 
 function AddEmployee() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
-  const [onConfirmAction, setOnConfirmAction] = useState(() => {});
+  const [onConfirmAction, setOnConfirmAction] = useState(() => { });
 
   const navigate = useNavigate();
+
+  const [userRole, setUserRole] = useState("");
+  const [userEmail, setUserEmail] = useState('')
+
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, [userEmail]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+
+
+      if (data.role !== 'admin') {
+        navigate('/login');
+      }
+
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+      navigate('/login');
+    }
+  };
 
   const AddEmployeeSchema = Yup.object().shape({
     title: Yup.string().required('กรุณาเลือกคำนำหน้า'),
@@ -36,7 +63,7 @@ function AddEmployee() {
       "is_pay": false,
       "type_payment": null
     }
-    
+
     try {
       const response = await fetch("http://localhost:3000/api/employee/emp-register", {
         method: "POST",
@@ -82,15 +109,15 @@ function AddEmployee() {
         </div>
 
         <ConfirmModal
-        isOpen={isModalOpen}
-        title={modalTitle}
-        description={modalDescription}
-        onConfirm={() => {
-          onConfirmAction();
-          closeModal();
-        }}
-        onCancel={closeModal}
-      />
+          isOpen={isModalOpen}
+          title={modalTitle}
+          description={modalDescription}
+          onConfirm={() => {
+            onConfirmAction();
+            closeModal();
+          }}
+          onCancel={closeModal}
+        />
 
         <Formik
           initialValues={{
@@ -101,7 +128,7 @@ function AddEmployee() {
             national_id: '',
             phone: '',
             email: '',
-            
+
           }}
           validationSchema={AddEmployeeSchema}
           onSubmit={(values, { setErrors }) =>
@@ -110,10 +137,10 @@ function AddEmployee() {
               "โปรดตรวจสอบความถูกต้องและครบถ้วนของข้อมูลก่อนกดยืนยัน",
               () => handleAddEmployee(values, { setErrors })
             )}
-          validateOnChange={true} 
+          validateOnChange={true}
           validateOnBlur={true}
         >
-          {({ values, errors, touched, isValid, dirty  }) => {
+          {({ values, errors, touched, isValid, dirty }) => {
 
             return (
               <Form>
@@ -245,7 +272,7 @@ function AddEmployee() {
                                     ${!isValid || !dirty ? "opacity-50 cursor-not-allowed" : ""}`}
                     disabled={!isValid || !dirty}
                   >
-    
+
                     ยืนยัน
                   </button>
                 </div>

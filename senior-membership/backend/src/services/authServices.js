@@ -4,6 +4,7 @@ import * as heirModel from "../models/heirModel.js";
 import * as memberModel from "../models/memberModel.js";
 import * as addressModel from "../models/addressModel.js";
 import * as peopleModel from '../models/peopleModel.js';
+import * as adminModel from '../models/adminModel.js'
 import bcrypt from "bcrypt";
 
 
@@ -88,3 +89,7 @@ export const changePassword = async (accountId, oldPassword, newPassword) => {
       throw new Error('เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน');
     }
   };
+
+  export const getAdminIdbyAccountId = async (accountId) => {
+    return await adminModel.getInfoByAccountId(accountId);
+  }
