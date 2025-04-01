@@ -52,7 +52,9 @@ function CommitteDeathList() {
 
  // MemberList.js
 const handleRowClick = (memberId) => {
-  navigate(`/member/${memberId}`);
+  navigate(`/member/${memberId}`, {
+    state: { context: "deathData" },
+  });
 };
  return (
     <div className="ibm-plex-sans-thai-medium">

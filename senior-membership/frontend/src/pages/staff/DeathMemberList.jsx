@@ -56,6 +56,8 @@ function DeathMemberList() {
   const handleRowClick = (memberId) => {
     navigate(`/member/${memberId}`);
   };
+
+  console.log(members.heir_id)
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">

@@ -106,7 +106,8 @@ export const getNotificationListByStatusAndReason = async (status, reason) => {
       dr.death_date,
       dr.is_requested,
       dr.is_finalized,
-      dr.submitted_at
+      dr.submitted_at,
+      dr.heir_id
     FROM members m
     JOIN candidates c ON m.candidate_id = c.candidate_id
     JOIN people p ON c.person_id = p.person_id

@@ -52,12 +52,8 @@ function History() {
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 text-center">
             <thead class="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
               <tr>
-              <th scope="col" class="px-6 py-3">
-                 ์No.
-                </th>
-                
                 <th scope="col" class="px-6 py-3">
-                  No.
+                  ์No.
                 </th>
 
                 <th scope="col" class="px-6 py-3">
@@ -85,8 +81,16 @@ function History() {
               {historyData.map((item, index) => (
                 <tr
                   key={item.history_id}
-                  onClick={() => handleRowClick(item.report_id, userRoleId)}
-                  className="bg-white border-b hover:bg-gray-50 text-gray-900"
+                  onClick={() => {
+                    if (item.status !== "unpaid") {
+                      handleRowClick(item.report_id, userRoleId);
+                    }
+                  }}
+                  className={`bg-white border-b text-gray-900 ${
+                    item.status !== "unpaid"
+                      ? "hover:bg-gray-50 cursor-pointer"
+                      : ""
+                  }`}
                 >
                   <th scope="row" className="px-8 py-4 font-medium">
                     {index + 1}
@@ -115,21 +119,20 @@ function History() {
                   <td className="px-6 py-4">
                     {item.status === "unpaid" ? (
                       <button
-                      
-                      onClick={(e) => {
-                        e.stopPropagation(); 
-                        handlePayClick(item.report_id);
-                      }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePayClick(item.report_id);
+                        }}
                         className="bg-blue-600 hover:bg-blue-800 text-white py-1 px-2 rounded-lg shadow"
                       >
                         ชำระเงิน
                       </button>
                     ) : item.status === "fail" ? (
                       <button
-                      onClick={(e) => {
-                        e.stopPropagation(); 
-                        handlePayClick(item.report_id); 
-                      }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePayClick(item.report_id);
+                        }}
                         className="bg-orange-600 hover:bg-orange-800 text-white py-1 px-2 rounded-lg shadow"
                       >
                         ชำระเงินใหม่

@@ -1,6 +1,5 @@
 import * as deathApprovalModel from '../models/deathApproval.js'
 import * as deathReportModel from '../models/deathReport.js'
-<<<<<<< HEAD
 import * as memberModel from '../models/memberModel.js'
 
 
@@ -8,10 +7,6 @@ export const checkCommitteesVote = async (reportId, committeeId, status, comment
 
     await deathApprovalModel.updateCommitteeApproval(reportId, committeeId, status, comment)
 
-=======
-
-export const checkCommitteesVote = async (reportId) => {
->>>>>>> 764f816cd2a74c76b15eb86f3f574565d8fd663d
     const approvals = await deathApprovalModel.getDeathApprovalStatusByReportId(reportId);
 
     const pending =  approvals.some(da => da.approval_status === 'รอการพิจารณา' ||  da.approval_status === 'รอการแก้ไข')
@@ -33,7 +28,6 @@ export const checkCommitteesVote = async (reportId) => {
     await deathReportModel.updateFinalApprovalStatus(reportId, finalStatus)
 }
 
-<<<<<<< HEAD
 export const getFinalDeathApproval = async (reportId) => {
     try{
 
@@ -62,5 +56,3 @@ export const sendToRecheck = async (reportId, status) => {
     await deathApprovalModel.updateAllCommitteeApproval(reportId, status)
     await deathReportModel.updateFinalApprovalStatus(reportId,status)
 }
-=======
->>>>>>> 764f816cd2a74c76b15eb86f3f574565d8fd663d

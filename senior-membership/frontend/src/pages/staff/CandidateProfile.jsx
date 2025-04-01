@@ -148,7 +148,8 @@ function CandidateProfile() {
     }
   };
 
- 
+  console.log("final_approval_status:", candidate?.final_approval_status);
+
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -205,7 +206,6 @@ function CandidateProfile() {
               </button>
             </li>
           )}
-       
         </ul>
 
         {/* Tab Content */}
@@ -213,26 +213,22 @@ function CandidateProfile() {
           {activeTab === "personalInfo" && candidate && (
             <CandidateInfo data={candidate} />
           )}
-          {activeTab === "heirInfo" && heir && <HeirInfo data={heir}/>}
+          {activeTab === "heirInfo" && heir && <HeirInfo data={heir} />}
           {activeTab === "candidateVerification" &&
             context === "committeeCandidateProfile" && (
               <CommitteeVerification candidateId={id} />
             )}
           {activeTab === "memberPaymentHistory" &&
-            context === "committeeCandidateProfile" && (
-            <MemberPaymentHistory />
-          )}
+            context === "committeeCandidateProfile" && <MemberPaymentHistory />}
         </div>
 
         {/* condition ว่าถ้าเจออันไหนให้เรนเดอร์ปุ่มนั้น โดยค่าจะส่งมากจากแต่ละไฟล์ที่ใช้ */}
         {context === "waitingCandidateProfile" && candidate && (
-          
           <div className="relative mt-14 flex justify-center items-center gap-4">
-           
             <button
               type="button"
               onClick={() => {
-                if (candidate.final_approval_status !== "ยังไม่ส่งพิจารณา") {
+                if (candidate.final_approval_status === "ยังไม่ส่งพิจารณา") {
                   openModal(
                     "ยืนยันการส่งข้อมูล",
                     "คุณต้องการส่งข้อมูลไปที่กรรมการหรือไม่?",
@@ -240,13 +236,11 @@ function CandidateProfile() {
                   );
                 }
               }}
-              disabled={
-                candidate.final_approval_status=== "ยังไม่ส่งพิจารณา"
-              }
+              disabled={candidate.final_approval_status !== "ยังไม่ส่งพิจารณา"}
               className={`text-white rounded-lg px-4 py-2 ${
                 candidate.final_approval_status === "ยังไม่ส่งพิจารณา"
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-400 cursor-not-allowed"
               }`}
             >
               ส่งข้อมูล

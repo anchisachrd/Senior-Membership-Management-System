@@ -21,4 +21,16 @@ export const dashboardController = async (req, res) => {
       res.status(500).json({ message: "Failed to load dashboard data" });
     }
   };
+
+  export const getClubSummaryReport = async (req, res) => {
+    try {
+      const { year } = req.query;
+      const result = await clubServices.getClubSummaryByYear(year);
+      res.json(result);
+    } catch (err) {
+      console.error("Error generating summary report:", err);
+      res.status(500).json({ error: "เกิดข้อผิดพลาดในการดึงข้อมูลรายงาน" });
+    }
+  };
+  
   

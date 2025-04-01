@@ -11,6 +11,16 @@ function MemberList() {
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
+  const onChangeDate = (data_date) => {
+    const dobFromData = new Date(data_date);
+    const filterDob =
+      dobFromData.getDate().toString().padStart(2, "0") +
+      "-" +
+      (dobFromData.getMonth() + 1).toString().padStart(2, "0") +
+      "-" +
+      (dobFromData.getFullYear() + 543);
+    return filterDob;
+  };
 
   useEffect(() => {
     fetchUserProfile();
@@ -84,7 +94,7 @@ const handleRowClick = (memberId) => {
                     </td>
                     <td className="text-center py-4 px-4">{member.national_id}</td>
                     <td className="text-center py-4 px-4">{member.phone}</td>
-                    <td className="text-center py-4 px-4">{member.start_date}</td>
+                    <td className="text-center py-4 px-4">{onChangeDate(member.start_date)}</td>
                     <td className="text-center">
                       <StatusBadge status={member.member_status} />
                     </td>

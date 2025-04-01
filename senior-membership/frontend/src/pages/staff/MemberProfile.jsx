@@ -10,7 +10,8 @@ import { verifyUser } from "../../api/verifyApi";
 
 function MemberProfile() {
   const { memberId } = useParams();
-
+const location = useLocation();
+const { context } = location.state || { context: null };
   const [member, setMember] = useState(null);
   const [heir, setHeir] = useState(null);
 
@@ -132,7 +133,8 @@ function MemberProfile() {
             </li>
           )}
           
-          <li className="me-2">
+          {context === "deathData" && (
+            <li className="me-2">
             <button
               onClick={() => setActiveTab("memberDeathReport")}
               className={`inline-block p-4 rounded-t-lg ${
@@ -144,6 +146,8 @@ function MemberProfile() {
               ข้อมูลการเสียชีวิต
             </button>
           </li>
+          )}
+          
         </ul>
 
         {/* Tab Content */}
@@ -153,7 +157,7 @@ function MemberProfile() {
           )}
           {activeTab === "heirInfo" && heir && <HeirInfo data={heir} />}
           {activeTab === "memberPaymentHistory" && <MemberPaymentHistory />}
-          {activeTab === "memberDeathReport" && (
+          {activeTab === "memberDeathReport" && context === "deathData" && (
             <DeathReportDetail />
           )}
         </div>
