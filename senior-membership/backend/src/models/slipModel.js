@@ -1,13 +1,22 @@
 import { query } from "../db.js";
 
-export const createSlipHistory = async (memberId,  reportId, amount, slipData, slipPath, status, errorCode, errorMsg) => {
+export const createSlipHistory = async (
+  memberId,
+  reportId,
+  status,
+
+) => {
   const { rows } = await query(
     `
-      INSERT INTO slip_history (member_id, report_id, amount, slip_data, slip_path, status, error_code, error_msg)
-      VALUES ($1, $2, $3, $4, $5,  $6, $7, $8)
+      INSERT INTO slip_history (member_id, report_id, status, created_at)
+      VALUES ($1, $2, $3, NOW())
       RETURNING *;
     `,
-    [memberId, reportId, amount, slipData, slipPath, status, errorCode, errorMsg]
+    [
+      memberId,
+      reportId,
+      status,
+    ]
   );
   return rows[0];
 };
@@ -45,9 +54,28 @@ export const getHistoryByMemberId = async (memberId) => {
   // Get candidate details
   const { rows } = await query(
     `
-      SELECT * FROM slip_history
-      WHERE member_id = $1
-      ORDER BY created_at DESC
+      SELECT 
+      sh.history_id,
+      sh.created_at,
+      sh.status,
+      sh.error_msg,
+      sh.amount,
+      sh.report_id,
+      
+      -- รหัสสมาชิกที่เสียชีวิต
+      dr.member_id AS death_member_id,
+      
+      -- ชื่อผู้เสียชีวิต
+      CONCAT(p.title, ' ', p.first_name, ' ', p.last_name) AS death_name
+
+    FROM slip_history sh
+    JOIN death_reports dr ON sh.report_id = dr.report_id
+    JOIN members m ON dr.member_id = m.member_id
+    JOIN candidates c ON m.candidate_id = c.candidate_id
+    JOIN people p ON c.person_id = p.person_id
+
+    WHERE sh.member_id = $1
+
     `,
     [memberId]
   );
@@ -72,21 +100,38 @@ export const updateSlipHistory = async (
   slipData,
   slipPath,
   status,
-  errorCode,
-  errorMsg
+  errorMsg,
+  senderName,
+  sendingBank,
+  transTimestamp,
+  amount
 ) => {
   const { rows } = await query(
     `UPDATE slip_history
      SET slip_data = $3,
          slip_path = $4,
          status = $5,
-         error_code = $6,
-         error_msg = $7,
-         updated_at = NOW()
-     WHERE member_id = $1
+         error_msg = $6,
+         updated_at = NOW(),
+         sender = $7,
+         sending_bank = $8,
+         trans_date = $9,
+         amount = $10
+      WHERE member_id = $1
        AND report_id = $2
      RETURNING *;`,
-    [memberId, reportId, slipData, slipPath, status, errorCode, errorMsg]
+    [
+      memberId,
+      reportId,
+      slipData,
+      slipPath,
+      status,
+      errorMsg,
+      senderName,
+      sendingBank,
+      transTimestamp,
+      amount
+    ]
   );
   return rows[0];
 };
@@ -111,4 +156,33 @@ export const getAllPassedSlips = async () => {
   return rows;
 };
 
+export const getSlipByMemberAndReport = async (memberId, reportId) => {
+  const { rows } = await query(`
+    SELECT 
+      sh.slip_path,
+      sh.status,
+      sh.error_msg,
+      sh.amount,
+      sh.trans_date,
+      sh.sender,
+      sh.sending_bank,
+
+      -- ผู้เสียชีวิต
+      dp.title AS death_title,
+      dp.first_name AS death_first_name,
+      dp.last_name AS death_last_name
+
+    FROM slip_history sh
+
+    -- ดึงผู้เสียชีวิตจาก death_reports
+    JOIN death_reports dr ON sh.report_id = dr.report_id
+    JOIN members dm ON dr.member_id = dm.member_id
+    JOIN candidates dc ON dm.candidate_id = dc.candidate_id
+    JOIN people dp ON dc.person_id = dp.person_id
+
+    WHERE sh.report_id = $1 AND sh.member_id = $2
+  `, [reportId, memberId]);
+
+  return rows[0];
+}
 

@@ -130,3 +130,15 @@ export const updateFinalApprovalStatus = async (candidateId, status) => {
   );
   return rows[0];
 };
+
+export const updateIsMemberbyMemberId = async ( memberId) => {
+  const { rows } = await query(
+    `UPDATE candidates
+     SET is_member = false
+     WHERE candidate_id = (
+       SELECT candidate_id FROM members WHERE member_id = $1
+     )`,
+     [memberId]
+  );
+  return rows[0];
+};

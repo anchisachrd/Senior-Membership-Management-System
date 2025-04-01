@@ -155,8 +155,8 @@ function AddEmployee() {
                           as='select'
                           name="title"
                           id="title"
-                          class={`bg-light ${errors.title && touched.title
-                            ? "border-none bg-red-100 text-gray-500"
+                          class={`bg-light border border-gray-400 ${errors.title && touched.title
+                            ? " bg-red-100 text-gray-500"
                             : values.title === ""
                               ? "text-gray-400"
                               : "text-black"
@@ -245,8 +245,8 @@ function AddEmployee() {
                           as='select'
                           name="position"
                           id="position"
-                          class={`bg-light ${errors.position && touched.position
-                            ? "border-none bg-red-100 text-gray-500"
+                          class={`bg-light border border-gray-400 ${errors.position && touched.position
+                            ? " bg-red-100 text-gray-500"
                             : values.position === ""
                               ? "text-gray-400"
                               : "text-black"

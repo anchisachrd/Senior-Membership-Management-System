@@ -1,41 +1,79 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { verifySlip } from "../../api/memberApi";
+import { deathName} from "../../api/deathApi"
 import ConfirmModal from "../../components/ConfirmModal";
-;
+import { useParams } from "react-router-dom";
+import { verifyUser } from "../../api/verifyApi";
 
 function SubmitPayment() {
-    const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [namePayment, setNamePayment] = useState("");
-    const [bank, setBank] = useState("");
-    const [amount, setAmount] = useState("");
-    const [slipFile, setSlipFile] = useState(null); // Store uploaded file
-    const memberId = 5; // Example memberId 
-    const reportId = 12; 
+  const { reportId } = useParams();
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deathFullName, setDeathFullName] = useState("");
 
-    // Toggle modal state
-    const toggleModal = () => setIsModalOpen(!isModalOpen);
+  const [slipFile, setSlipFile] = useState(null); // Store uploaded file
+  const [userRole, setUserRole] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userRoleId, setUserRoleId] = useState("");
 
-    const isFormValid = namePayment !== "" && bank !== "" && amount !== "" && slipFile !== null;
+  const amount = 100;
 
-    const handleFileChange = (e) => {
-        setSlipFile(e.target.files[0]);
-    };
+  useEffect(() => {
+      fetchUserProfile();
+    }, [userEmail]);
+  
+    useEffect(() => {
+      fetchDeathName();
+    }, [reportId]);
 
-    
-    const handleConfirmSubmit = async () => {
-        try {
-            const result = await verifySlip(slipFile, memberId, amount, reportId);
-            alert(result.message);
-            console.log(result);
-            setIsModalOpen(false);
-            navigate('/history');
-        } catch (error) {
-            alert('เกิดข้อผิดพลาดในการอัปโหลดสลิป');
-            setIsModalOpen(false);
+    const fetchUserProfile = async () => {
+      try {
+        const data = await verifyUser();
+        console.log(data);
+        setUserRole(data.role);
+        setUserEmail(data.email);
+        setUserRoleId(data.role_id);
+  
+        if (data.role !== "member") {
+          navigate("/login");
         }
+      } catch (error) {
+        console.error("Fetch Protected Data Error:", error);
+      }
     };
+
+    const fetchDeathName = async () => {
+      try {
+        const res = await deathName(reportId); // Make sure deathName returns the full name
+        setDeathFullName(res.death_name); // Adjust depending on your API
+      } catch (err) {
+        console.error("Error fetching death name:", err);
+        setDeathFullName("ไม่พบชื่อผู้เสียชีวิต");
+      }
+    };
+    
+  // Toggle modal state
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  const isFormValid = slipFile !== null;
+
+  const handleFileChange = (e) => {
+    setSlipFile(e.target.files[0]);
+  };
+
+  const handleConfirmSubmit = async () => {
+    try {
+      const result = await verifySlip(slipFile, userRoleId, reportId);
+      alert(result.message);
+      console.log(result);
+      setIsModalOpen(false);
+      navigate("/history");
+    } catch (error) {
+      alert("เกิดข้อผิดพลาดในการอัปโหลดสลิป");
+      setIsModalOpen(false);
+    }
+  };
 
   return (
     <div className="p-12 sm:ml-64">
@@ -100,51 +138,10 @@ function SubmitPayment() {
             ฟอร์มแจ้งชำระเงิน
           </div>
           <div className="text-lg text-black mb-5">
-            แจ้งชำระเงินค่าบำรุงรักษาศพของ <b>คุณพอยเบ ง่วงนอนงับ</b>
+            แจ้งชำระเงินค่าบำรุงรักษาศพของ <b>{deathFullName}</b>
           </div>
 
           <div className="grid gap-6 mb-6 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="name_payment"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                ชื่อบัญชีที่โอน
-              </label>
-              <input
-                value={namePayment}
-                onChange={(e) => setNamePayment(e.target.value)}
-                type="text"
-                id="name_payment"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                                           focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
-                placeholder="กรอกชื่อของบัญชีที่โอน"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="bank"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                ธนาคาร
-              </label>
-              <select
-                value={bank}
-                onChange={(e) => setBank(e.target.value)}
-                id="bank"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                                           focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
-              >
-                <option value="">เลือกธนาคารของท่าน</option>
-                <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
-                <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
-                <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid gap-6 mb-6 md:grid-cols-3">
             <div>
               <label
                 htmlFor="amount"
@@ -154,11 +151,11 @@ function SubmitPayment() {
               </label>
               <input
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                disabled={true}
                 type="text"
                 id="amount"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                                           focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
+                          focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
                 placeholder="กรอกจำนวนเงิน"
               />
             </div>
@@ -190,21 +187,20 @@ function SubmitPayment() {
               className={`focus:outline-none text-white font-medium rounded-lg text-base px-5 py-2.5 me-9 mb-2 ${
                 isFormValid
                   ? "bg-lime-700 hover:bg-lime-800 focus:ring-4 "
-                  : "bg-gray-400 cursor-not-allowed" 
-                  
+                  : "bg-gray-400 cursor-not-allowed"
               }`}
             >
               แจ้งผลการชำระเงิน
-            </button>         
+            </button>
           </div>
         </div>
       </div>
       <ConfirmModal
-       isOpen={isModalOpen}
-       title="ยืนยันการแจ้งชำระเงิน"
-       description="โปรดตรวจสอบความถูกต้องก่อนกดยืนยัน"
-       onConfirm={handleConfirmSubmit} 
-       onCancel={toggleModal} 
+        isOpen={isModalOpen}
+        title="ยืนยันการแจ้งชำระเงิน"
+        description="โปรดตรวจสอบความถูกต้องก่อนกดยืนยัน"
+        onConfirm={handleConfirmSubmit}
+        onCancel={toggleModal}
       />
     </div>
   );

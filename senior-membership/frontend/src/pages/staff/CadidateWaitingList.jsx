@@ -221,24 +221,24 @@ function CadidateWaitingList() {
                     </td>
                     <td className="text-center align-middle py-4 px-4 space-x-4">
                       {candidate.final_approval_status ===
-                      "ยังไม่ส่งพิจารณา" || candidate.final_approval_status ===
-                      "รอการพิจารณา" ? (
+                      "ยังไม่ส่งพิจารณา"  ? (
                         <button
                           disabled={
                             candidate.final_approval_status !==
-                            "ยังไม่ส่งพิจารณา" && candidate.final_approval_status !==
-                            "รอการพิจารณา"
+                            "ยังไม่ส่งพิจารณา" 
                           }
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openModal(
-                              "ยืนยันการส่งข้อมูลกรรมการ",
-                              "คุณต้องการส่งข้อมูลไปที่กรรมการหรือไม่?",
-                              () => handleSentdata(candidate.candidate_id)
-                            );
+                          
+                          onClick={() => {
+                            if (candidate.final_approval_status !== "ยังไม่ส่งพิจารณา") {
+                              openModal(
+                                "ยืนยันการส่งข้อมูล",
+                                "คุณต้องการส่งข้อมูลไปที่กรรมการหรือไม่?",
+                                () => handleSentdata(candidate.candidate_id)
+                              );
+                            }
                           }}
                           className={`${
-                            candidate.final_approval_status !==
+                            candidate.final_approval_status ===
                             "ยังไม่ส่งพิจารณา"
                               ? "bg-gray-400 cursor-not-allowed"
                               : "bg-blue-600 hover:bg-blue-700"

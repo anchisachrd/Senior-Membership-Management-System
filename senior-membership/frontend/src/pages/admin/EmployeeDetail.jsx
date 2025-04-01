@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
 import ConfirmModal from '../../components/ConfirmModal';
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from 'yup'
 import { verifyUser } from "../../api/verifyApi";
 
 

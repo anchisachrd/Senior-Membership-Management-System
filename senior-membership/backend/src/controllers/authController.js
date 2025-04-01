@@ -68,7 +68,10 @@ export const loginUserByEmail = async (req, res, next) => {
       var info = {
         "title": employee.title,
         "first_name": employee.first_name,
-        "last_name": employee.last_name
+        "last_name": employee.last_name,
+        "is_pay": employee.is_pay,
+        "type_payment": employee.type_payment
+
       }
       var role_id = employee.employee_id
     }

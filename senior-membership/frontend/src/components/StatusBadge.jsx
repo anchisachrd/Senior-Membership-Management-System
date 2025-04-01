@@ -10,6 +10,10 @@ const statusColors = {
   "รอตรวจเอกสาร": "bg-yellow-400 text-gray-800",
   "ใช้งานอยู่": "bg-green-600 text-white",
   "เสียชีวิต":  "bg-red-600 text-white",
+  "ยังไม่ส่ง": "bg-red-500 text-white",
+  "ส่งแล้ว": "bg-green-600 text-white",
+  "รอการจ่ายเงิน": "bg-red-500 text-white",
+  "จ่ายแล้ว": "bg-green-600 text-white",
 };
 
 function StatusBadge({ status }) {

@@ -226,21 +226,25 @@ function CandidateProfile() {
 
         {/* condition ว่าถ้าเจออันไหนให้เรนเดอร์ปุ่มนั้น โดยค่าจะส่งมากจากแต่ละไฟล์ที่ใช้ */}
         {context === "waitingCandidateProfile" && candidate && (
+          
           <div className="relative mt-14 flex justify-center items-center gap-4">
+           
             <button
               type="button"
-              onClick={() =>
-                openModal(
-                  "ยืนยันการส่งข้อมูล",
-                  "คุณต้องการส่งข้อมูลไปที่กรรมการหรือไม่?",
-                  () => handleSentdata()
-                )
-              }
+              onClick={() => {
+                if (candidate.final_approval_status !== "ยังไม่ส่งพิจารณา") {
+                  openModal(
+                    "ยืนยันการส่งข้อมูล",
+                    "คุณต้องการส่งข้อมูลไปที่กรรมการหรือไม่?",
+                    () => handleSentdata()
+                  );
+                }
+              }}
               disabled={
-                candidate.final_approval_status !== "ยังไม่ได้ส่งพิจารณา"
+                candidate.final_approval_status=== "ยังไม่ส่งพิจารณา"
               }
               className={`text-white rounded-lg px-4 py-2 ${
-                candidate.final_approval_status !== "ยังไม่ได้ส่งพิจารณา"
+                candidate.final_approval_status === "ยังไม่ส่งพิจารณา"
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}

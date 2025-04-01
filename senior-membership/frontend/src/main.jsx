@@ -37,10 +37,13 @@ import ClubAccount from "./pages/staff/ClubAccount.jsx";
 import Dashboard from "./components/DashBoard.jsx";
 import SummaryReport from "./pages/member/SummaryReport.jsx";
 import RequestForm from './pages/heir/RequestForm.jsx'
+import DeathFinalApprovalDeatil from "./pages/staff/DeathFinalApprovalDeatil.jsx";
+import DeathMemberList from "./pages/staff/DeathMemberList.jsx";
 import EmployeeDetail from "./pages/admin/EmployeeDetail.jsx";
 import ManageEmployee from "./pages/admin/ManageEmployee.jsx";
 import SidebarAdmin from "./components/SidebarAdmin.jsx";
 import AddEmployee from "./pages/admin/AddEmployee.jsx";
+import ClubExpense from "./pages/committee/ClubExpense.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -50,13 +53,16 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Route element={<Sidebar />}>
         <Route path="/report-summary" element={<SummaryReport/>}/>
         <Route path="/deathReport" element={<DeathReport />} />
-        <Route path="/submitPayment" element={<SubmitPayment />} />
+        <Route path="/submitPayment/:reportId" element={<SubmitPayment />} />
         <Route path="/history" element={<History />} />
         <Route path="/heir_register" element={<HeirRegister />} />
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path='/request-form' element={<RequestForm />} />
-       
+        <Route
+          path="/payment/detail/:reportId"
+          element={<DetailCheckPayment />}
+        />
       </Route>
 
       <Route element={<SidebarStaff />}>
@@ -86,9 +92,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/member/:memberId" element={<MemberProfile />} />
         <Route path="/club-account/" element={<ClubAccount/>}/>
         <Route
-          path="/staff_detailCheckPayment"
+          path="/staff/payment/detail/:reportId"
           element={<DetailCheckPayment />}
         />
+        <Route
+          path="/death/member-list"
+          element={<DeathMemberList />}
+        />
+        <Route path="/club-expense" element={<ClubExpense/>}/>
       </Route>
 
       <Route element={<SidebarAdmin />}>
@@ -96,6 +107,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/employee-detail/:employeeId" element={<EmployeeDetail/>}/>
         <Route path="/add-employee" element={<AddEmployee/>}/>
       </Route>
+
 
       {/* หน้าที่ไม่ต้องมี side bar */}
       <Route path="/login" element={<Login />} />
@@ -105,7 +117,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         path="/final-approval/detail/:candidateId"
         element={<FinalResultDetail />}
       />
+       <Route path="/committee/final-death-approval/:reportId" element={<DeathFinalApprovalDeatil />} />
+       <Route
+          path="/death/payment/detail/:reportId"
+          element={<DetailCheckPayment />}
+        />
     </Routes>
+   
    
   </BrowserRouter>
 );

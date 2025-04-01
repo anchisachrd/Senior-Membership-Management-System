@@ -3,15 +3,14 @@ import axios from "axios";
 // Base URL for API
 const apiUrl = "http://localhost:3000/api/members";
 
-export const verifySlip = async (slipFile, memberId, amount, reportId) => {
+export const verifySlip = async (slipFile, memberId, reportId) => {
   try {
     const formData = new FormData();
     formData.append("slip", slipFile); // Field name must match backend
     formData.append("memberId", memberId);
-    formData.append("amount", amount);
     formData.append("reportId", reportId);
 
-    console.log("✅ Sending Data:", { memberId, amount, reportId });
+    console.log("✅ Sending Data:", { memberId, reportId });
 
     // Send request to backend
     const response = await axios.post(`${apiUrl}/verify-slip`, formData, {
@@ -87,3 +86,36 @@ export const getReviewedDeathList = async () => {
     throw error;
   }
 };
+
+export const getPaymentHistory = async (memberId) => {
+  try {
+    const res = await axios.get(`${apiUrl}/history/${memberId}`);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching payment list:", error);
+    throw error;
+  }
+};
+
+export const getMemberPaymentDetail = async (memberId, reportId) => {
+  try {
+    const res = await axios.get(`${apiUrl}/slip/${memberId}/${reportId}`);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching payment list:", error);
+    throw error;
+  }
+};
+
+export const getDeathMemberList = async () => {
+  try {
+    const res = await axios.get(`${apiUrl}/death`);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching list:", error);
+    throw error;
+  }
+};
+
+
+

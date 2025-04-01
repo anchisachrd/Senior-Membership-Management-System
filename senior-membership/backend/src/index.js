@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js" // <-- login
 import memberRoutes from './routes/memberRoutes.js'
 import heirRoutes from './routes/heirRoutes.js'
 import deathReportRoutes from './routes/deathReportRoutes.js'
+import clubSummaryRoutes from './routes/clubSummaryRoutes.js'
 import cookieParser from 'cookie-parser'
 import employeeRoutes from './routes/employeeRoutes.js'
 
@@ -29,6 +30,7 @@ app.use('/api/approval-details', approvalRoutes);
 app.use('/api/members', memberRoutes );
 app.use('/api/heirs', heirRoutes);
 app.use('/api/death-report', deathReportRoutes);
+app.use('/api/club', clubSummaryRoutes);
 // Login
 app.use('/api/auth', authRoutes);
 app.use('/api/employee', employeeRoutes);

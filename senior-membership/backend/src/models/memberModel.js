@@ -78,27 +78,42 @@ export const updateMemberStatus = async (memberId, status) => {
   return rows[0];
 };
 
-export const getNotificationListByStatus = async (status) => {
+export const getNotificationListByStatusAndReason = async (status, reason) => {
+
+  let reasonCondition;
+  if (reason === 'NULL') {
+    reasonCondition = 'IS NULL';
+  } else if (reason === 'NOTNULL') {
+    reasonCondition = 'IS NOT NULL';
+  } else {
+    throw new Error('Invalid reasonFlag. Use either "NULL" or "NOTNULL"');
+  }
   const { rows } = await query(
-    `SELECT 
-    m.member_id,
-    p.title, 
-    p.first_name, 
-    p.last_name, 
-    p.national_id, 
-    p.phone,
-    m.start_date,
-    m.member_status,
-    dr.staff_status,
-    dr.final_approval,
-    dr.death_date,
-    dr.submitted_at
-FROM members m
-JOIN candidates c ON m.candidate_id = c.candidate_id
-JOIN people p ON c.person_id = p.person_id
-LEFT JOIN death_reports dr ON m.member_id = dr.member_id  
-WHERE m.member_status = $1
-ORDER BY m.start_date DESC`,
+    ` SELECT 
+      m.member_id,
+      p.title, 
+      p.first_name, 
+      p.last_name, 
+      p.national_id, 
+      p.phone,
+      m.start_date,
+      m.end_date,
+      m.member_status,
+      m.leaving_reason,
+      dr.staff_status,
+      dr.report_id,
+      dr.final_approval,
+      dr.death_date,
+      dr.is_requested,
+      dr.is_finalized,
+      dr.submitted_at
+    FROM members m
+    JOIN candidates c ON m.candidate_id = c.candidate_id
+    JOIN people p ON c.person_id = p.person_id
+    LEFT JOIN death_reports dr ON m.member_id = dr.member_id
+    WHERE m.member_status = $1
+      AND m.leaving_reason ${reasonCondition}
+    ORDER BY m.start_date DESC`,
     [status]
   );
 
@@ -122,4 +137,36 @@ WHERE d.staff_status = 'ผ่าน'
   );
 
   return rows;
+};
+
+
+export const getPersonalInfoByMemberId = async (memberId) => {;
+  const { rows } = await query(
+    `SELECT 
+       m.member_id,
+        CONCAT(p.title,' ', 
+        p.first_name,' ', 
+        p.last_name) as death_name
+    FROM members m
+    JOIN candidates c ON m.candidate_id = c.candidate_id
+    JOIN people p ON c.person_id = p.person_id
+    WHERE m.member_id = $1`,
+    [memberId]
+  );
+
+  return rows[0];
+};
+
+
+export const setMemberLeft = async (memberId, reason) => {;
+  const { rows } = await query(
+    `UPDATE members
+     SET leaving_reason = $1,
+         end_date = NOW()
+     WHERE member_id = $2
+     RETURNING *`,
+    [ reason, memberId]
+  );
+
+  return rows[0];
 };

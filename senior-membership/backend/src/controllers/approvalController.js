@@ -6,8 +6,8 @@ import * as registerService from '../services/registerService.js'
 export const updateApprovalDetail = async (req, res) => {
   try {
     const { approvalId } = req.params;
-    // Typically, you'd also verify that the logged-in user is the correct committee
-    const updateData = req.body; // e.g. { status, verificationDetails, comment, isSigned }
+  
+    const updateData = req.body; 
 
     const updated = await approvalService.updateCommitteeApproval(approvalId, updateData);
     return res.json({
