@@ -87,6 +87,33 @@ function DeathMemberList() {
           รายละเอียดผู้เสียชีวิต
         </div>
 
+        <div class="mb-8 overflow-hidden">
+          <div class="grid gap-6 md:grid-cols-3">
+            <form className="col-span-2 w-full" onSubmit={(e) => e.preventDefault()}>
+              <div className="relative">
+                <input
+                  type="search"
+                  id="default-search"
+                  className="w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+                  placeholder="ค้นหา..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </form>
+
+            <select
+              className="col-span-1 w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}>
+              <option value="">สถานะการจ่ายเงินสงเคราะห์ทั้งหมด</option>
+              <option value="ยังไม่ส่งข้อมูล">ยังไม่ส่งข้อมูล</option>
+              <option value="รอการจ่ายเงิน">รอการจ่ายเงิน</option>
+              <option value="จ่ายแล้ว">จ่ายแล้ว</option>
+            </select>
+          </div>
+        </div>
+
         <div className="relative overflow-hidden shadow-xl sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-base text-gray-300 uppercase bg-gray-50 dark:bg-gray-300 dark:text-gray-900">
@@ -118,7 +145,8 @@ function DeathMemberList() {
             </thead>
 
             <tbody>
-              {members.map((member, index) => (
+            
+              {filteredMembers.map((member, index) => (
                 <tr
                   key={member.member_id}
                   onClick={() => handleRowClick(member.member_id)}

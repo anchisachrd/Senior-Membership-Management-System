@@ -10,14 +10,14 @@ export const notiStaff = async () => {
       
       -- 2. Candidate Approval
 
-      (SELECT COUNT(*) FROM candidates WHERE final_approval_status IN ('อนุมัติ', 'ไม่อนุมัติ')) AS waiting_list,
+      (SELECT COUNT(*) FROM candidates WHERE final_approval_status IN ('อนุมัติ', 'ไม่อนุมัติ') AND is_member IS NULL) AS waiting_list,
 
       -- 4. Death Report
       (SELECT COUNT(*) FROM death_reports WHERE staff_status = 'รอตรวจเอกสาร') AS waiting_staff,
       (SELECT COUNT(*) FROM death_reports WHERE final_approval IN ('อนุมัติ', 'ไม่อนุมัติ')) AS result_death,
 
       -- 5. Heir Transfer
-      (SELECT COUNT(*) FROM death_reports WHERE is_finalized = false AND is_requested = true) AS heir_wait_transfer
+      (SELECT COUNT(*) FROM death_reports WHERE is_finalized IS NULL AND is_requested = true) AS heir_wait_transfer
   `);
   return rows[0]; // คืนค่าผลลัพธ์เป็น object
 };
