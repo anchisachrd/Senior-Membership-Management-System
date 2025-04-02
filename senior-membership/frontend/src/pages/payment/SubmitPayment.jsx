@@ -119,13 +119,13 @@ function SubmitPayment() {
                 รายละเอียดบัญชีธนาคารของชมรม:{" "}
               </div>
               <div class="text-xl text-black font-medium mt-3">
-                ธนาคารกรุงศรีอยุธยา
+                ธนาคารกสิกรไทย
               </div>
               <div class="text-xl text-black font-medium mt-3">
-                หมายเลขธนาคาร: 229199xxxx
+                หมายเลขธนาคาร: 0518785338
               </div>
               <div class="text-xl text-black font-medium mt-3">
-                ชื่อผู้รับเงิน: ชมรมผู้สูงอายุ
+                ชื่อผู้รับเงิน: อัญชิสา เชิดสัตยานุกูล
               </div>
             </div>
           </div>

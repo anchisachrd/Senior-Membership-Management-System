@@ -122,7 +122,7 @@ function StaffCandidateList() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="text-center align-middle py-4">
+                  <td colSpan="7" className="text-center align-middle py-4">
                     ไม่พบรายชื่อผู้สมัคร
                   </td>
                 </tr>

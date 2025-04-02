@@ -10,7 +10,7 @@ import {
 import { LuPiggyBank } from "react-icons/lu";
 import { MdOutlineDashboard, MdLogout, MdOutlinePaid, MdOutlineFilePresent } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
-import { FaRegCircleCheck, FaUserTie } from "react-icons/fa6";
+import { FaRegCircleCheck, FaUserTie, FaHouseUser } from "react-icons/fa6";
 import { Link } from "react-router";
 import { verifyUser } from "../api/verifyApi";
 import { IoMdInformationCircleOutline } from "react-icons/io";
@@ -19,12 +19,14 @@ import { GrContactInfo } from "react-icons/gr";
 
 function SidebarStaff() {
   const navigate = useNavigate();
+  const [activeMenu, setActiveMenu] = useState('');
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userTitle, setUserTitle] = useState("");
   const [userFirstName, setUserFirstName] = useState("");
   const [userLastName, setUserLastName] = useState("");
   const [userThaiRole, setUserThaiRole] = useState("");
+  const [committeeId, setCommitteeId] = useState("");
   const [userPaymentInfo, setUserPaymentInfo] = useState({
     is_pay: false,
     type_payment: "",
@@ -40,7 +42,8 @@ function SidebarStaff() {
 
   const [notiCommittee, setNotiCommittee] = useState({
     waiting_approval: '',
-    waiting_committee: ''
+    waiting_committee: '',
+    pay: ''
   });
 
   // Dropdown states (each dropdown has its own state)
@@ -51,6 +54,15 @@ function SidebarStaff() {
   useEffect(() => {
     fetchUserProfile();
   }, [userEmail]);
+
+  useEffect(() => {
+    if (userRole === "committee" && committeeId) {
+      fetchNotiCommittee(committeeId);
+    } else if (userRole === "staff") {
+      fetchNotiStaff();
+    }
+  }, [userRole, committeeId, notiCommittee, notiStaff]); 
+
 
   const fetchUserProfile = async () => {
     try {
@@ -64,7 +76,7 @@ function SidebarStaff() {
 
       if (data.role === "staff") {
         setUserThaiRole("เจ้าหน้าที่");
-        fetchNotiStaff();
+        setActiveMenu("Dashboard");
       }
       if (data.role === "committee") {
         setUserThaiRole("กรรมการ");
@@ -72,13 +84,17 @@ function SidebarStaff() {
           is_pay: data.info.is_pay,
           type_payment: data.info.type_payment,
         });
-        fetchNotiCommittee();
+        setCommitteeId(data.role_id);
+        setActiveMenu("Dashboard");
       }
+
 
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
     }
   };
+
+
 
   const handleLogout = async () => {
     await fetch("http://localhost:3000/api/auth/logout", {
@@ -115,9 +131,9 @@ function SidebarStaff() {
     }
   };
 
-  const fetchNotiCommittee = async () => {
+  const fetchNotiCommittee = async (committee_id) => {
     try {
-      const response = await fetch("http://localhost:3000/api/noti/noti-committee", {
+      const response = await fetch(`http://localhost:3000/api/noti/noti-committee?committee_id=${committee_id}`, {
         method: "GET",
         credentials: "include",
       });
@@ -125,15 +141,18 @@ function SidebarStaff() {
       const data = await response.json();
       setNotiCommittee({
         waiting_approval: data.waiting_approval,
-        waiting_committee: data.waiting_committee
+        waiting_committee: data.waiting_committee,
+        pay: data.pay
       })
-      
-
-
     } catch (error) {
       console.error("Fetch Data Error:", error);
     }
   };
+
+  const handleMenuClick = (menuName) => {
+    setActiveMenu(menuName);
+  };
+
 
 
 
@@ -183,9 +202,16 @@ function SidebarStaff() {
                 <li>
                   <Link
                     to="/dashboard"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    onClick={() => handleMenuClick("Dashboard")} className={`flex items-center p-3 rounded-lg group 
+                      ${activeMenu === "Dashboard"
+                        ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                        : "dark:text-gray-500 dark:hover:bg-gray-700"
+                        }`}
                   >
-                    <MdOutlineDashboard className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <MdOutlineDashboard className={`w-5 h-5 ${activeMenu === "Dashboard"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       Dashboard
                     </span>
@@ -231,9 +257,13 @@ function SidebarStaff() {
                     <li>
                       <Link
                         to="/committee_candidateList"
-                        className="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                        onClick={() => handleMenuClick("เอกสารการสมัคร")} className={`flex items-center ml-10 rounded-lg group 
+                          ${activeMenu === "เอกสารการสมัคร"
+                            ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                            : "dark:text-gray-500 dark:hover:bg-gray-700"
+                            }`}
                       >
-                        <span className="ms-2 mt-1 dark:group-hover:text-white">
+                        <span className="ms-2 mt-1 p-2 dark:group-hover:text-white">
                           เอกสารการสมัคร
                         </span>
                         {notiCommittee.waiting_approval !== '0' && (
@@ -246,9 +276,13 @@ function SidebarStaff() {
                     <li>
                       <Link
                         to="/committee/death-list"
-                        className="flex items-center p-2 ml-11 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                        onClick={() => handleMenuClick("เอกสารการเสียชีวิต")} className={`flex items-center ml-10 rounded-lg group 
+                          ${activeMenu === "เอกสารการเสียชีวิต"
+                            ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                            : "dark:text-gray-500 dark:hover:bg-gray-700"
+                            }`}
                       >
-                        <span className=" ms-2 mt-1 dark:group-hover:text-white">
+                        <span className="ms-2 mt-1 p-2 dark:group-hover:text-white">
                           เอกสารการเสียชีวิต
                         </span>
                         {notiCommittee.waiting_committee !== '0' && (
@@ -264,28 +298,81 @@ function SidebarStaff() {
                 <li>
                   <Link
                     to="/final-approval"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    onClick={() => handleMenuClick("สรุปผลการอนุมัติสมาชิก")} className={`flex items-center p-3 rounded-lg group 
+                      ${activeMenu === "สรุปผลการอนุมัติสมาชิก"
+                        ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                        : "dark:text-gray-500 dark:hover:bg-gray-700"
+                        }`}
                   >
-                    <IoDocumentTextOutline className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <IoDocumentTextOutline className={`w-5 h-5 ${activeMenu === "สรุปผลการอนุมัติสมาชิก"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       สรุปผลการอนุมัติสมาชิก
                     </span>
                   </Link>
                 </li>
 
-                {(userPaymentInfo.is_pay === true && userPaymentInfo.type_payment === "ค่าใช้จ่ายทั่วไปในชมรม") && (
+                {(userPaymentInfo.is_pay === true && userPaymentInfo.type_payment === "ค่าใช้จ่ายทั่วไป") && (
                   <li>
                     <Link
                       to="/club-expense"
-                      className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                      onClick={() => handleMenuClick("แจ้งชำระค่าใช้จ่ายทั่วไป")} className={`flex items-center p-3 rounded-lg group 
+                        ${activeMenu === "แจ้งชำระค่าใช้จ่ายทั่วไป"
+                          ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                          : "dark:text-gray-500 dark:hover:bg-gray-700"
+                          }`}
                     >
-                      <MdOutlinePaid className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                      <MdOutlinePaid className={`w-5 h-5 ${activeMenu === "แจ้งชำระค่าใช้จ่ายทั่วไป"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                       <span className="ms-3 mt-1 dark:group-hover:text-white">
                         แจ้งชำระค่าใช้จ่ายทั่วไป
                       </span>
                     </Link>
                   </li>
                 )}
+                {(userPaymentInfo.is_pay === true && userPaymentInfo.type_payment === "โอนเงินสงเคราะห์") && (
+                  <li>
+                    <Link
+                      to="/notify/death-payment"
+                      onClick={() => handleMenuClick("แจ้งโอนเงินสงเคราะห์")} className={`flex items-center p-3 rounded-lg group 
+                        ${activeMenu === "แจ้งโอนเงินสงเคราะห์"
+                          ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                          : "dark:text-gray-500 dark:hover:bg-gray-700"
+                          }`}
+                    >
+                      <MdOutlinePaid className={`w-5 h-5 ${activeMenu === "แจ้งโอนเงินสงเคราะห์"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
+                      <span className="ms-2 mt-1 dark:group-hover:text-white">
+                        แจ้งโอนเงินสงเคราะห์
+                      </span>
+                      {notiCommittee.pay !== '0' && (
+                        <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-1">
+                          {notiCommittee.pay}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                )}
+
+                <li>
+                  <Link to='/profile-staff' onClick={() => handleMenuClick("โปรไฟล์")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "โปรไฟล์"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                    <FaHouseUser className={`w-5 h-5 ${activeMenu === "โปรไฟล์"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
+                    <span class="ms-3 mt-1 dark:group-hover:text-white">โปรไฟล์</span>
+                  </Link>
+                </li>
 
 
               </div>
@@ -295,9 +382,16 @@ function SidebarStaff() {
                 <li>
                   <Link
                     to="/dashboard"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    onClick={() => handleMenuClick("Dashboard")} className={`flex items-center p-3 rounded-lg group 
+                      ${activeMenu === "Dashboard"
+                        ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                        : "dark:text-gray-500 dark:hover:bg-gray-700"
+                        }`}
                   >
-                    <MdOutlineDashboard className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <MdOutlineDashboard className={`w-5 h-5 ${activeMenu === "Dashboard"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       Dashboard
                     </span>
@@ -307,9 +401,16 @@ function SidebarStaff() {
                 <li>
                   <Link
                     to="/club-account"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    onClick={() => handleMenuClick("บัญชีชมรม")} className={`flex items-center p-3 rounded-lg group 
+                      ${activeMenu === "บัญชีชมรม"
+                        ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                        : "dark:text-gray-500 dark:hover:bg-gray-700"
+                        }`}
                   >
-                    <LuPiggyBank className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <LuPiggyBank className={`w-5 h-5 ${activeMenu === "บัญชีชมรม"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       บัญชีชมรม
                     </span>
@@ -319,9 +420,16 @@ function SidebarStaff() {
                 <li>
                   <Link
                     to="/staff_checkPayment"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    onClick={() => handleMenuClick("การตรวจสอบสลิป")} className={`flex items-center p-3 rounded-lg group 
+                      ${activeMenu === "การตรวจสอบสลิป"
+                        ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                        : "dark:text-gray-500 dark:hover:bg-gray-700"
+                        }`}
                   >
-                    <FaRegCircleCheck className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <FaRegCircleCheck className={`w-5 h-5 ${activeMenu === "การตรวจสอบสลิป"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       การตรวจสอบสลิป
                     </span>
@@ -332,9 +440,16 @@ function SidebarStaff() {
                 <li>
                   <Link
                     to="/member-list/notify-death"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    onClick={() => handleMenuClick("แจ้งเสียชีวิต")} className={`flex items-center p-3 rounded-lg group 
+                      ${activeMenu === "แจ้งเสียชีวิต"
+                        ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                        : "dark:text-gray-500 dark:hover:bg-gray-700"
+                        }`}
                   >
-                    <MdOutlineFilePresent className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <MdOutlineFilePresent className={`w-5 h-5 ${activeMenu === "แจ้งเสียชีวิต"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       แจ้งเสียชีวิต
                     </span>
@@ -348,26 +463,40 @@ function SidebarStaff() {
                 <li>
                   <Link
                     to="/death/member-list"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    onClick={() => handleMenuClick("ข้อมูลสมาชิกที่เสียชีวิต")} className={`flex items-center p-3 rounded-lg group 
+                      ${activeMenu === "ข้อมูลสมาชิกที่เสียชีวิต"
+                        ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                        : "dark:text-gray-500 dark:hover:bg-gray-700"
+                        }`}
                   >
-                    <GrContactInfo className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <GrContactInfo className={`w-5 h-5 ${activeMenu === "ข้อมูลสมาชิกที่เสียชีวิต"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       ข้อมูลสมาชิกที่เสียชีวิต
                     </span>
                     {notiStaff.heir_wait_transfer !== '0' && (
-                          <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full">
-                            {notiStaff.heir_wait_transfer}
-                          </span>
-                        )}
+                      <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full">
+                        {notiStaff.heir_wait_transfer}
+                      </span>
+                    )}
                   </Link>
                 </li>
 
                 <li>
                   <Link
                     to="/member-list"
-                    className="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                    onClick={() => handleMenuClick("ข้อมูลสมาชิกปัจจุบัน")} className={`flex items-center p-3 rounded-lg group 
+                      ${activeMenu === "ข้อมูลสมาชิกปัจจุบัน"
+                        ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                        : "dark:text-gray-500 dark:hover:bg-gray-700"
+                        }`}
                   >
-                    <IoMdInformationCircleOutline className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <IoMdInformationCircleOutline className={`w-5 h-5 ${activeMenu === "ข้อมูลสมาชิกปัจจุบัน"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="ms-3 mt-1 dark:group-hover:text-white">
                       ข้อมูลสมาชิกปัจจุบัน
                     </span>
@@ -381,7 +510,10 @@ function SidebarStaff() {
                     onClick={() => setOpenCandidate(!openCandidate)}
                     className="flex items-center w-full p-3 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                   >
-                    <IoPeopleOutline className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                    <IoPeopleOutline className={`w-5 h-5 ${activeMenu === "จัดการผู้สมัคร"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
                     <span className="flex-1 ms-3 mt-1 text-left whitespace-nowrap dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white">
                       จัดการผู้สมัคร
                     </span>
@@ -413,7 +545,11 @@ function SidebarStaff() {
                     <li>
                       <Link
                         to="/staff_candidateList"
-                        className="flex items-center ml-10 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                        onClick={() => handleMenuClick("ตรวจสอบข้อมูลสมัคร")} className={`flex items-center ml-10 rounded-lg group 
+                          ${activeMenu === "ตรวจสอบข้อมูลสมัคร"
+                            ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                            : "dark:text-gray-500 dark:hover:bg-gray-700"
+                            }`}
                       >
                         <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
                           ตรวจสอบข้อมูลสมัคร
@@ -429,7 +565,11 @@ function SidebarStaff() {
                     <li>
                       <Link
                         to="/staff_cadidateWaitingList"
-                        className="flex items-center ml-10 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
+                        onClick={() => handleMenuClick("แถวคอยการสมัคร")} className={`flex items-center ml-10 rounded-lg group 
+                          ${activeMenu === "แถวคอยการสมัคร"
+                            ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                            : "dark:text-gray-500 dark:hover:bg-gray-700"
+                            }`}
                       >
                         <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
                           แถวคอยการสมัคร
@@ -437,23 +577,26 @@ function SidebarStaff() {
 
                         {notiStaff.waiting_list !== '0' && (
                           <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-1">
-                          {notiStaff.waiting_list}
-                        </span>
+                            {notiStaff.waiting_list}
+                          </span>
                         )}
 
                       </Link>
                     </li>
-                    <li>
-                      <Link
-                        to="/staff_candidateList"
-                        className="flex items-center ml-10 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group"
-                      >
-                        <span className="ms-3 mt-1 p-2 dark:group-hover:text-white">
-                          ไม่ผ่านการอนุมัติ
-                        </span>
-                      </Link>
-                    </li>
                   </ul>
+                  <li>
+                    <Link to='/profile-staff' onClick={() => handleMenuClick("โปรไฟล์")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "โปรไฟล์"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                      <FaHouseUser className={`w-5 h-5 ${activeMenu === "โปรไฟล์"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}  />
+                      <span class="ms-3 mt-1 dark:group-hover:text-white">โปรไฟล์</span>
+                    </Link>
+                  </li>
                 </li>
               </div>
             )}

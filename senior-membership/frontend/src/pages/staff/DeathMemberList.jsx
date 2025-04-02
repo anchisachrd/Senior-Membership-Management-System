@@ -9,6 +9,8 @@ function DeathMemberList() {
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userRoleId, setUserRoleId] = useState("");
+
 
   useEffect(() => {
     fetchUserProfile();
@@ -57,6 +59,26 @@ function DeathMemberList() {
     navigate(`/member/${memberId}`);
   };
 
+  const addClubExpense = async (payload) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/club/add-club-expense", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to add club expense");
+      }
+  
+      return await response.json();
+    } catch (err) {
+      console.error("Add Club Expense Error:", err);
+      throw err;
+    }
+  };
 
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -78,7 +100,7 @@ function DeathMemberList() {
         (categoryFilter === "" || categoryFilter === statusText)
       );
     });
-
+  
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
@@ -94,7 +116,7 @@ function DeathMemberList() {
                   type="search"
                   id="default-search"
                   className="w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
-                  placeholder="ค้นหา..."
+                  placeholder="ค้นหาโดยใช้รหัสสมาชิกหรือชื่อสมาชิก"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -191,9 +213,26 @@ function DeathMemberList() {
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-800"
                       }`}
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevent triggering row click
-                        navigate(`/submitPayment/${member.report_id}`);
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                    
+                        try {
+                          await addClubExpense({
+                            amount: 15000,
+                            paid_by: null,
+                            proof_path: null,
+                            death_report_id: member.report_id,
+                            paid_to_heir_id: member.heir_id,
+                            expense_type: "โอนเงินสงเคราะห์",
+                            note: null,
+                            paid_at: null,
+                          });
+                    
+                          alert("เพิ่มรายการสำเร็จ");
+                          // navigate(`/submitPayment/${member.report_id}`);
+                        } catch (error) {
+                          alert("เกิดข้อผิดพลาดในการเพิ่มรายการ");
+                        }
                       }}
                     >
                       ส่งข้อมูล

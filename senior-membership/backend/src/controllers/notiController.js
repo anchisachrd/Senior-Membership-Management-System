@@ -14,8 +14,11 @@ export const getNotiStaff = async (req, res) => {
   };
 
   export const getNotiCommittee = async (req, res) => {
+
+    const {committee_id} = req.query
+
     try {
-      const result = await notiService.notiCommittee();
+      const result = await notiService.notiCommittee(committee_id);
       return res.status(200).json(result);
     } catch (error) {
       console.error("noti error:", error.message);

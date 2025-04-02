@@ -8,7 +8,7 @@ import * as candidateModel from "../models/candidateModel.js";
 import * as peopleModel from "../models/peopleModel.js";
 import * as docVerificationModel from "../models/docVerificationModel.js";
 import * as emailService from "../utils/emailService.js";
-import * as memberModel from "../models/memberModel.js"
+import * as memberModel from "../models/memberModel.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import path from "path";
@@ -236,6 +236,7 @@ export const fetchAllCandidateAndHeirData = async (candidateId) => {
     priority: candidateRow.priority,
     account_id: candidateRow.account_id,
     address_id: candidateRow.address_id,
+    final_approval_status: candidateRow.final_approval_status,
 
     // candidate docs
     documents: candidateDocsObj,
@@ -321,11 +322,12 @@ export const sendEmailMembership = async (candidateId, reason) => {
   const heirSubject = `แจ้งข้อมูลเข้าสู่ระบบสมาชิกชมรมผู้สูงอายุสำหรับทายาท`;
 
   const heirPassword = generateRandomPassword();
-  const hashedPassword = hashPassword(heirPassword);
-  console.log( "eamil: ", email, heir_email)
+  console.log("heirPassword: ", heirPassword);
 
+  const hashedPassword = await hashPassword(heirPassword);
+  console.log("hashedPassword: ", hashedPassword);
+  
   if (final_approval_status === "อนุมัติ") {
-
     const candidatePassContent = emailService.generateApprovalEmail(full_name);
     const heirPassContent = emailService.generatePasswordEmailTemplate(
       heir_name,
@@ -337,23 +339,18 @@ export const sendEmailMembership = async (candidateId, reason) => {
       hashedPassword
     );
 
-    await candidateModel.updateIsMember(candidateId, true)
+    await candidateModel.updateIsMember(candidateId, true);
     await accountModel.activateMemberAccount(candidateId);
-    await memberModel.addMember(candidateId)
-   
+    await memberModel.addMember(candidateId);
+
     await emailService.sendEmail(email, candidateSubject, candidatePassContent);
     await emailService.sendEmail(heir_email, heirSubject, heirPassContent);
-
   } else if (final_approval_status === "ไม่อนุมัติ") {
-    await candidateModel.updateIsMember(candidateId, false)
+    await candidateModel.updateIsMember(candidateId, false);
     const candidateFailContent = emailService.generateRejectionEmail(
       full_name,
       reason
     );
-    await emailService.sendEmail(
-      email,
-      candidateSubject,
-      candidateFailContent
-    );
+    await emailService.sendEmail(email, candidateSubject, candidateFailContent);
   }
 };

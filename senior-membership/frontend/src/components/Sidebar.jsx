@@ -11,13 +11,15 @@ import { verifyUser } from "../api/verifyApi";
 
 function Sidebar() {
   const navigate = useNavigate();
-
+  const [activeMenu, setActiveMenu] = useState('');
   const [userRole, setUserRole] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const [userTitle, setUserTitle] = useState('')
   const [userFirstName, setUserFirstName] = useState('')
   const [userLastName, setUserLastName] = useState('')
   const [userThaiRole, setUserThaiRole] = useState('')
+  const [heirId, setHeirId] = useState("");
+  const [memberId, setMemberId] = useState("");
   const [notiHeir, setNotiHeir] = useState({
     rejected_death: '',
     approved_death: ''
@@ -31,6 +33,16 @@ function Sidebar() {
     fetchUserProfile();
   }, [userEmail]);
 
+
+  useEffect(() => {
+    if (userRole === "member" && memberId) {
+      fetchNotiMember(memberId);
+    } else if (userRole === "heir" && heirId) {
+      fetchNotiHeir(heirId);
+    }
+  }, [userRole, memberId, heirId, notiMember, notiHeir]);
+
+
   const fetchUserProfile = async () => {
     try {
       const data = await verifyUser();
@@ -42,11 +54,13 @@ function Sidebar() {
 
       if (data.role === 'member') {
         setUserThaiRole('สมาชิก');
-        fetchNotiMember(data.role_id);
+        setMemberId(data.role_id);
+        setActiveMenu("ประวัติการชำระเงิน")
       }
       if (data.role === 'heir') {
         setUserThaiRole('ทายาท');
-        fetchNotiHeir(data.role_id);
+        setHeirId(data.role_id);
+        setActiveMenu("ฟอร์มแจ้งเสียชีวิต")
       }
 
     } catch (error) {
@@ -105,6 +119,10 @@ function Sidebar() {
     }
   };
 
+  const handleMenuClick = (menuName) => {
+    setActiveMenu(menuName);
+  };
+
 
   return (
 
@@ -132,14 +150,28 @@ function Sidebar() {
             {userRole !== 'heir' ? (
               <div>
                 <li>
-                  <Link to='/report-summary' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <IoDocumentTextOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <Link to='/report-summary' onClick={() => handleMenuClick("สรุปการเงินชมรม")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "สรุปการเงินชมรม"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                    <IoDocumentTextOutline className={`w-5 h-5 ${activeMenu === "สรุปการเงินชมรม"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`} />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">สรุปการเงินชมรม</span>
                   </Link>
                 </li>
                 <li>
-                  <Link to='/history' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <AiOutlineHistory class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <Link to='/history' onClick={() => handleMenuClick("ประวัติการชำระเงิน")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "ประวัติการชำระเงิน"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                    <AiOutlineHistory className={`w-5 h-5 ${activeMenu === "ประวัติการชำระเงิน"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`} />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">ประวัติการชำระเงิน</span>
                     {notiMember.unpaid !== '0' && (
                       <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
@@ -149,8 +181,15 @@ function Sidebar() {
                   </Link>
                 </li>
                 <li>
-                  <Link to='/profile' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <FaHouseUser class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <Link to='/profile' onClick={() => handleMenuClick("โปรไฟล์")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "โปรไฟล์"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                    <FaHouseUser  className={`w-5 h-5 ${activeMenu === "โปรไฟล์"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`}/>
                     <span class="ms-3 mt-1 dark:group-hover:text-white">โปรไฟล์</span>
                   </Link>
                 </li>
@@ -158,8 +197,15 @@ function Sidebar() {
             ) : (
               <div>
                 <li>
-                  <Link to='/deathReport' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <IoDocumentTextOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <Link to='/deathReport' onClick={() => handleMenuClick("ฟอร์มแจ้งเสียชีวิต")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "ฟอร์มแจ้งเสียชีวิต"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                    <IoDocumentTextOutline className={`w-5 h-5 ${activeMenu === "ฟอร์มแจ้งเสียชีวิต"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`} />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">ฟอร์มแจ้งเสียชีวิต</span>
                     {notiHeir.rejected_death !== '0' && (
                       <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
@@ -169,8 +215,15 @@ function Sidebar() {
                   </Link>
                 </li>
                 <li>
-                  <Link to='/request-form' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <TiDocumentText class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <Link to='/request-form' onClick={() => handleMenuClick("ฟอร์มคำร้อง")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "ฟอร์มคำร้อง"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                    <TiDocumentText className={`w-5 h-5 ${activeMenu === "ฟอร์มคำร้อง"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`} />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">ฟอร์มคำร้อง</span>
                     {notiHeir.approved_death !== '0' && (
                       <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
@@ -180,14 +233,28 @@ function Sidebar() {
                   </Link>
                 </li>
                 <li>
-                  <Link to='/heir_register' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <FaUserPlus class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <Link to='/heir_register' onClick={() => handleMenuClick("สมัครสมาชิก")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "สมัครสมาชิก"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                    <FaUserPlus className={`w-5 h-5 ${activeMenu === "สมัครสมาชิก"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`} />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">สมัครสมาชิก</span>
                   </Link>
                 </li>
                 <li>
-                  <Link to='/profile' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <FaHouseUser class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <Link to='/profile' onClick={() => handleMenuClick("โปรไฟล์")} className={`flex items-center p-3 rounded-lg group 
+                  ${activeMenu === "โปรไฟล์"
+                    ? "bg-gray-700 text-white" // เมนูที่ถูกคลิกจะมีสีเข้มขึ้น
+                    : "dark:text-gray-500 dark:hover:bg-gray-700"
+                    }`}>
+                    <FaHouseUser className={`w-5 h-5 ${activeMenu === "โปรไฟล์"
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
+                      }`} />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">โปรไฟล์</span>
                   </Link>
                 </li>

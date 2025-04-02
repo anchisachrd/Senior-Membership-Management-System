@@ -175,6 +175,19 @@ export const updateDeathReport = async ({
   );
 };
 
+export const updateIsFinalized = async (reportId, status) => {
+  const result = await query(
+    `UPDATE death_reports
+     SET is_finalized = $1
+     WHERE report_id = $2
+     RETURNING *;`,
+    [status, reportId]
+  );
+
+  return result.rows[0];
+};
+
+
 
 
 

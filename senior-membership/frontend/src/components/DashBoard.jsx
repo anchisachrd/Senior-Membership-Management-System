@@ -38,14 +38,21 @@ function Dashboard() {
   const [lineChart, setLineChart] = useState([]);
   const [barChart, setBarChart] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [latestYear, setLatestYear] = useState(null);
 
   const [range, setRange] = useState("6m");
   const [selectedMonth, setSelectedMonth] = useState(0);
   const [selectedYear, setSelectedYear] = useState("2568");
+  const [chartType, setChartType] = useState("line"); // or "bar"
 
   useEffect(() => {
     fetchDashboard();
-  }, [selectedYear]);
+  }, [selectedYear, range, selectedMonth]);
+
+  useEffect(() => {
+    console.log("lineChart จาก backend:", lineChart);
+  }, [lineChart]);
+  
 
   const fetchDashboard = async () => {
     try {
@@ -59,18 +66,46 @@ function Dashboard() {
       setLineChart(res.data.lineChart);
       setBarChart(res.data.barChart);
       setTransactions(res.data.latestTransactions);
+      setLatestYear(res.data.latestYear); // assuming backend returns it
     } catch (err) {
       console.error("Error fetching dashboard:", err);
     }
   };
 
   const getFilteredChartData = (data) => {
-    if (range === "3m") return data.slice(-3);
-    if (range === "6m") return data.slice(-6);
-    if (range === "1y") return data;
-    if (range === "custom") return [data[selectedMonth]];
-    return data;
+    const now = new Date();
+  
+    const selectedYearBE = parseInt(selectedYear);
+    const selectedYearCE = selectedYearBE - 543;
+  
+    const isLatestYear = selectedYearBE === parseInt(latestYear);
+    const systemYear = now.getFullYear();
+  
+    let currentMonthIndex = 11;
+    if (isLatestYear && selectedYearCE === systemYear) {
+      currentMonthIndex = now.getMonth(); // ถ้าเป็นปีล่าสุด → เอาเดือนปัจจุบัน
+    }
+  
+    let startIndex = 0;
+    let endIndex = 11;
+  
+    if (range === "3m") {
+      startIndex = Math.max(0, currentMonthIndex - 2);
+      endIndex = currentMonthIndex;
+    } else if (range === "6m") {
+      startIndex = Math.max(0, currentMonthIndex - 5);
+      endIndex = currentMonthIndex;
+    } else if (range === "custom") {
+      startIndex = selectedMonth;
+      endIndex = selectedMonth;
+    }
+  
+    // ✨ กรองข้อมูลตาม index
+    return data.slice(startIndex, endIndex + 1);
   };
+  
+  
+  
 
   if (!summary) return <div className="p-12 sm:ml-64">กำลังโหลดข้อมูล...</div>;
 
@@ -78,23 +113,6 @@ function Dashboard() {
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
         <h1 className="text-2xl font-bold text-gray-800">แดชบอร์ดภาพรวม</h1>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-6">
-          <SummaryCard
-            title="รายรับรวม"
-            value={`฿${Number(summary.totalIncome).toLocaleString()}`}
-            highlight="green"
-          />
-          <SummaryCard
-            title="รายจ่ายรวม"
-            value={`฿${Number(summary.totalExpense).toLocaleString()}`}
-            highlight="red"
-          />
-          <SummaryCard
-            title="ยอดเงินปัจจุบัน"
-            value={`฿${Number(summary.currentBalance).toLocaleString()}`}
-          />
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2 ">
           <SummaryCard
@@ -125,17 +143,17 @@ function Dashboard() {
               {
                 label: "รอการตรวจสอบ",
                 value: summary.verification.waiting,
-                color: 'yellow'
+                color: "yellow",
               },
               {
                 label: "รอกรรมการพิจารณา/แก้ไข",
                 value: summary.candidateApproval.waiting,
-                color: 'orange'
+                color: "orange",
               },
               {
                 label: "กรรมการไม่อนุมัติ",
                 value: summary.candidateApproval.rejected,
-                color: 'red'
+                color: "red",
               },
             ]}
           />
@@ -145,124 +163,181 @@ function Dashboard() {
               {
                 label: "รอการตรวจสอบ",
                 value: summary.deathReport.staffWaiting,
-                color: 'yellow'
+                color: "yellow",
               },
               {
                 label: "รอกรรมการพิจารณา/แก้ไข",
                 value: summary.deathReport.committeeWaiting,
-                color: 'orange'
+                color: "orange",
               },
               {
                 label: "กรรมการไม่อนุมัติ",
                 value: summary.deathReport.committeeRejected,
-                color: 'red'
+                color: "red",
               },
             ]}
           />
         </div>
 
+        <div className="flex items-center gap-2 mt-8">
+          <label className="text-sm text-gray-700">เลือกปี:</label>
+          <select
+            className="border rounded px-2 py-1 text-sm"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+          >
+            <option value="2568">2568</option>
+            <option value="2567">2567</option>
+            <option value="2566">2566</option>
+          </select>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
+          <SummaryCard
+            title="รายรับรวม"
+            value={`฿${Number(summary.totalIncome).toLocaleString()}`}
+            highlight="green"
+          />
+          <SummaryCard
+            title="รายจ่ายรวม"
+            value={`฿${Number(summary.totalExpense).toLocaleString()}`}
+            highlight="red"
+          />
+          <SummaryCard
+            title="ยอดเงินสุทธิ"
+            value={`฿${Number(summary.currentBalance).toLocaleString()}`}
+          />
+        </div>
+
         {/* Filter */}
-        <div className="flex flex-wrap justify-end gap-2 items-center mt-5">
-          <button
-            onClick={() => setRange("3m")}
-            className={`px-4 py-1 rounded-full text-sm border ${
-              range === "3m"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-600"
-            }`}
-          >
-            3 เดือน
-          </button>
-          <button
-            onClick={() => setRange("6m")}
-            className={`px-4 py-1 rounded-full text-sm border ${
-              range === "6m"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-600"
-            }`}
-          >
-            6 เดือน
-          </button>
-          <button
-            onClick={() => setRange("1y")}
-            className={`px-4 py-1 rounded-full text-sm border ${
-              range === "1y"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-600"
-            }`}
-          >
-            ทั้งปี
-          </button>
-          <button
-            onClick={() => setRange("custom")}
-            className={`px-4 py-1 rounded-full text-sm border ${
-              range === "custom"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-600"
-            }`}
-          >
-            เลือกเดือน
-          </button>
-          {range === "custom" && (
-            <select
-              className="border rounded px-2 py-1 text-sm ml-2"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(Number(e.target.value))}
+        {/* Filter + Year + Chart Type Switch */}
+        <div className="flex flex-wrap justify-between items-center mt-6 gap-4">
+          {/* Year Selector */}
+
+          {/* Range Selector */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              {/* Always show: ทั้งปี */}
+              <button
+                onClick={() => setRange("1y")}
+                className={`px-4 py-1 rounded-full text-sm border ${
+                  range === "1y"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-600"
+                }`}
+              >
+                ทั้งปี
+              </button>
+
+             
+             
+
+              {/* Always show: เลือกเดือน */}
+              <button
+                onClick={() => setRange("custom")}
+                className={`px-4 py-1 rounded-full text-sm border ${
+                  range === "custom"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-600"
+                }`}
+              >
+                เลือกเดือน
+              </button>
+
+              {/* Month dropdown only when custom is selected */}
+              {range === "custom" && (
+                <select
+                  className="border rounded px-2 py-1 text-sm"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                >
+                  {monthOptions.map((month, index) => (
+                    <option key={month} value={index}>
+                      {month}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          </div>
+
+          {/* Chart Type Toggle */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setChartType("line")}
+              className={`px-4 py-1 rounded-full text-sm border ${
+                chartType === "line"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-600"
+              }`}
             >
-              {monthOptions.map((month, index) => (
-                <option key={month} value={index}>
-                  {month}
-                </option>
-              ))}
-            </select>
-          )}
+              กราฟเส้น
+            </button>
+            <button
+              onClick={() => setChartType("bar")}
+              className={`px-4 py-1 rounded-full text-sm border ${
+                chartType === "bar"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-600"
+              }`}
+            >
+              กราฟแท่ง
+            </button>
+          </div>
         </div>
 
         {/* Line Chart */}
-        <div className="bg-white p-6 shadow-lg rounded-xl mt-5">
-          <h2 className="text-lg font-semibold mb-4">แนวโน้มรายรับ-รายจ่าย</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={getFilteredChartData(lineChart)}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="รายรับ"
-                stroke="#16a34a"
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="รายจ่าย"
-                stroke="#dc2626"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Bar Chart */}
-        <div className="bg-white p-6 shadow-lg rounded-xl mt-5">
-          <h2 className="text-lg font-semibold mb-4">กราฟแท่งรายรับ-รายจ่าย</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={getFilteredChartData(barChart)}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="รายรับ" fill="#16a34a" />
-              <Bar dataKey="รายจ่าย" fill="#dc2626" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        {chartType === "line" ? (
+          <div className="bg-white p-6 shadow-sm border rounded-xl mt-5">
+            <h2 className="text-lg font-semibold mb-4">
+              แนวโน้มรายรับ-รายจ่าย
+            </h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={getFilteredChartData(lineChart)}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="รายรับ"
+                  stroke="#16a34a"
+                  strokeWidth={2}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="รายจ่าย"
+                  stroke="#dc2626"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="bg-white p-6 shadow-lg rounded-xl mt-5">
+            <h2 className="text-lg font-semibold mb-4">
+              กราฟแท่งรายรับ-รายจ่าย
+            </h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={getFilteredChartData(barChart)}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="รายรับ" fill="#16a34a" />
+                <Bar dataKey="รายจ่าย" fill="#dc2626" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
 
         {/* Latest Transactions */}
         <div className="bg-white p-6 shadow-lg rounded-xl mt-5">
-          <h2 className="text-lg font-semibold mb-4">รายการล่าสุด</h2>
+          <h2 className="text-lg font-semibold mb-4">
+            รายการล่าสุด (ปี {latestYear})
+          </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-100">
@@ -276,7 +351,7 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((item, index) => (
+                {transactions.slice(0, 5).map((item, index) => (
                   <tr
                     key={index}
                     className={`text-center ${
@@ -289,10 +364,20 @@ function Dashboard() {
                         timeStyle: "medium",
                       })}
                     </td>
-                    <td className="px-4 py-2">{item.type}</td>
+                    <td className="px-4 py-2">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          item.type === "รายรับ"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {item.type}
+                      </span>
+                    </td>
                     <td className="px-4 py-2">{item.name}</td>
                     <td className="px-4 py-2">{item.detail}</td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 text-right">
                       {parseFloat(item.amount).toLocaleString()} บาท
                     </td>
                     <td className="px-4 py-2">{item.note}</td>
@@ -357,7 +442,9 @@ function GroupedSummaryCard({ title, items }) {
         {items.map((item, idx) => (
           <div key={idx} className="flex flex-col items-center px-2">
             <span className="text-gray-500 mt-1">{item.label}</span>
-            <span className={`text-xl font-bold my-3 ${getTextColor(item.color)}`}>
+            <span
+              className={`text-xl font-bold my-3 ${getTextColor(item.color)}`}
+            >
               {item.value}
             </span>
           </div>
@@ -366,7 +453,5 @@ function GroupedSummaryCard({ title, items }) {
     </div>
   );
 }
-
-
 
 export default Dashboard;

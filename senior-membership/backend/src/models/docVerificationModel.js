@@ -69,6 +69,7 @@ export const getCandidateByDocVerification = async () => {
       JOIN people p ON c.person_id = p.person_id
       JOIN document_verification dv ON c.candidate_id = dv.candidate_id
       WHERE dv.verification_status = 'ผ่าน'
+      AND c.is_member IS NULL
       ORDER BY dv.verified_at ASC;
       `
     );

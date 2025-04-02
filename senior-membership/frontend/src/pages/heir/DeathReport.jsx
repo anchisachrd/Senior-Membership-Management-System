@@ -29,7 +29,7 @@ function StatusPage({ deathReport, onResubmit }) {
   ) {
     statusMessage =
       "สถานะการตรวจสอบเอกสารของท่านผ่าน สามารถส่งคำร้องขอรับเงินได้เลย";
-    showResubmit = true;
+    showResubmit = false;
   }
 
   return (

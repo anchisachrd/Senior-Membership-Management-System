@@ -7,10 +7,12 @@ import HeirInfo from "../../components/HeirInfo";
 import CandidateInfo from "../../components/CandidateInfo";
 import DeathReportDetail from "../../components/DeathReportDetail";
 import { verifyUser } from "../../api/verifyApi";
+import HeirPaymentDetail from "../committee/HeirPaymentDetail";
 
 function MemberProfile() {
   const { memberId } = useParams();
-
+  const location = useLocation();
+  const { context } = location.state || { context: null };
   const [member, setMember] = useState(null);
   const [heir, setHeir] = useState(null);
 
@@ -25,7 +27,6 @@ function MemberProfile() {
   // สำหรับเช็ค role
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
- 
 
   useEffect(() => {
     fetchUserProfile();
@@ -117,7 +118,7 @@ function MemberProfile() {
             </button>
           </li>
 
-          {userRole !== 'committee' && (
+          {userRole !== "committee" && (
             <li className="me-2">
               <button
                 onClick={() => setActiveTab("memberPaymentHistory")}
@@ -131,19 +132,36 @@ function MemberProfile() {
               </button>
             </li>
           )}
-          
-          <li className="me-2">
-            <button
-              onClick={() => setActiveTab("memberDeathReport")}
-              className={`inline-block p-4 rounded-t-lg ${
-                activeTab === "memberDeathReport"
-                  ? "text-white bg-gray-600"
-                  : "text-gray-500 bg-gray-300"
-              }`}
-            >
-              ข้อมูลการเสียชีวิต
-            </button>
-          </li>
+
+          {context === "deathData" && (
+            <li className="me-2">
+              <button
+                onClick={() => setActiveTab("memberDeathReport")}
+                className={`inline-block p-4 rounded-t-lg ${
+                  activeTab === "memberDeathReport"
+                    ? "text-white bg-gray-600"
+                    : "text-gray-500 bg-gray-300"
+                }`}
+              >
+                ข้อมูลการเสียชีวิต
+              </button>
+            </li>
+          )}
+
+          {context === "heirPayment" && (
+            <li className="me-2">
+              <button
+                onClick={() => setActiveTab("heirPaymentDetail")}
+                className={`inline-block p-4 rounded-t-lg ${
+                  activeTab === "heirPaymentDetail"
+                    ? "text-white bg-gray-600"
+                    : "text-gray-500 bg-gray-300"
+                }`}
+              >
+                อัปโหลดหลักฐานการชำระเงิน
+              </button>
+            </li>
+          )}
         </ul>
 
         {/* Tab Content */}
@@ -153,8 +171,11 @@ function MemberProfile() {
           )}
           {activeTab === "heirInfo" && heir && <HeirInfo data={heir} />}
           {activeTab === "memberPaymentHistory" && <MemberPaymentHistory />}
-          {activeTab === "memberDeathReport" && (
+          {activeTab === "memberDeathReport" && context === "deathData" && (
             <DeathReportDetail />
+          )}
+          {activeTab === "heirPaymentDetail" && context === "heirPayment" && (
+            <HeirPaymentDetail/>
           )}
         </div>
       </div>

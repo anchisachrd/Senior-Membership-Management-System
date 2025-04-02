@@ -61,6 +61,7 @@ export const getHistoryByMemberId = async (memberId) => {
       sh.error_msg,
       sh.amount,
       sh.report_id,
+      sh.status,
       
       -- รหัสสมาชิกที่เสียชีวิต
       dr.member_id AS death_member_id,

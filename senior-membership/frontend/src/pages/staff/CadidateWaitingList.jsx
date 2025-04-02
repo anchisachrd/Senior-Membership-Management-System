@@ -86,7 +86,12 @@ function CadidateWaitingList() {
 
   const onChangeDate = (data_date) => {
     const dobFromData = new Date(data_date);
-    const filterDob = dobFromData.getDate().toString().padStart(2, "0") + "-" +(dobFromData.getMonth() + 1).toString().padStart(2, "0") + "-" + (dobFromData.getFullYear() + 543)
+    const filterDob =
+      dobFromData.getDate().toString().padStart(2, "0") +
+      "-" +
+      (dobFromData.getMonth() + 1).toString().padStart(2, "0") +
+      "-" +
+      (dobFromData.getFullYear() + 543);
     return filterDob;
   };
 
@@ -125,7 +130,6 @@ function CadidateWaitingList() {
         </div>
 
         <div class="mb-8 overflow-hidden">
-          
         <div class="grid gap-6 md:grid-cols-3">
             <form className="col-span-2 w-full" onSubmit={(e) => e.preventDefault()}>
               <div className="relative">
@@ -133,7 +137,7 @@ function CadidateWaitingList() {
                   type="search"
                   id="default-search"
                   className="w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
-                  placeholder="ค้นหา..."
+                  placeholder="ค้นหาโดยใช้รหัสผู้สมัครหรือชื่อผู้สมัคร"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -143,8 +147,7 @@ function CadidateWaitingList() {
             <select
               className="col-span-1 w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-            >
+              onChange={(e) => setCategoryFilter(e.target.value)}>
               <option value="">สถานะอนุมัติการเป็นสมาชิกทั้งหมด</option>
               <option value="อนุมัติ">อนุมัติ</option>
               <option value="ไม่อนุมัติ">ไม่อนุมัติ</option>
@@ -215,22 +218,22 @@ function CadidateWaitingList() {
                       {candidate.priority ? <FaCheck /> : "-"}
                     </td>
                     <td className="text-center align-middle py-4 px-4">
-                    {onChangeDate(candidate.verified_at)}
+                      {onChangeDate(candidate.verified_at)}
                     </td>
                     <td className="text-center ">
-                    <StatusBadge status={candidate.final_approval_status}/>
+                      <StatusBadge status={candidate.final_approval_status} />
                     </td>
                     <td className="text-center align-middle py-4 px-4 space-x-4">
                       {candidate.final_approval_status ===
-                      "ยังไม่ส่งพิจารณา"  ? (
+                      "ยังไม่ส่งพิจารณา" ? (
                         <button
-                          disabled={
-                            candidate.final_approval_status !==
-                            "ยังไม่ส่งพิจารณา" 
-                          }
-                          
-                          onClick={() => {
-                            if (candidate.final_approval_status !== "ยังไม่ส่งพิจารณา") {
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation(); // 👈 stop the row click
+                            if (
+                              candidate.final_approval_status ===
+                              "ยังไม่ส่งพิจารณา"
+                            ) {
                               openModal(
                                 "ยืนยันการส่งข้อมูล",
                                 "คุณต้องการส่งข้อมูลไปที่กรรมการหรือไม่?",
@@ -238,12 +241,16 @@ function CadidateWaitingList() {
                               );
                             }
                           }}
-                          className={`${
+                          disabled={
+                            candidate.final_approval_status !==
+                            "ยังไม่ส่งพิจารณา"
+                          }
+                          className={`text-white rounded-lg px-4 py-2 ${
                             candidate.final_approval_status ===
                             "ยังไม่ส่งพิจารณา"
-                              ? "bg-gray-400 cursor-not-allowed"
-                              : "bg-blue-600 hover:bg-blue-700"
-                          } text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2`}
+                              ? "bg-blue-600 hover:bg-blue-700"
+                              : "bg-gray-400 cursor-not-allowed"
+                          }`}
                         >
                           ส่งข้อมูล
                         </button>
