@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getActiveMembers } from "../../api/memberApi";
 import { verifyUser } from "../../api/verifyApi";
 import StatusBadge from "../../components/StatusBadge"
-import MemberTable from "../../components/MemberTable";
+
 
 function MemberList() {
   const [members, setMembers] = useState([]);
@@ -29,6 +29,7 @@ function MemberList() {
 
     } catch (error) {
       console.error('Fetch Protected Data Error:', error);
+      navigate("/login");
     }
   };
 
@@ -46,14 +47,59 @@ function MemberList() {
     fetchData();
   }, [userRole]);
 
- // MemberList.js
-const handleRowClick = (memberId) => {
-  navigate(`/member/${memberId}`);
-};
- return (
+  // MemberList.js
+  const handleRowClick = (memberId) => {
+    navigate(`/member/${memberId}`);
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+
+  const filteredMembers = members.filter((member) => {
+    const matchesSearch =
+      member.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.member_id.toString().includes(searchTerm);
+
+    const matchesCategory =
+      categoryFilter === "" || member.member_status === categoryFilter;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
         <div className="text-xl text-black mx-3 mt-5 mb-8 font-bold">รายชื่อสมาชิกปัจจุบัน</div>
+
+        <div class="mb-8 overflow-hidden">
+          <div class="grid gap-6 md:grid-cols-3">
+            <form className="col-span-2 w-full" onSubmit={(e) => e.preventDefault()}>
+              <div className="relative">
+                <input
+                  type="search"
+                  id="default-search"
+                  className="w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+                  placeholder="ค้นหาสมาชิก..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </form>
+
+            {/* Category Filter (2 ส่วน) */}
+            <select
+              className="col-span-1 w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              <option value="">สถานะสมาชิกทั้งหมด</option>
+              <option value="ใช้งานอยู่">ใช้งานอยู่</option>
+              <option value="เสียชีวิต">เสียชีวิต</option>
+            </select>
+          </div>
+        </div>
 
         <div className="relative overflow-hidden shadow-xl sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -70,8 +116,8 @@ const handleRowClick = (memberId) => {
             </thead>
 
             <tbody>
-              {members.length > 0 ? (
-                members.map((member, index) => (
+              {filteredMembers.length > 0 ? (
+                filteredMembers.map((member, index) => (
                   <tr
                     key={member.member_id}
                     className="bg-white border-b hover:bg-gray-50 text-gray-900 cursor-pointer"
@@ -104,6 +150,6 @@ const handleRowClick = (memberId) => {
 
 
 }
-    
+
 
 export default MemberList;

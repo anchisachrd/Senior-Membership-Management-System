@@ -64,11 +64,55 @@ function CheckPayment() {
     return `${thaiDate} เวลา ${thaiTime} น.`;
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  
+    const filteredSlips = slips.filter((slip) => {
+      const matchesSearch =
+      slip.member_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      slip.death_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        slip.member_id.toString().includes(searchTerm);
+  
+      const matchesCategory =
+        categoryFilter === "" || slip.status === categoryFilter;
+  
+      return matchesSearch && matchesCategory;
+    });
+
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
         <div className="text-xl text-black mx-3 mt-5 mb-8 font-bold">
           การตรวจสอบสลิป
+        </div>
+
+        <div class="mb-8 overflow-hidden">
+          <div class="grid gap-6 md:grid-cols-3">
+            <form className="col-span-2 w-full" onSubmit={(e) => e.preventDefault()}>
+              <div className="relative">
+                <input
+                  type="search"
+                  id="default-search"
+                  className="w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+                  placeholder="ค้นหา..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </form>
+
+            {/* Category Filter (2 ส่วน) */}
+            <select
+              className="col-span-1 w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              <option value="">สถานะทั้งหมด</option>
+              <option value="fail">ชำระเงินไม่สำเร็จ</option>
+              <option value="unpaid">ยังไม่ได้ชำระเงิน</option>
+              <option value="pass">สลิปโอนเงินถูกต้อง</option>
+            </select>
+          </div>
         </div>
 
         <div className="relative overflow-hidden shadow-xl sm:rounded-lg">
@@ -85,7 +129,7 @@ function CheckPayment() {
               </tr>
             </thead>
             <tbody>
-              {slips.map((slip, index) => (
+              {filteredSlips.map((slip, index) => (
                 <tr
                   key={slip.history_id}
                   onClick={() => handleRowClick(slip.report_id, slip.member_id)}
