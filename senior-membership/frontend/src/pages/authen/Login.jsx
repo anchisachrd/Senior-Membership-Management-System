@@ -43,8 +43,11 @@ function Login() {
       const userInfo = jwtDecode(data.token)
       alert("เข้าสู่ระบบสำเร็จ!");
 
-      if (userInfo.userInfo.role === 'member' || userInfo.userInfo.role === 'heir'){
-        navigate("/home");
+      if (userInfo.userInfo.role === 'member'){
+        navigate("/report-summary");
+      }
+      if (userInfo.userInfo.role === 'heir'){
+        navigate("/deathReport");
       }
       if (userInfo.userInfo.role === 'staff'){
         navigate("/staff_candidateList");

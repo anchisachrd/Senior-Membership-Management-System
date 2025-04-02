@@ -224,7 +224,9 @@ function CandidateProfile() {
 
         {/* condition ว่าถ้าเจออันไหนให้เรนเดอร์ปุ่มนั้น โดยค่าจะส่งมากจากแต่ละไฟล์ที่ใช้ */}
         {context === "waitingCandidateProfile" && candidate && (
+          
           <div className="relative mt-14 flex justify-center items-center gap-4">
+           
             <button
               type="button"
               onClick={() => {

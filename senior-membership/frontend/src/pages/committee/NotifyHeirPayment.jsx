@@ -4,8 +4,8 @@ import { getDeathMemberList } from "../../api/memberApi";
 import { verifyUser } from "../../api/verifyApi";
 import StatusBadge from "../../components/StatusBadge";
 
-function DeathMemberList() {
-  const [members, setMembers] = useState([]);
+function NotifyHeirPayment() {
+ const [members, setMembers] = useState([]);
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -22,7 +22,7 @@ function DeathMemberList() {
       setUserRole(data.role);
       setUserEmail(data.email);
 
-      if (data.role !== "staff") {
+      if (data.role !== "committee") {
         navigate("/login");
       }
     } catch (error) {
@@ -56,7 +56,9 @@ function DeathMemberList() {
   };
 
   const handleRowClick = (memberId) => {
-    navigate(`/member/${memberId}`);
+    navigate(`/member/${memberId}`, {
+      state: { context: "heirPayment" },
+    });
   };
 
   const addClubExpense = async (payload) => {
@@ -113,7 +115,6 @@ function DeathMemberList() {
                 <th className="text-center align-middle py-4 px-4">
                   สถานะการจ่ายเงินสงเคราะห์
                 </th>
-                <th className="text-center align-middle py-4 px-4">ปุ่ม</th>
               </tr>
             </thead>
 
@@ -154,41 +155,7 @@ function DeathMemberList() {
                       }
                     />
                   </td>
-                  <td className="text-center py-4 px-4">
-                    <button
-                      disabled={
-                        !member.is_requested || member.is_finalized !== null
-                      }
-                      className={`px-3 py-1 rounded-lg shadow text-white font-medium ${
-                        !member.is_requested || member.is_finalized !== null
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-800"
-                      }`}
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                    
-                        try {
-                          await addClubExpense({
-                            amount: 15000,
-                            paid_by: null,
-                            proof_path: null,
-                            death_report_id: member.report_id,
-                            paid_to_heir_id: member.heir_id,
-                            expense_type: "โอนเงินสงเคราะห์",
-                            note: null,
-                            paid_at: null,
-                          });
-                    
-                          alert("เพิ่มรายการสำเร็จ");
-                          // navigate(`/submitPayment/${member.report_id}`);
-                        } catch (error) {
-                          alert("เกิดข้อผิดพลาดในการเพิ่มรายการ");
-                        }
-                      }}
-                    >
-                      ส่งข้อมูล
-                    </button>
-                  </td>
+                  
                 </tr>
               ))}
             </tbody>
@@ -199,4 +166,4 @@ function DeathMemberList() {
   );
 }
 
-export default DeathMemberList;
+export default NotifyHeirPayment

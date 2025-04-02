@@ -106,7 +106,7 @@ export const createSlipsForActiveMembers = async (
 
   await memberModel.setMemberLeft(memberId, reason);
 
-  await candidateModel.updateIsMemberbyMemberId(memberId);
+  // await candidateModel.updateIsMemberbyMemberId(memberId);
 
   const payment = activeMembers.map((payment) => {
 

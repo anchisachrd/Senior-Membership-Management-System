@@ -11,6 +11,7 @@ import deathReportRoutes from './routes/deathReportRoutes.js'
 import clubSummaryRoutes from './routes/clubSummaryRoutes.js'
 import cookieParser from 'cookie-parser'
 import employeeRoutes from './routes/employeeRoutes.js'
+import notiRoutes from './routes/notiRoutes.js'
 
 
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/club', clubSummaryRoutes);
 // Login
 app.use('/api/auth', authRoutes);
 app.use('/api/employee', employeeRoutes);
+app.use('/api/noti', notiRoutes);
 
 // Optional: Serve files from the upload folder (if you want direct access to them)
 

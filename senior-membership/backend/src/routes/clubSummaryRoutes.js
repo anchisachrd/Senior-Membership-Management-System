@@ -7,6 +7,7 @@ router.get("/account-balance",clubController.getClubAccount);
 router.get("/dashboard/staff",clubController.dashboardController);
 router.get("/summary-report",clubController.getClubSummaryReport);
 
+router.post("/add-club-expense",clubController.addClubExpense);
 
 
 export default router;

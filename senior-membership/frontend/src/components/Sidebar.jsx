@@ -18,6 +18,15 @@ function Sidebar() {
   const [userFirstName, setUserFirstName] = useState('')
   const [userLastName, setUserLastName] = useState('')
   const [userThaiRole, setUserThaiRole] = useState('')
+  const [notiHeir, setNotiHeir] = useState({
+    rejected_death: '',
+    approved_death: ''
+  });
+
+  const [notiMember, setNotiMember] = useState({
+    unpaid: ''
+  });
+
   useEffect(() => {
     fetchUserProfile();
   }, [userEmail]);
@@ -32,10 +41,12 @@ function Sidebar() {
       setUserLastName(data.info.last_name)
 
       if (data.role === 'member') {
-        setUserThaiRole('สมาชิก')
+        setUserThaiRole('สมาชิก');
+        fetchNotiMember(data.role_id);
       }
       if (data.role === 'heir') {
-        setUserThaiRole('ทายาท')
+        setUserThaiRole('ทายาท');
+        fetchNotiHeir(data.role_id);
       }
 
     } catch (error) {
@@ -47,14 +58,52 @@ function Sidebar() {
     await fetch('http://localhost:3000/api/auth/logout', {
       method: 'POST',
       credentials: 'include',
-  });
-  
+    });
+
     console.log("Logged out!");
     alert("ออกจากระบบเรียบร้อยแล้ว");
     navigate("/login");
     setUserRole('');
     setUserEmail('');
   }
+
+  const fetchNotiHeir = async (heir_id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/noti/noti-heir?heir_id=${heir_id}`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+      setNotiHeir({
+        rejected_death: data.rejected_death,
+        approved_death: data.approved_death
+      });
+
+
+    } catch (error) {
+      console.error("Fetch Data Error:", error);
+    }
+  }
+
+  const fetchNotiMember = async (member_id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/noti/noti-member?member_id=${member_id}`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+      console.log(data)
+      setNotiMember({
+        unpaid: data.unpaid
+      });
+
+
+    } catch (error) {
+      console.error("Fetch Data Error:", error);
+    }
+  };
 
 
   return (
@@ -83,12 +132,6 @@ function Sidebar() {
             {userRole !== 'heir' ? (
               <div>
                 <li>
-                  <Link to='/home' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <IoHomeOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">หน้าแรก</span>
-                  </Link>
-                </li>
-                <li>
                   <Link to='/report-summary' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
                     <IoDocumentTextOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">สรุปการเงินชมรม</span>
@@ -98,6 +141,11 @@ function Sidebar() {
                   <Link to='/history' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
                     <AiOutlineHistory class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">ประวัติการชำระเงิน</span>
+                    {notiMember.unpaid !== '0' && (
+                      <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
+                        {notiMember.unpaid}
+                      </span>
+                    )}
                   </Link>
                 </li>
                 <li>
@@ -110,27 +158,25 @@ function Sidebar() {
             ) : (
               <div>
                 <li>
-                  <Link to='/home' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <IoHomeOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">หน้าแรก</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to='/' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                    <IoNotificationsOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span class="ms-3 mt-1 dark:group-hover:text-white">แจ้งเตือน</span>
-                  </Link>
-                </li>
-                <li>
                   <Link to='/deathReport' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
                     <IoDocumentTextOutline class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">ฟอร์มแจ้งเสียชีวิต</span>
+                    {notiHeir.rejected_death !== '0' && (
+                      <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
+                        {notiHeir.rejected_death}
+                      </span>
+                    )}
                   </Link>
                 </li>
                 <li>
                   <Link to='/request-form' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
                     <TiDocumentText class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
                     <span class="ms-3 mt-1 dark:group-hover:text-white">ฟอร์มคำร้อง</span>
+                    {notiHeir.approved_death !== '0' && (
+                      <span className="bg-red-700 text-white text-xs font-medium px-2 py-1 rounded-full ms-3">
+                        {notiHeir.approved_death}
+                      </span>
+                    )}
                   </Link>
                 </li>
                 <li>

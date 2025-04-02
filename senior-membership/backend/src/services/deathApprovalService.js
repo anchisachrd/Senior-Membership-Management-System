@@ -40,7 +40,6 @@ export const getFinalDeathApproval = async (reportId) => {
      //3) ดึงข้อมูลสมาชิกที่เสียชีวิตออกมา
     const memberInfo =  await memberModel.getPersonalInfoByMemberId(member_id)
 
-
     return{
       sent_to_heir,
       final_approval,

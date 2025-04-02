@@ -43,6 +43,8 @@ import EmployeeDetail from "./pages/admin/EmployeeDetail.jsx";
 import ManageEmployee from "./pages/admin/ManageEmployee.jsx";
 import SidebarAdmin from "./components/SidebarAdmin.jsx";
 import AddEmployee from "./pages/admin/AddEmployee.jsx";
+import ClubExpense from "./pages/committee/ClubExpense.jsx";
+import NotifyHeirPayment from "./pages/committee/NotifyHeirPayment.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -98,6 +100,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           path="/death/member-list"
           element={<DeathMemberList />}
         />
+        <Route path="/club-expense" element={<ClubExpense/>}/>
+        <Route path= "notify/death-payment" element={<NotifyHeirPayment/>}/>
       </Route>
 
       <Route element={<SidebarAdmin />}>

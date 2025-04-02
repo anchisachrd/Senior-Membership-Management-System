@@ -4,27 +4,26 @@ export const createEmployee = async (data) => {
   const { rows } = await query(
     `INSERT INTO employees (title, first_name, last_name, position, national_id, phone, account_id, is_pay, type_payment)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-    [data.title,
-    data.first_name,
-    data.last_name,
-    data.position,
-    data.national_id,
-    data.phone,
-    data.account_id,
-    data.is_pay,
-    data.type_payment
+    [
+      data.title,
+      data.first_name,
+      data.last_name,
+      data.position,
+      data.national_id,
+      data.phone,
+      data.account_id,
+      data.is_pay,
+      data.type_payment,
     ]
   );
   return rows[0];
-}
+};
 
 export const findAllByPosition = async (position) => {
-  const { rows } = await query(
-    `SELECT * FROM employees WHERE position = $1;`,
-    [position]
-  );
+  const { rows } = await query(`SELECT * FROM employees WHERE position = $1;`, [
+    position,
+  ]);
   return rows;
-
 };
 
 export const getInfoByAccountId = async (accountId) => {
@@ -35,7 +34,6 @@ export const getInfoByAccountId = async (accountId) => {
     [accountId]
   );
   return rows[0];
-
 };
 
 export const deleteEmployee = async (employeeId) => {
@@ -55,9 +53,9 @@ export const getAllEmployee = async () => {
      FROM employees e
 	 JOIN accounts a ON e.account_id = a.account_id
      ORDER BY e.employee_id ASC `
-  )
+  );
   return rows;
-}
+};
 
 export const getDetailEmployee = async (employeeId) => {
   const { rows } = await query(
@@ -66,9 +64,9 @@ export const getDetailEmployee = async (employeeId) => {
 	   JOIN accounts a ON e.account_id = a.account_id
      WHERE employee_id = $1 `,
     [employeeId]
-  )
+  );
   return rows[0];
-}
+};
 
 export const updateEmployee = async (employeeData) => {
   const { rows } = await query(
@@ -77,8 +75,28 @@ export const updateEmployee = async (employeeData) => {
     is_pay = $7, type_payment = $8
     WHERE employee_id = $9 
     RETURNING *`,
-    [employeeData.title, employeeData.first_name, employeeData.last_name, employeeData.position, 
-      employeeData.phone, employeeData.national_id, employeeData.is_pay, employeeData.type_payment, employeeData.employee_id]
-  )
+    [
+      employeeData.title,
+      employeeData.first_name,
+      employeeData.last_name,
+      employeeData.position,
+      employeeData.phone,
+      employeeData.national_id,
+      employeeData.is_pay,
+      employeeData.type_payment,
+      employeeData.employee_id,
+    ]
+  );
   return rows[0];
-}
+};
+
+export const findCommitteeIsPay = async (position) => {
+  const { rows } = await query(
+    `SELECT employee_id
+    FROM employees
+    WHERE is_pay = true
+    AND type_payment = 'โอนเงินสงเคราะห์'
+      `,
+  );
+  return rows;
+};
