@@ -1,6 +1,6 @@
 import React from "react";
 
-function ConfirmRejectModal({ isOpen, onCancel, onConfirm, comment, setComment }) {
+function ConfirmRejectModal({ isOpen, onCancel, onConfirm, comment, setComment, title }) {
   if (!isOpen) return null;
 
   return (
@@ -48,8 +48,8 @@ function ConfirmRejectModal({ isOpen, onCancel, onConfirm, comment, setComment }
                 d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
-            <p className="mb-1 text-lg font-bold text-gray-800">ไม่ผ่านการตรวจสอบ</p>
-            <p className="text-sm font-normal text-gray-800">โปรดกรอกหมายเหตุ</p>
+            <p className="mb-1 text-lg font-bold text-gray-800">{title}</p>
+            <p className="text-sm font-normal text-gray-800">โปรดกรอกข้อมูล</p>
           </div>
 
           <div className="px-5 pb-5">

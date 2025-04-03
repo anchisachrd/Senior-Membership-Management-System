@@ -13,4 +13,14 @@ export const getMembersForHeir = async (heirId) => {
     }
   };
 
+  export const getHeirDetail = async (memberId) => {
+    try {
+      const res = await axios.get(`${apiUrl}/detail/${memberId}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching members for heir:", error);
+      throw error;
+    }
+  };
+
   

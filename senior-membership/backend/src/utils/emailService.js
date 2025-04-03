@@ -82,14 +82,14 @@ export const generatePasswordEmailTemplate = (recipientName, password) => `
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h1>Welcome to Senior Club</h1>
+            <h1>ยินดีต้อนรับเข้าสู่สมาชิกชมรมผู้สูงอายุ</h1>
         </div>
         <div class="email-body">
-            <p>Hello <b>${recipientName}</b>,</p>
-            <p>Your auto-generated password is:</p>
+            <p>สวัสดี <b>${recipientName}</b>,</p>
+            <p>รหัสผ่านที่สร้างอัตโนมัติของคุณคือ:</p>
             <h2>${password}</h2>
-            <p>Please log in to your account and change your password immediately for security reasons.</p>
-            <a href="http://localhost:5173/login" class="btn">Login Now</a>
+            <p>โปรดเข้าสู่ระบบบัญชีของคุณและเปลี่ยนรหัสผ่านโดยทันทีเพื่อความปลอดภัย</p>
+            <a href="http://localhost:5173/login" class="btn">เข้าสู่ระบบ</a>
         </div>
         <div class="email-footer">
             <p>&copy; 2025 Senior Club. All rights reserved.</p>
@@ -142,7 +142,7 @@ export const generateApprovalEmail = (candidateName) => {
     <p>🎉 <b>ยินดีด้วย!</b> 🎉</p>
     <p>เราขอแจ้งให้ทราบว่าการสมัครสมาชิกชมรมผู้สูงอายุของคุณ <b>ได้รับการอนุมัติ</b> เรีบร้อยแล้ว</p>
     <p>คุณสามารถเข้าสู่ระบบเพื่อเริ่มต้นใช้งานได้ที่:</p>
-    <p><a href="http://localhost:5173/login" class="btn">Login Now</a></p>
+    <p><a href="http://localhost:5173/login" class="btn">เข้าสู่ระบบ</a></p>
     <p>หากคุณมีคำถามเพิ่มเติม กรุณาติดต่อฝ่ายสนับสนุน</p>
     <p>ขอขอบคุณที่เข้าร่วมกับเรา</p>
     <p>ด้วยความเคารพ,</p>

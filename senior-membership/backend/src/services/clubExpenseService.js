@@ -25,3 +25,15 @@ export const addIsPayCommittee =  async (data) => {
   const result = await clubExpenseModel.createClubExpense(payload);
   return result;
 }
+
+export const fetchNotifyDeathPayment = async () => {
+  return await clubExpenseModel.getHeirPaymentList();
+};
+
+export const addProof = async (proof_path, paid_at, expense_id, report_id) => {
+  
+  await clubExpenseModel.updateProof(proof_path, paid_at, expense_id);
+  await deathReports.updateIsFinalized(report_id, true)
+
+};
+

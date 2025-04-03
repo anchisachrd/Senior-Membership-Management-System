@@ -1,12 +1,14 @@
 import * as clubModel from "../models/clubSummaryModel.js";
 import dayjs from "dayjs";
 import { query } from "../db.js";
+import isBetween from "dayjs/plugin/isBetween.js";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore.js";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter.js";
 
-
-// เปิดใช้ plugin ก่อนใช้งาน
+// Extend dayjs with the plugin
+dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
-
+dayjs.extend(isSameOrAfter);
 
 export async function getClubAccount() {
   // 1) Fetch the raw rows
@@ -36,145 +38,166 @@ export async function getClubAccount() {
 }
 
 export const getDashboardFilteredData = async ({ year, range, month }) => {
+  try {
+    // 1) Get the latest year from DB
+    const latestYearResult = await query(`
+      SELECT MAX(EXTRACT(YEAR FROM trans_date)) AS year
+      FROM slip_history
+    `);
 
+    // Log what the DB returned
+    console.log("latestYearResult:", latestYearResult.rows);
 
-  const latestYearResult = await query(
-    `SELECT MAX(EXTRACT(YEAR FROM trans_date)) AS year FROM slip_history`
-  );
-  const latestYearCE = latestYearResult.rows[0].year;
-  const latestYearBE = parseInt(latestYearCE) + 543;
-
-  const selectedYearCE = year !== "ทั้งหมด" ? parseInt(year) - 543 : null;
-  const today = dayjs();
-  const now = parseInt(year) === latestYearBE ? today : dayjs(`${selectedYearCE}-12-31`);
-
-  let rangeStart = null;
-  let rangeEnd = null;
-
-  if (selectedYearCE) {
-    if (range === "3m") {
-      rangeEnd = now.endOf("month");
-      rangeStart = now.subtract(2, "month").startOf("month");
-    } else if (range === "6m") {
-      rangeEnd = now.endOf("month");
-      rangeStart = now.subtract(5, "month").startOf("month");
-    } else if (range === "1y") {
-      rangeStart = dayjs(`${selectedYearCE}-01-01`);
-      rangeEnd = dayjs(`${selectedYearCE}-12-31`).endOf("day");
-    } else if (range === "custom" && typeof month === "number") {
-      rangeStart = dayjs(`${selectedYearCE}-${month + 1}-01`);
-      rangeEnd = rangeStart.endOf("month");
+    // If we have no rows or the value is null, handle it
+    let latestYearCE = null;
+    let latestYearBE = null;
+    if (!latestYearResult.rows.length || latestYearResult.rows[0].year == null) {
+      // slip_history might be empty, or no valid trans_date
+      console.warn("No valid year found in slip_history. Using current year as fallback.");
+      latestYearCE = new Date().getFullYear(); // e.g., 2025
+      latestYearBE = latestYearCE + 543;
+    } else {
+      // We got a valid year from the DB
+      latestYearCE = parseInt(latestYearResult.rows[0].year, 10); // e.g., 2023
+      latestYearBE = latestYearCE + 543; // 2566
     }
-  }
 
-  const raw = await clubModel.getDashboardRawData(
-    rangeStart?.format("YYYY-MM-DD"),
-    rangeEnd?.format("YYYY-MM-DD")
-  );
+    // Log them
+    console.log("latestYearCE:", latestYearCE, "latestYearBE:", latestYearBE);
 
-  const latestRaw = await clubModel.getDashboardRawData(
-    dayjs(`${latestYearCE}-01-01`).format("YYYY-MM-DD"),
-    dayjs(`${latestYearCE}-12-31`).endOf("day").format("YYYY-MM-DD")
-  );
-  
+    // 2) Convert the selected year from BE to CE (if not "ทั้งหมด")
+    let selectedYearCE = null;
+    if (year && year !== "ทั้งหมด") {
+      selectedYearCE = parseInt(year, 10) - 543;
+    }
 
-  const filtered = {
-    summary: {
-      verification: {},
-      candidateApproval: {},
-      memberStatus: {},
-      deathReport: {},
-      heirTransfer: {},
-      totalMembers: 0,
-      totalDeaths: 0,
-      totalIncome: 0,
-      totalExpense: 0,
-      currentBalance: 0,
-    },
-    lineChart: [],
-    barChart: [],
-    latestTransactions: [],
-  };
+    // Log user’s choice
+    console.log(`User input year: ${year}, range: ${range}, month: ${month}`);
+    console.log("selectedYearCE:", selectedYearCE);
 
-  filtered.summary.verification = raw.verificationSummary;
-  filtered.summary.candidateApproval = raw.candidateApprovalSummary;
-  filtered.summary.memberStatus = raw.memberStatusSummary;
-  filtered.summary.deathReport = raw.deathReportSummary;
-  filtered.summary.heirTransfer = raw.heirTransferSummary;
+    let rangeStart = null;
+    let rangeEnd = null;
 
+    // 3) Determine the date filter
+    if (selectedYearCE && !isNaN(selectedYearCE)) {
+      if (range === "1y") {
+        // "ทั้งปี"
+        rangeStart = dayjs(`${selectedYearCE}-01-01`).startOf("day");
+        rangeEnd   = dayjs(`${selectedYearCE}-12-31`).endOf("day");
+      } else if (range === "custom" && typeof month === "number") {
+        // "เลือกเดือน"
+        const targetMonth = month + 1; // front-end is zero-based
+        const startString = `${selectedYearCE}-${targetMonth}-01`;
+        rangeStart = dayjs(startString).startOf("month");
+        rangeEnd   = dayjs(startString).endOf("month");
+      }
+    }
 
+    // Log the final range
+    console.log("rangeStart:", rangeStart?.format(), "rangeEnd:", rangeEnd?.format());
 
+    // 4) Get raw data
+    const raw = await clubModel.getDashboardRawData();
+    const latestRaw = await clubModel.getDashboardRawData();
 
+    // 5) Build base filtered object
+    const filtered = {
+      summary: {
+        verification: {},
+        candidateApproval: {},
+        memberStatus: {},
+        deathReport: {},
+        heirTransfer: {},
+        totalMembers: 0,
+        totalDeaths: 0,
+        totalIncome: 0,
+        totalExpense: 0,
+        currentBalance: 0,
+      },
+      lineChart: [],
+      barChart: [],
+      latestTransactions: [],
+    };
 
-  // 🧠 Filter รายรับ/รายจ่าย ตามช่วงเวลา
-  const income = raw.transactions.filter((item) => {
-    if (item.type !== "รายรับ") return false;
-    const date = dayjs(item.datetime);
-    return (
-      !rangeStart ||
-      (date.isAfter(rangeStart.subtract(1, "day")) &&
-        date.isBefore(rangeEnd.add(1, "day")))
-    );
-  });
+    // 6) Basic summaries
+    filtered.summary.verification      = raw.verificationSummary;
+    filtered.summary.candidateApproval = raw.candidateApprovalSummary;
+    filtered.summary.memberStatus      = raw.memberStatusSummary;
+    filtered.summary.deathReport       = raw.deathReportSummary;
+    filtered.summary.heirTransfer      = raw.heirTransferSummary;
 
-  const expense = raw.transactions.filter((item) => {
-    if (item.type !== "รายจ่าย") return false;
-    const date = dayjs(item.datetime);
-    return (
-      !rangeStart ||
-      (date.isAfter(rangeStart.subtract(1, "day")) &&
-        date.isBefore(rangeEnd.add(1, "day")))
-    );
-  });
-
-  // 💰 คำนวณยอดรวม
-  const totalIncome = income.reduce((sum, t) => sum + Number(t.amount), 0);
-  const totalExpense = expense.reduce((sum, t) => sum + Number(t.amount), 0);
-  const currentBalance = totalIncome - totalExpense;
-
-  filtered.summary.totalIncome = totalIncome;
-  filtered.summary.totalExpense = totalExpense;
-  filtered.summary.currentBalance = currentBalance;
-  filtered.latestTransactions = latestRaw.transactions
-    .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
-    .slice(0, 10);
-
-  // 📊 Chart รายเดือน (ทั้งปี)
-  const monthly = [];
-if (rangeStart && rangeEnd) {
-  let cursor = rangeStart.startOf("month");
-
-  while (cursor.isSameOrBefore(rangeEnd)) {
-    const monthBE = cursor.year() + 543;
-
-    const thisMonthIncome = income.filter((t) =>
-      dayjs(t.datetime).isSame(cursor, "month")
-    );
-
-    const thisMonthExpense = expense.filter((t) =>
-      dayjs(t.datetime).isSame(cursor, "month")
-    );
-
-    monthly.push({
-      month: cursor.format("MMMM") + " " + monthBE,
-      รายรับ: thisMonthIncome.reduce((sum, i) => sum + Number(i.amount), 0),
-      รายจ่าย: thisMonthExpense.reduce((sum, i) => sum + Number(i.amount), 0),
+    // 7) Filter transactions by date range
+    const income = raw.transactions.filter((item) => {
+      if (item.type !== "รายรับ") return false;
+      if (!rangeStart || !rangeEnd) return true; // "ทั้งหมด" or no valid filter
+      const date = dayjs(item.datetime);
+      return date.isBetween(rangeStart, rangeEnd, "day", "[]");
     });
 
-    cursor = cursor.add(1, "month");
+    const expense = raw.transactions.filter((item) => {
+      if (item.type !== "รายจ่าย") return false;
+      if (!rangeStart || !rangeEnd) return true;
+      const date = dayjs(item.datetime);
+      return date.isBetween(rangeStart, rangeEnd, "day", "[]");
+    });
+
+    // 8) Totals
+    const totalIncome = income.reduce((sum, t) => sum + Number(t.amount), 0);
+    const totalExpense = expense.reduce((sum, t) => sum + Number(t.amount), 0);
+    const currentBalance = totalIncome - totalExpense;
+
+    filtered.summary.totalIncome = totalIncome;
+    filtered.summary.totalExpense = totalExpense;
+    filtered.summary.currentBalance = currentBalance;
+
+    // 9) Latest 10 transactions
+    filtered.latestTransactions = latestRaw.transactions
+      .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
+      .slice(0, 10);
+
+    // 10) Build monthly data
+    const monthlyData = [];
+    if (rangeStart && rangeEnd) {
+      let cursor = rangeStart.startOf("month");
+      while (cursor.isSameOrBefore(rangeEnd, "month")) {
+        const monthBE = cursor.year() + 543;
+        const thisMonthIncome = income.filter((t) =>
+          dayjs(t.datetime).isSame(cursor, "month")
+        );
+        const thisMonthExpense = expense.filter((t) =>
+          dayjs(t.datetime).isSame(cursor, "month")
+        );
+
+        monthlyData.push({
+          month: cursor.format("MMMM") + " " + monthBE,
+          รายรับ: thisMonthIncome.reduce((sum, i) => sum + Number(i.amount), 0),
+          รายจ่าย: thisMonthExpense.reduce((sum, i) => sum + Number(i.amount), 0),
+        });
+
+        cursor = cursor.add(1, "month");
+      }
+    }
+
+    filtered.lineChart = monthlyData;
+    filtered.barChart  = monthlyData;
+
+    // Final log before returning
+    console.log("Returning dashboard data:", {
+      ...filtered,
+      latestYear: latestYearBE,
+    });
+
+    // 11) Return the final data
+    return {
+      ...filtered,
+      latestYear: latestYearBE,
+    };
+  } catch (error) {
+    console.error("Error in getDashboardFilteredData:", error);
+    // rethrow or return an error
+    throw error;
   }
-}
-
-
-  filtered.lineChart = monthly;
-  filtered.barChart = monthly;
-
-  return {
-    ...filtered,
-    latestYear: latestYearBE,
-  };
 };
-
 
 export const getClubSummaryByYear = async (year) => {
 

@@ -39,7 +39,7 @@ export const notiHeir = async (heir_id) => {
   const { rows } = await query(`
       SELECT
       (SELECT COUNT(*) FROM death_reports WHERE final_approval = 'ไม่อนุมัติ' AND heir_id = $1) AS rejected_death,
-      (SELECT COUNT(*) FROM death_reports WHERE final_approval = 'อนุมัติ' AND heir_id = $1) AS approved_death
+      (SELECT COUNT(*) FROM death_reports WHERE final_approval = 'อนุมัติ' AND is_requested IS FALSE AND heir_id = $1) AS approved_death
   `, [heir_id]);
   return rows[0];
 };

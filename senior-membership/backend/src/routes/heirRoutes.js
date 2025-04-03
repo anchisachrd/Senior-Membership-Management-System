@@ -7,6 +7,7 @@ import * as heirController from '../controllers/heirController.js';
 const router = express.Router();
 
 router.get("/:heirId/member", heirController.getMembersForHeir);
+router.get("/detail/:memberId", heirController.getHeirNameForPayment);
 // router.post("/submit", submitDeathReport);
 
 export default router;

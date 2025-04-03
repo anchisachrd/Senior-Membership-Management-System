@@ -42,6 +42,7 @@ function DeathFinalApprovalDeatil() {
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
+      navigate('/login')
     }
   };
 
@@ -90,6 +91,7 @@ function DeathFinalApprovalDeatil() {
         setComment={setLeavingReason}
         onCancel={() => setIsRejectModalOpen(false)}
         onConfirm={handleConfirmFinalApproval}
+        title="ระบุสาเหตุการเสียชีวิต"
       />
       <ConfirmModal
         isOpen={isModalOpen}
@@ -163,14 +165,24 @@ function DeathFinalApprovalDeatil() {
         <div className="flex space-x-4 mt-4 justify-center">
           <button
             onClick={openRecheckModal}
-            className="bg-yellow-600 text-white px-4 py-2 rounded-lg"
+            disabled={finalApproval === "รอการพิจารณา" || finalApproval === "รอการแก้ไข"}
+            className={`px-4 py-2 rounded-lg ${
+              (finalApproval === "รอการพิจารณา" || finalApproval === "รอการแก้ไข")
+              ? "disabled:bg-gray-400 disabled:cursor-not-allowed"
+              : "bg-yellow-600 text-white"
+            }`}
           >
             ตรวจสอบใหม่
           </button>
 
           <button
             onClick={handleConfirmApproval}
-            className="px-4 py-2 rounded-lg bg-green-600 text-white"
+            disabled={finalApproval === "รอการพิจารณา" || finalApproval === "รอการแก้ไข"}
+            className={`px-4 py-2 rounded-lg ${
+              (finalApproval === "รอการพิจารณา" || finalApproval === "รอการแก้ไข")
+              ? "disabled:bg-gray-400 disabled:cursor-not-allowed"
+              : "bg-green-600 text-white"
+            }`}
           >
             ส่งข้อมูลผลการอนุมัติ
           </button>

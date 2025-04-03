@@ -10,7 +10,7 @@ function DeathMemberList() {
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userRoleId, setUserRoleId] = useState("");
-
+  const [amountStaff, SetAmountStaff] = useState("")
 
   useEffect(() => {
     fetchUserProfile();
@@ -27,6 +27,7 @@ function DeathMemberList() {
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
+      navigate('/login')
     }
   };
 
@@ -61,18 +62,21 @@ function DeathMemberList() {
 
   const addClubExpense = async (payload) => {
     try {
-      const response = await fetch("http://localhost:3000/api/club/add-club-expense", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-  
+      const response = await fetch(
+        "http://localhost:3000/api/club/add-club-expense",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to add club expense");
       }
-  
+
       return await response.json();
     } catch (err) {
       console.error("Add Club Expense Error:", err);
@@ -82,25 +86,33 @@ function DeathMemberList() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-    
-    const filteredMembers = members.filter((member) => {
-      const statusText =
-        member.is_finalized === null
-          ? "ยังไม่ส่งข้อมูล"
-          : member.is_finalized === false
+
+  const filteredMembers = members.filter((member) => {
+    const statusText =
+      member.is_finalized === null
+        ? "ยังไม่ส่งข้อมูล"
+        : member.is_finalized === false
           ? "รอการจ่ายเงิน"
           : "จ่ายแล้ว";
-    
-      return (
-        (searchTerm === "" ||
-          member.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          member.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          member.member_id.toString().includes(searchTerm)) &&
-        (categoryFilter === "" || categoryFilter === statusText)
-      );
-    });
-  
+
+    return (
+      (searchTerm === "" ||
+        member.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.member_id.toString().includes(searchTerm)) &&
+      (categoryFilter === "" || categoryFilter === statusText)
+    );
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+
+
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
@@ -110,7 +122,10 @@ function DeathMemberList() {
 
         <div class="mb-8 overflow-hidden">
           <div class="grid gap-6 md:grid-cols-3">
-            <form className="col-span-2 w-full" onSubmit={(e) => e.preventDefault()}>
+            <form
+              className="col-span-2 w-full"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className="relative">
                 <input
                   type="search"
@@ -126,7 +141,8 @@ function DeathMemberList() {
             <select
               className="col-span-1 w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}>
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
               <option value="">สถานะการจ่ายเงินสงเคราะห์ทั้งหมด</option>
               <option value="ยังไม่ส่งข้อมูล">ยังไม่ส่งข้อมูล</option>
               <option value="รอการจ่ายเงิน">รอการจ่ายเงิน</option>
@@ -144,10 +160,10 @@ function DeathMemberList() {
                   รหัสผู้เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
-                  รายชื่อผู้เสียชีวิต
+                  ชื่อผู้เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
-                  วันที่สิ้นสุดการเป็นสมาชิก
+                  วัน/เดือน/ปี ที่เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
                   วัน/เดือน/ปี ที่เสียชีวิต
@@ -156,17 +172,16 @@ function DeathMemberList() {
                   สาเหตุที่เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
-                  สถานะการส่งฟอร์มคำร้องของทายาท
+                  สถานะการส่งคำร้อง
                 </th>
                 <th className="text-center align-middle py-4 px-4">
                   สถานะการจ่ายเงินสงเคราะห์
                 </th>
-                <th className="text-center align-middle py-4 px-4">ปุ่ม</th>
+                <th className="text-center align-middle py-4 px-4"></th>
               </tr>
             </thead>
 
             <tbody>
-            
               {filteredMembers.map((member, index) => (
                 <tr
                   key={member.member_id}
@@ -198,8 +213,8 @@ function DeathMemberList() {
                         member.is_finalized === null
                           ? "ยังไม่ส่งข้อมูล"
                           : member.is_finalized === false
-                          ? "รอการจ่ายเงิน"
-                          : "จ่ายแล้ว"
+                            ? "รอการจ่ายเงิน"
+                            : "จ่ายแล้ว"
                       }
                     />
                   </td>
@@ -208,35 +223,118 @@ function DeathMemberList() {
                       disabled={
                         !member.is_requested || member.is_finalized !== null
                       }
-                      className={`px-3 py-1 rounded-lg shadow text-white font-medium ${
-                        !member.is_requested || member.is_finalized !== null
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-800"
-                      }`}
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                    
-                        try {
-                          await addClubExpense({
-                            amount: 15000,
-                            paid_by: null,
-                            proof_path: null,
-                            death_report_id: member.report_id,
-                            paid_to_heir_id: member.heir_id,
-                            expense_type: "โอนเงินสงเคราะห์",
-                            note: null,
-                            paid_at: null,
-                          });
-                    
-                          alert("เพิ่มรายการสำเร็จ");
-                          // navigate(`/submitPayment/${member.report_id}`);
-                        } catch (error) {
-                          alert("เกิดข้อผิดพลาดในการเพิ่มรายการ");
-                        }
-                      }}
+                      className={`px-3 py-1 rounded-lg shadow text-white font-medium 
+                        ${!member.is_requested || member.is_finalized !== null
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : 
+                        "bg-blue-600 hover:bg-blue-800"
+                        }`}
+                      onClick={(e) => {
+                        e.stopPropagation();  
+                        toggleModal() }}
                     >
                       ส่งข้อมูล
                     </button>
+
+                    {isModalOpen && (
+                      <div
+                        id="popup-modal"
+                        onClick={(e) => {
+                          e.stopPropagation(); }}      
+                      
+                        className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full bg-black bg-opacity-50"
+                      >
+                        <div className="relative p-1 w-full max-w-md max-h-full">
+                          <div className="relative bg-white rounded-lg shadow dark:bg-gray-100">
+                            <button
+                              type="button"
+                              onClick={() => setIsModalOpen(false)}
+                              className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            >
+                              <svg
+                                className="w-3 h-3"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 14 14"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                                />
+                              </svg>
+                              <span className="sr-only">Close modal</span>
+                            </button>
+
+                            <div className="p-4 md:p-5 text-center">
+                              <svg
+                                className="mx-auto mt-4 mb-4 text-gray-800 w-12 h-12"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                />
+                              </svg>
+                              <p className="mb-1 text-lg font-bold text-gray-800">ระบุจำนวนเงินที่โอนค่าเงินสงเคราะห์</p>
+                              <p className="text-sm font-normal text-gray-800">โปรดกรอกจำนวนเงิน</p>
+                            </div>
+
+                            <div className="px-5 pb-5">
+                              <input
+                              type="text"
+                              value={amountStaff}
+                                onChange={(e) => SetAmountStaff(e.target.value)}
+                                name="amount"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
+                              />
+
+                            </div>
+
+                            <div className="relative flex justify-center items-center">
+                              <button
+                                type="button"
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  try {
+                                    await addClubExpense({
+                                      amount: amountStaff,
+                                      paid_by: null,
+                                      proof_path: null,
+                                      death_report_id: member.report_id,
+                                      paid_to_heir_id: member.heir_id,
+                                      expense_type: "โอนเงินสงเคราะห์",
+                                      note: null,
+                                      paid_at: null,
+                                    });
+                                    alert("เพิ่มรายการสำเร็จ");
+                                    toggleModal();
+                                    navigate(`/death/member-list`);
+                                  } catch (error) {
+                                    alert("เกิดข้อผิดพลาดในการเพิ่มรายการ");
+                                  }
+                                }}
+                                disabled={isNaN(amountStaff) || amountStaff === ""}
+                                className={`text-white rounded-lg px-5 py-2.5 text-sm mb-5 ${(isNaN(amountStaff) || amountStaff === "")
+                                    ? "disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                    : "bg-lime-800 hover:bg-lime-700"
+                                  }`}
+                              >
+                                เสร็จสิ้น
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
+import {useNavigate } from "react-router-dom";
+import { verifyUser } from "../../api/verifyApi";
 
 function ClubAccount() {
+
+  const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState("");
 
   const [ledger, setLedger] = useState({
     totalIncome: 0,
@@ -9,6 +13,24 @@ function ClubAccount() {
     currentBalance: 0,
     records: [],
   });
+
+  useEffect(() => {
+      fetchUserProfile();
+    }, [userEmail]);
+  
+    const fetchUserProfile = async () => {
+      try {
+        const data = await verifyUser();
+        setUserEmail(data.email);
+  
+        if (data.role !== "staff") {
+          navigate("/login");
+        }
+      } catch (error) {
+        console.error("Fetch Protected Data Error:", error);
+        navigate('/login')
+      }
+    };
   
   useEffect(() => {
     const fetchClubLedger = async () => {

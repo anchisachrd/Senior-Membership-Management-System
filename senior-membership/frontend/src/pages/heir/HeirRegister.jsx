@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import FileUpload from "../../components/FileUpload";
 import {useNavigate } from 'react-router-dom';
 import { verifyUser } from "../../api/verifyApi";
-
+import { getMembersForHeir } from "../../api/heirApi";
 // Define the provinces as a reusable array
 const provinces = [
   "กระบี่", "กรุงเทพมหานคร", "กาญจนบุรี", "กาฬสินธุ์", "กำแพงเพชร",
@@ -962,6 +962,8 @@ function Confirm() {
   );
 }
 
+
+
 // =============== MAIN REGISTER COMPONENT ===============
 function HeirRegister() {
   const [step, setStep] = useState(1);
@@ -970,7 +972,8 @@ function HeirRegister() {
 
   // สำหรับเช็ค role
       const [userRole, setUserRole] = useState('')
-        const [userEmail, setUserEmail] = useState('')
+      const [userEmail, setUserEmail] = useState('')
+      const [infoMember, setInfoMember] = useState({});
       
         useEffect(() => {
           fetchUserProfile();
@@ -988,6 +991,17 @@ function HeirRegister() {
             if (data.role !== 'heir') {
               navigate('/login')
             }
+
+            const data3 = await getMembersForHeir(data.role_id);
+                  setInfoMember({
+                    name: data3.member_name,
+                    member_id: data3.member_id,
+                    leaving_reason: data3.leaving_reason,
+                    report_id: data3.report_id,
+                    death_date: data3.death_date,
+                    is_requested: data3.is_requested,
+                    is_finalized: data3.is_finalized,
+              });
       
           } catch (error) {
             console.error('Fetch Protected Data Error:', error);
@@ -1134,6 +1148,22 @@ function HeirRegister() {
 
     }
   };
+
+  if (infoMember.is_finalized !== true) {
+    return (
+      <div className="p-12 sm:ml-64">
+        <div class="bg-gray-50 overflow-hidden rounded-xl shadow-lg mt-8">
+          <div class="p-6">
+            <div class="text-base text-center text-black font-bold me-2">
+              ไม่สามารถสมัครสมาชิกได้เนื่องจากการกรอกฟอร์มคำร้องยังไม่สมบูรณ์
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
 
   return (
     <div class='p-12 sm:ml-64'>

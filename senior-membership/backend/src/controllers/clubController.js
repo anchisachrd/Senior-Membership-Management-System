@@ -12,16 +12,21 @@ export const getClubAccount = async (req, res) => {
 };
 
 export const dashboardController = async (req, res) => {
-    const { year = "ทั้งหมด", range = "1y", month } = req.query;
-  
-    try {
-      const data = await clubServices.getDashboardFilteredData({ year, range, month: month ? parseInt(month) : undefined });
-      res.json(data);
-    } catch (error) {
-      console.error("Dashboard error:", error);
-      res.status(500).json({ message: "Failed to load dashboard data" });
-    }
-  };
+  try {
+    // Destructure the relevant query params
+    const { year = "ทั้งหมด", range = "1y", month = 0 } = req.query;
+
+    const data = await clubServices.getDashboardFilteredData({
+      year,
+      range,
+      month: parseInt(month, 10),
+    });
+    res.json(data);
+  } catch (error) {
+    console.error("Dashboard error:", error);
+    res.status(500).json({ message: "Failed to load dashboard data" });
+  }
+};
 
   export const getClubSummaryReport = async (req, res) => {
     try {
@@ -57,6 +62,35 @@ export const dashboardController = async (req, res) => {
     }
   };
 
+ 
+  export const getHeirPaymentList = async (req, res) => {
+    try {
+      const list = await clubExpenseService.fetchNotifyDeathPayment();
+      res.status(200).json(list);
+    } catch (error) {
+      console.error("Error fetching death report:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+
+
+  export const uploadProof = async (req, res) => {
+    const { paid_at, expense_id, report_id } = req.body;
+    const proof_path = req.file?.filename;
+
+    if (!proof_path || !paid_at || !expense_id) {
+      return res.status(400).json({ error: "Missing data" });
+    }
+  
+
+  try {
+    const result = await clubExpenseService.addProof(proof_path, paid_at, expense_id, report_id )
+    res.status(200).json({ message: "Add proof Expense", data: result });
+  } catch (error) {
+    console.error("Add Club Expense error:", error);
+    res.status(500).json({ message: "Failed to add proof expense data" });
+  }
+};
   export const addClubGeneralExpense = async (req, res) => {
     
     const data = {

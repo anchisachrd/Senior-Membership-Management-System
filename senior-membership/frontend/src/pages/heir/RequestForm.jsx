@@ -387,7 +387,7 @@ function RequestForm() {
       if (data.role !== "heir") {
         navigate("/login");
       }
-
+  
       const response = await fetch(
         `http://localhost:3000/api/auth/get_info_heir?heirId=${data.role_id}`,
         {
@@ -397,23 +397,22 @@ function RequestForm() {
           },
         }
       );
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
           errorData.message || "เกิดข้อผิดพลาดในการดึงข้อมูลส่วนตัว"
         );
       }
-
+  
       const data2 = await response.json();
-      // console.log(data2)
       setInfoHeir({
         title: data2.title,
         first_name: data2.first_name,
         last_name: data2.last_name,
         national_id: data2.national_id,
       });
-
+  
       const data3 = await getMembersForHeir(data.role_id);
       setInfoMember({
         name: data3.member_name,
@@ -421,14 +420,21 @@ function RequestForm() {
         leaving_reason: data3.leaving_reason,
         report_id: data3.report_id,
         death_date: data3.death_date,
+        is_requested: data3.is_requested,
+        is_finalized: data3.is_finalized,
       });
-
-      console.log("Death date raw value:", infoMember.death_date);
+  
+      // ✅ Set to step 3 if request is already submitted and waiting
+      if (data3.is_requested && (data3.is_finalized === false || data3.is_finalized === null)) {
+        setStep(3);
+      }
+  
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
       navigate("/login");
     }
   };
+  
 
   const handleConfirm = async () => {
     try {

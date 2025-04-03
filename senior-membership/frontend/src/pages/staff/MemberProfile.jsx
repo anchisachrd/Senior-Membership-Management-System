@@ -13,11 +13,10 @@ function MemberProfile() {
   const { memberId } = useParams();
   const location = useLocation();
   const { context } = location.state || { context: null };
+  const [activeTab, setActiveTab] = useState("personalInfo");
   const [member, setMember] = useState(null);
   const [heir, setHeir] = useState(null);
-
-  const [activeTab, setActiveTab] = useState("personalInfo");
-
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
@@ -32,6 +31,18 @@ function MemberProfile() {
     fetchUserProfile();
   }, [userEmail]);
 
+  
+  useEffect(() => {
+    if (context === 'deathData') {
+      setActiveTab("memberDeathReport");
+    } else if (context === 'heirPayment') {
+      setActiveTab("heirPaymentDetail")
+    }
+    else {
+      setActiveTab("personalInfo");
+    }
+  }, [context]);
+
   const fetchUserProfile = async () => {
     try {
       const data = await verifyUser();
@@ -44,6 +55,7 @@ function MemberProfile() {
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
+      navigate('/login');
     }
   };
 
@@ -60,6 +72,8 @@ function MemberProfile() {
     };
     fetchMemberAndHeirData();
   }, [userRole]);
+
+  
 
   // const toggleModal = () => {
   //   setIsModalOpen(!isModalOpen);

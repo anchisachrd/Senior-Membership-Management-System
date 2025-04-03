@@ -30,11 +30,11 @@ function DetailCheckPayment() {
       setUserRoleId(data.role_id);
 
       if (data.role != "staff" && data.role != "member") {
-        alert("คุณไม่สามารถเข้าสู่หน้านี้ได้");
         navigate("/login");
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
+      navigate('/login')
     }
   };
 

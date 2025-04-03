@@ -96,6 +96,7 @@ function DeathReport() {
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
+      navigate('/login');
     }
   };
 

@@ -12,17 +12,12 @@ import DeathReport from "./pages/heir/DeathReport.jsx";
 import StaffCandidateList from "./pages/staff/StaffCandidateList.jsx";
 import CadidateWaitingList from "./pages/staff/CadidateWaitingList.jsx";
 import CandidateProfile from "./pages/staff/CandidateProfile.jsx";
-import SendNotify from "./pages/staff/SendNotify.jsx";
 import CheckPayment from "./pages/staff/CheckPayment.jsx";
 import DetailCheckPayment from "./pages/staff/DetailCheckPayment.jsx";
 import SubmitPayment from "./pages/payment/SubmitPayment.jsx";
 import History from "./pages/payment/History.jsx";
 import HeirRegister from "./pages/heir/HeirRegister.jsx";
-import EditInfo from "./pages/authen/EditInfo.jsx";
-import Home from "./pages/member/Home.jsx";
 import Profile from "./pages/member/Profile.jsx";
-import HomeForStaff from "./pages/member/HomeForStaff.jsx";
-
 import SidebarStaff from "./components/SidebarStaff.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import FinaceReport from "./pages/staff/FinaceReport.jsx";
@@ -58,7 +53,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/submitPayment/:reportId" element={<SubmitPayment />} />
         <Route path="/history" element={<History />} />
         <Route path="/heir_register" element={<HeirRegister />} />
-        <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path='/request-form' element={<RequestForm />} />
         <Route
@@ -81,13 +75,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           element={<CadidateWaitingList />}
         />
         <Route path="/candidateProfile/:id" element={<CandidateProfile />} />
-        <Route path="/staff_sendNotify" element={<SendNotify />} />
         <Route path="/staff_checkPayment" element={<CheckPayment />} />
-        
         <Route path="/finance-report" element={<FinaceReport />} />
         <Route path="/final-approval" element={<FinalResultApproval />} />
-
-        <Route path="/home_staff" element={<HomeForStaff />} />
         <Route path="/member-list" element={<MemberList />} />
         <Route path="/member-list/notify-death" element={<NotifyDeathList />} />
         <Route path="/member-list/notify-quit" element={<NotifyQuitList />} />
@@ -116,7 +106,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       {/* หน้าที่ไม่ต้องมี side bar */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/edit_info" element={<EditInfo />} />
       <Route
         path="/final-approval/detail/:candidateId"
         element={<FinalResultDetail />}

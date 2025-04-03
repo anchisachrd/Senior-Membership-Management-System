@@ -72,8 +72,7 @@ function SidebarStaff() {
       setUserTitle(data.info.title);
       setUserFirstName(data.info.first_name);
       setUserLastName(data.info.last_name);
-
-
+   
       if (data.role === "staff") {
         setUserThaiRole("เจ้าหน้าที่");
         setActiveMenu("Dashboard");
@@ -93,8 +92,6 @@ function SidebarStaff() {
       console.error("Fetch Protected Data Error:", error);
     }
   };
-
-
 
   const handleLogout = async () => {
     await fetch("http://localhost:3000/api/auth/logout", {

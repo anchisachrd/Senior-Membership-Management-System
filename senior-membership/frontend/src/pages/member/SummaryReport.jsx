@@ -4,6 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer
 } from "recharts";
+import { verifyUser } from '../../api/verifyApi';
 
 const SummaryCard = ({ title, value }) => (
   <div className="p-4 border rounded-2xl shadow w-48">
@@ -16,6 +17,30 @@ export default function SummaryReport() {
   const [year, setYear] = useState("2568");
   const [reportData, setReportData] = useState([]);
   const [totals, setTotals] = useState({ income: 0, expense: 0, net: 0 });
+
+  const [userRole, setUserRole] = useState('')
+  const [userEmail, setUserEmail] = useState('')
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, [userEmail]);
+
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserRole(data.role)
+      setUserEmail(data.email)
+
+      if (data.role !== 'member') {
+        navigate('/login');
+      }
+
+    } catch (error) {
+      console.error('Fetch Protected Data Error:', error);
+      navigate('/login');
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {

@@ -5,12 +5,11 @@ import { verifyUser } from "../../api/verifyApi";
 import StatusBadge from "../../components/StatusBadge";
 
 function NotifyHeirPayment() {
- const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState([]);
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userRoleId, setUserRoleId] = useState("");
-
 
   useEffect(() => {
     fetchUserProfile();
@@ -27,20 +26,35 @@ function NotifyHeirPayment() {
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
+      navigate('/login');
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDeathMemberList();
-        console.log("Fetched Members:", data);
-        setMembers(Array.isArray(data) ? data : [data]);
+        const response = await fetch(
+          "http://localhost:3000/api/club/payment/death-list",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const data = await response.json();
+        setMembers(data);
       } catch (error) {
-        console.error("Error loading members:", error);
+        console.error("Error fetching data:", error);
         setMembers([]);
       }
     };
+
     fetchData();
   }, [userRole]);
 
@@ -61,27 +75,8 @@ function NotifyHeirPayment() {
     });
   };
 
-  const addClubExpense = async (payload) => {
-    try {
-      const response = await fetch("http://localhost:3000/api/club/add-club-expense", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to add club expense");
-      }
-  
-      return await response.json();
-    } catch (err) {
-      console.error("Add Club Expense Error:", err);
-      throw err;
-    }
-  };
-  
+  //http://localhost:3000/api/club/payment/death-list
+
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
@@ -101,16 +96,13 @@ function NotifyHeirPayment() {
                   รายชื่อผู้เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
-                  วันที่สิ้นสุดการเป็นสมาชิก
-                </th>
-                <th className="text-center align-middle py-4 px-4">
                   วัน/เดือน/ปี ที่เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
                   สาเหตุที่เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
-                  สถานะการส่งฟอร์มคำร้องของทายาท
+                  ชื่อทายาทผู้รับเงินสงเคราะห์
                 </th>
                 <th className="text-center align-middle py-4 px-4">
                   สถานะการจ่ายเงินสงเคราะห์
@@ -119,46 +111,52 @@ function NotifyHeirPayment() {
             </thead>
 
             <tbody>
-              {members.map((member, index) => (
-                <tr
-                  key={member.member_id}
-                  onClick={() => handleRowClick(member.member_id)}
-                  className="bg-white border-b hover:bg-gray-50 text-gray-900 cursor-pointer"
-                >
-                  <td className="text-center py-4 px-4 font-medium">
-                    {index + 1}
+              {members.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="7"
+                    className="text-center py-6 text-gray-500 font-medium"
+                  >
+                    ไม่มีการแจ้งเตือนโอนเงินค่าสงเคราะห์
                   </td>
-                  <td className="text-center py-4 px-4">{member.member_id}</td>
-                  <td className="text-center py-4 px-4">{`${member.title} ${member.first_name} ${member.last_name}`}</td>
-                  <td className="text-center py-4 px-4">
-                    {onChangeDate(member.end_date)}
-                  </td>
-                  <td className="text-center py-4 px-4">
-                    {onChangeDate(member.death_date)}
-                  </td>
-                  <td className="text-center py-4 px-4">
-                    {member.leaving_reason}
-                  </td>
-                  <td className="text-center py-4 px-4">
-                    <StatusBadge
-                      status={member.is_requested ? "ส่งแล้ว" : "ยังไม่ส่ง"}
-                    />
-                  </td>
-                  <td className="text-center py-4 px-4">
-                    <StatusBadge
-                      status={
-                        member.is_finalized === null
-                          ? "ยังไม่ส่งข้อมูล"
-                          : member.is_finalized === false
-                          ? "รอการจ่ายเงิน"
-                          : "จ่ายแล้ว"
-                      }
-                    />
-                  </td>
-                  
                 </tr>
-              ))}
+              ) : (
+                members.map((member, index) => (
+                  <tr
+                    key={member.death_member_id}
+                    onClick={() => handleRowClick(member.death_member_id)}
+                    className="bg-white border-b hover:bg-gray-50 text-gray-900 cursor-pointer"
+                  >
+                    <td className="text-center py-4 px-4 font-medium">{index + 1}</td>
+                    <td className="text-center py-4 px-4">
+                      {member.death_member_id}
+                    </td>
+                    <td className="text-center py-4 px-4">
+                      {member.deceased_full_name}
+                    </td>
+                    <td className="text-center py-4 px-4">
+                      {onChangeDate(member.date_of_death)}
+                    </td>
+                    <td className="text-center py-4 px-4">
+                      {member.cause_of_death}
+                    </td>
+                    <td className="text-center py-4 px-4">
+                      {member.heir_full_name || "–"}
+                    </td>
+                    <td className="text-center py-4 px-4">
+                      <StatusBadge
+                        status={
+                          member.paid_status === true
+                            ? "จ่ายแล้ว"
+                            : "รอการจ่ายเงิน"
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
+
           </table>
         </div>
       </div>
@@ -166,4 +164,4 @@ function NotifyHeirPayment() {
   );
 }
 
-export default NotifyHeirPayment
+export default NotifyHeirPayment;
