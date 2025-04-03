@@ -54,8 +54,10 @@ function DeathMemberList() {
     return filterDob;
   };
 
-  const handleRowClick = (memberId) => {
-    navigate(`/member/${memberId}`);
+  const handleRowClick = (memberId, heirId) => {
+    navigate(`/member/${memberId}`,{
+      state: { context: "heirProof", heirId },
+    });
   };
 
   const addClubExpense = async (payload) => {
@@ -175,7 +177,7 @@ function DeathMemberList() {
               {filteredMembers.map((member, index) => (
                 <tr
                   key={member.member_id}
-                  onClick={() => handleRowClick(member.member_id)}
+                  onClick={() => handleRowClick(member.member_id, member.heir_id)}
                   className="bg-white border-b hover:bg-gray-50 text-gray-900 cursor-pointer"
                 >
                   <td className="text-center py-4 px-4 font-medium">

@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { verifyUser } from "../../api/verifyApi";
 import { getMembersForHeir } from "../../api/heirApi";
 import ConfirmModal from "../../components/ConfirmModal";
+import PaymentProof from "../../components/PaymentProof";
 
 const onChangeDate = (data_date) => {
   const dobFromData = new Date(data_date);
@@ -71,7 +72,6 @@ function Form1({ isChecked, setIsChecked, infoHeir, infoMember }) {
               </label>
               <input
                 id="death_day_member"
-                
                 value={onChangeDate(infoMember.death_date)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
                 readOnly
@@ -231,7 +231,6 @@ function Form2({ isChecked, setIsChecked, infoHeir, infoMember }) {
               </label>
               <input
                 id="death_day_member"
-              
                 value={onChangeDate(infoMember.death_date)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2.5"
                 readOnly
@@ -335,7 +334,7 @@ function Form2({ isChecked, setIsChecked, infoHeir, infoMember }) {
   );
 }
 
-function StatusPage() {
+function StatusPage({ isRequested, isFinalized }) {
   return (
     <div>
       <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-12">
@@ -344,7 +343,13 @@ function StatusPage() {
             <div class="text-base text-black font-bold me-2">
               สถานะของการยื่นคำร้องขอรับเงิน:
             </div>
-            <div class="text-base text-black">กำลังดำเนินการ</div>
+            <div class="text-base text-black">
+              {isRequested && isFinalized
+                ? "ดำเนินการเสร็จสิ้น โปรดตรวจสอบหลักฐานการโอนเงินสงเคราะห์"
+                : isRequested
+                ? "กำลังดำเนินการ"
+                : "-"}
+            </div>
           </div>
         </div>
       </div>
@@ -387,7 +392,7 @@ function RequestForm() {
       if (data.role !== "heir") {
         navigate("/login");
       }
-  
+
       const response = await fetch(
         `http://localhost:3000/api/auth/get_info_heir?heirId=${data.role_id}`,
         {
@@ -397,14 +402,14 @@ function RequestForm() {
           },
         }
       );
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
           errorData.message || "เกิดข้อผิดพลาดในการดึงข้อมูลส่วนตัว"
         );
       }
-  
+
       const data2 = await response.json();
       setInfoHeir({
         title: data2.title,
@@ -412,7 +417,7 @@ function RequestForm() {
         last_name: data2.last_name,
         national_id: data2.national_id,
       });
-  
+
       const data3 = await getMembersForHeir(data.role_id);
       setInfoMember({
         name: data3.member_name,
@@ -423,18 +428,16 @@ function RequestForm() {
         is_requested: data3.is_requested,
         is_finalized: data3.is_finalized,
       });
-  
+
       // ✅ Set to step 3 if request is already submitted and waiting
-      if (data3.is_requested && (data3.is_finalized === false || data3.is_finalized === null)) {
+      if (data3.is_requested) {
         setStep(3);
       }
-  
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
       navigate("/login");
     }
   };
-  
 
   const handleConfirm = async () => {
     try {
@@ -601,9 +604,15 @@ function RequestForm() {
             </div>
           </div>
         ) : (
-          <StatusPage />
+          <StatusPage
+            isRequested={infoMember.is_requested}
+            isFinalized={infoMember.is_finalized}
+          />
         )}
 
+        {infoMember.is_requested && infoMember.is_finalized && (
+          <PaymentProof userRoleId={userRoleId} />
+        )}
         {/* Confirm Modal */}
         <ConfirmModal
           isOpen={isModalOpen}

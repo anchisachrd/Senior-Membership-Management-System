@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getCommitteePendingDeathApprovals } from "../../api/deathApi";
 import { verifyUser } from "../../api/verifyApi";
 import StatusBadge from "../../components/StatusBadge"
-import MemberTable from "../../components/MemberTable";
+
 
 function CommitteDeathList() {
   const [members, setMembers] = useState([]);

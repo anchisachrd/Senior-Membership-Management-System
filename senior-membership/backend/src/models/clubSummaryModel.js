@@ -1,10 +1,19 @@
 import { query } from "../db.js";
 
-export const getClubAccountDetail = async () => {
+export const getClubAccountDetail = async (start, end) => {
+  let dateFilter = "";
+  let expenseFilter = "";
+
+  if (start && end) {
+    dateFilter = `AND sh.trans_date BETWEEN '${start}' AND '${end} 23:59:59'`;
+    expenseFilter = `AND ce.paid_at BETWEEN '${start}' AND '${end} 23:59:59'`;
+  }
+  
+
   const result = await query(
-    `SELECT * 
+    `
+     SELECT * 
      FROM (
-       -- รายรับ from slip_history
        SELECT
          sh.trans_date AS datetime,
          'รายรับ' AS type,
@@ -29,10 +38,10 @@ export const getClubAccountDetail = async () => {
          '-' AS note
        FROM slip_history sh
        WHERE sh.status = 'pass'
+       ${dateFilter}
 
        UNION ALL
 
-       -- รายจ่าย from club_expenses
        SELECT
          ce.paid_at AS datetime,
          'รายจ่าย' AS type,
@@ -55,11 +64,15 @@ export const getClubAccountDetail = async () => {
          ce.amount,
          ce.note
        FROM club_expenses ce
+       WHERE 1=1
+       ${expenseFilter}
      ) AS combined
-     ORDER BY datetime DESC;`
+     ORDER BY datetime DESC;
+    `
   );
   return result.rows;
 };
+
 
 export const getDashboardRawData = async () => {
 

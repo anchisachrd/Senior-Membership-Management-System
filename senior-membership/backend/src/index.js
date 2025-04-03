@@ -56,6 +56,11 @@ app.use(
   express.static(path.join(process.cwd(), 'src', 'uploads', 'death-docs'))
 );
 
+app.use(
+  '/death-payment-proof',
+  express.static(path.join(process.cwd(), 'src', 'uploads', 'death-payment-proof'))
+);
+
 
 
 // Error-handling for Multer or custom errors (optional)
