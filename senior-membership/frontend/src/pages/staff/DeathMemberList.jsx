@@ -121,7 +121,7 @@ function DeathMemberList() {
                   type="search"
                   id="default-search"
                   className="w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
-                  placeholder="ค้นหา..."
+                  placeholder="ค้นหาโดยใช้รหัสสมาชิกหรือชื่อสมาชิก"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -220,7 +220,6 @@ function DeathMemberList() {
                       }`}
                       onClick={async (e) => {
                         e.stopPropagation();
-
                         try {
                           await addClubExpense({
                             amount: 15000,
@@ -232,7 +231,6 @@ function DeathMemberList() {
                             note: null,
                             paid_at: null,
                           });
-
                           alert("เพิ่มรายการสำเร็จ");
                           // navigate(`/submitPayment/${member.report_id}`);
                         } catch (error) {

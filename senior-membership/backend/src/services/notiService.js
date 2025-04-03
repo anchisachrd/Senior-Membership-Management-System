@@ -4,8 +4,8 @@ export const notiStaff = async () => {
     return await notiModel.notiStaff();
   }
 
-export const notiCommittee = async () => {
-    return await notiModel.notiCommittee();
+export const notiCommittee = async (committee_id) => {
+    return await notiModel.notiCommittee(committee_id);
 }
 
 export const notiHeir = async (heir_id) => {

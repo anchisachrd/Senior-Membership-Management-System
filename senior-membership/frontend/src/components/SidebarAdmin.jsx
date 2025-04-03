@@ -68,8 +68,8 @@ function SidebarAdmin() {
                     <ul class="space-y-2 font-medium flex-grow mt-4">
                         <div>
                             <li>
-                                <Link to='/manage-employee' class="flex items-center p-3 rounded-lg dark:text-gray-500 dark:hover:bg-gray-700 group">
-                                    <FaUsersCog class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white" />
+                                <Link to='/manage-employee' className={`flex items-center p-3 rounded-lg group bg-gray-700 text-white`}>
+                                    <FaUsersCog class="w-5 h-5 text-white" />
                                     <span class="ms-3 mt-1 dark:group-hover:text-white">จัดการพนักงาน</span>
                                 </Link>
                             </li>

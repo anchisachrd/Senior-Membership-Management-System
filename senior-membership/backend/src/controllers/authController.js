@@ -36,9 +36,9 @@ export const loginUserByEmail = async (req, res, next) => {
       return res.status(400).json({ message: "You can not login, You are Candidate." });
     }
 
-    // if (account.is_active === false){
-    //   return res.status(400).json({ message: "your account not active" });
-    // }
+    if (account.is_active === false){
+      return res.status(400).json({ message: "Your account not active" });
+    }
 
     
     if (account.role === 'member') {

@@ -93,7 +93,7 @@ export const getDashboardRawData = async () => {
 
       -- 5. Heir Transfer
       (SELECT COUNT(*) FROM death_reports WHERE is_requested = true) AS heir_requested,
-      (SELECT COUNT(*) FROM death_reports WHERE is_finalized = false AND is_requested = true) AS heir_wait_transfer
+      (SELECT COUNT(*) FROM death_reports WHERE is_finalized IS NULL AND is_requested = true) AS heir_wait_transfer
   `);
 
   

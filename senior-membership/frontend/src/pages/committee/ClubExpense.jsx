@@ -78,7 +78,7 @@ function ClubExpense() {
         console.log(data)
     
         try {
-          const response = await fetch("http://localhost:3000/api/club/add-club-expense", {
+          const response = await fetch("http://localhost:3000/api/club//add-club-general-expense", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -196,7 +196,7 @@ function ClubExpense() {
                                                         type="text"
                                                         name="note"
                                                         id="note"
-                                                        placeholder='กรอกหมายเหตุสำหรับค่าอื่น ๆ '
+                                                        placeholder='กรอกหมายเหตุสำหรับค่าอื่น ๆ'
                                                         class={`bg-light ${errors.note && touched.note ? "bg-red-100" : "border border-gray-400"} text-gray-900 text-xs rounded-lg w-full p-1.5`}
                                                     />
                                                     <ErrorMessage name="note" component="div" class="text-red-600 text-xs mt-1" />

@@ -80,7 +80,7 @@ function FinalResultApproval() {
                   type="search"
                   id="default-search"
                   className="w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
-                  placeholder="ค้นหา..."
+                  placeholder="ค้นหาโดยใช้รหัสผู้สมัครหรือชื่อผู้สมัคร"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />

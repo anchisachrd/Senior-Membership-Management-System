@@ -44,16 +44,16 @@ function Login() {
       alert("เข้าสู่ระบบสำเร็จ!");
 
       if (userInfo.userInfo.role === 'member'){
-        navigate("/report-summary");
+        navigate("/history");
       }
       if (userInfo.userInfo.role === 'heir'){
         navigate("/deathReport");
       }
       if (userInfo.userInfo.role === 'staff'){
-        navigate("/staff_candidateList");
+        navigate("/dashboard");
       }
       if (userInfo.userInfo.role === 'committee'){
-        navigate("/committee_candidateList");
+        navigate("/dashboard");
       }
       if (userInfo.userInfo.role === 'admin'){
         navigate("/manage-employee");

@@ -91,3 +91,28 @@ export const dashboardController = async (req, res) => {
     res.status(500).json({ message: "Failed to add proof expense data" });
   }
 };
+  export const addClubGeneralExpense = async (req, res) => {
+    
+    const data = {
+      amount: req.body.amount,
+      paid_by: req.body.paid_by,
+      proof_path: req.body.proof_path,
+      death_report_id: req.body.death_report_id,
+      paid_to_heir_id: req.body.paid_to_heir_id,
+      expense_type: req.body.expense_type,
+      note: req.body.note,
+      paid_at: req.body.paid_at
+    }
+
+  try {
+
+    const result = await clubExpenseService.addClubExpense(data)
+    res.status(200).json({ message: "Add Club Expense", data: result });
+  } catch (error) {
+    console.error("Add Club Expense error:", error);
+    res.status(500).json({ message: "Failed to add club expense data" });
+  }
+};
+
+ 
+  

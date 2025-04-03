@@ -30,7 +30,7 @@ function CandidateInfo({data}) {
           <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-14">
             <div class="p-8">
               <p class="block mt-1 mb-7 text-xl leading-tight font-bold text-grey-600">
-                1. ข้อมูลส่วนตัวของผู้สมัคร
+                1. ข้อมูลส่วนตัว
               </p>
     
               <div class="grid gap-6 mb-6 md:grid-cols-3">
@@ -314,7 +314,7 @@ function CandidateInfo({data}) {
           <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-14">
             <div class="p-8">
               <p class="block mt-1 mb-7 text-xl leading-tight font-bold text-grey-600">
-                2. เอกสารของผู้สมัคร
+                2. เอกสาร
               </p>
     
               <DocumentPreview

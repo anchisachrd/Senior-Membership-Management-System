@@ -45,6 +45,7 @@ import SidebarAdmin from "./components/SidebarAdmin.jsx";
 import AddEmployee from "./pages/admin/AddEmployee.jsx";
 import ClubExpense from "./pages/committee/ClubExpense.jsx";
 import NotifyHeirPayment from "./pages/committee/NotifyHeirPayment.jsx";
+import ProfileStaff from "./pages/staff/ProfileStaff.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -102,6 +103,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         />
         <Route path="/club-expense" element={<ClubExpense/>}/>
         <Route path= "notify/death-payment" element={<NotifyHeirPayment/>}/>
+        <Route path="/profile-staff" element={<ProfileStaff />} />
       </Route>
 
       <Route element={<SidebarAdmin />}>

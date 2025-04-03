@@ -94,7 +94,6 @@ function NotifyHeirPayment() {
                 <th className="text-center align-middle py-4 px-4">
                   รายชื่อผู้เสียชีวิต
                 </th>
-
                 <th className="text-center align-middle py-4 px-4">
                   วัน/เดือน/ปี ที่เสียชีวิต
                 </th>
