@@ -40,7 +40,7 @@ function StatusPage({ deathReport, onResubmit }) {
 
       <div className="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-12">
         <div className="p-6">
-          <div className="flex items-start mb-4">
+          <div className="flex items-start">
             <div className="text-base text-black font-bold me-2">
               {statusMessage}
             </div>
