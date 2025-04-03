@@ -15,9 +15,7 @@ export const fetchDeathMemberList = async () => {
   return await memberModel.getNotificationListByStatusAndReason("เสียชีวิต", "NOTNULL");
 };
 
-export const fetchQuitMembers = async () => {
-  return await memberModel.getNotificationListByStatus("ขอลาออก");
-};
+
 
 export const fetchMemberDetails = async (memberId) => {
   const memberData = await memberModel.getMemberById(memberId);

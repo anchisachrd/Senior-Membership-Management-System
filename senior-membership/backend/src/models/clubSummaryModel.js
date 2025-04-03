@@ -61,7 +61,7 @@ export const getClubAccountDetail = async () => {
   return result.rows;
 };
 
-export const getDashboardRawData = async (rangeStart = null, rangeEnd = null) => {
+export const getDashboardRawData = async () => {
 
   const result = await query(`
     SELECT
@@ -96,13 +96,7 @@ export const getDashboardRawData = async (rangeStart = null, rangeEnd = null) =>
       (SELECT COUNT(*) FROM death_reports WHERE is_finalized = false AND is_requested = true) AS heir_wait_transfer
   `);
 
-  const incomeDateFilter = rangeStart && rangeEnd
-    ? `AND sh.trans_date BETWEEN '${rangeStart}' AND '${rangeEnd}'`
-    : "";
-
-  const expenseDateFilter = rangeStart && rangeEnd
-    ? `WHERE ce.paid_at BETWEEN '${rangeStart}' AND '${rangeEnd}'`
-    : "";
+  
 
     const transactions = await query(`
       SELECT * 
@@ -131,7 +125,7 @@ export const getDashboardRawData = async (rangeStart = null, rangeEnd = null) =>
           '-' AS note
         FROM slip_history sh
         WHERE sh.status = 'pass' 
-        ${incomeDateFilter}
+
   
         UNION ALL
   
@@ -157,14 +151,11 @@ export const getDashboardRawData = async (rangeStart = null, rangeEnd = null) =>
           ce.amount,
           ce.note
         FROM club_expenses ce
-        ${expenseDateFilter}
+
       ) AS combined
       ORDER BY datetime DESC;
     `);
-    console.log("rangeStart:", rangeStart);
-    console.log("rangeEnd:", rangeEnd);
-    console.log("จำนวนธุรกรรมที่ได้:", transactions.rows.length);
-    console.log("raw query income BETWEEN:", incomeDateFilter);
+
     return {
       verificationSummary: {
         waiting: result.rows[0].waiting_verification,

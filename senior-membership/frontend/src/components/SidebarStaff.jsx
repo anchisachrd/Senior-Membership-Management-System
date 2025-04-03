@@ -274,7 +274,7 @@ function SidebarStaff() {
                   </Link>
                 </li>
 
-                {(userPaymentInfo.is_pay === true && userPaymentInfo.type_payment === "ค่าใช้จ่ายทั่วไปในชมรม") && (
+                {(userPaymentInfo.is_pay === true && userPaymentInfo.type_payment === "ค่าใช้จ่ายทั่วไป") && (
                   <li>
                     <Link
                       to="/club-expense"

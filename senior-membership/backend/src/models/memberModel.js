@@ -121,6 +121,8 @@ export const getNotificationListByStatusAndReason = async (status, reason) => {
   return rows;
 };
 
+
+
 export const getReviewedDeathMember = async () => {
   const { rows } = await query(
     ` SELECT 

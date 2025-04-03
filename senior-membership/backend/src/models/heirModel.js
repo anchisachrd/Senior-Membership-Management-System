@@ -39,7 +39,9 @@ export const createHeir = async (person_id, candidate_id, relationship, address_
       CONCAT(p.title, ' ', p.first_name, ' ', p.last_name) AS member_name,
       m.leaving_reason,
       dr.report_id,
-      dr.death_date
+      dr.death_date,
+      dr.is_requested,
+      dr.is_finalized
     FROM members m
     JOIN candidates c 
       ON m.candidate_id = c.candidate_id
@@ -57,6 +59,32 @@ export const createHeir = async (person_id, candidate_id, relationship, address_
   
     return rows[0];
   };
+
+  export const getHeirByMemberId = async (memberId) => {
+    const { rows } = await query(
+      `SELECT 
+      h.heir_id,
+      CONCAT(p.title, p.first_name, ' ', p.last_name) AS heir_name,
+      ce.amount,
+      ce.proof_path,
+      ce.expense_type,
+      ce.paid_at,
+      ce.expense_id,
+      dr.report_id
+    FROM members m
+    JOIN death_reports dr ON m.member_id = dr.member_id
+    JOIN club_expenses ce ON ce.death_report_id = dr.report_id
+    JOIN heirs h ON ce.paid_to_heir_id = h.heir_id
+    JOIN people p ON h.person_id = p.person_id
+    WHERE m.member_id = $1 
+    `,
+      [memberId]
+    );
+    return rows[0];
+  };
+
+
+  
 
 
 

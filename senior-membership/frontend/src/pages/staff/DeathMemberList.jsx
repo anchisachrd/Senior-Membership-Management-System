@@ -11,7 +11,6 @@ function DeathMemberList() {
   const [userEmail, setUserEmail] = useState("");
   const [userRoleId, setUserRoleId] = useState("");
 
-
   useEffect(() => {
     fetchUserProfile();
   }, [userEmail]);
@@ -61,25 +60,49 @@ function DeathMemberList() {
 
   const addClubExpense = async (payload) => {
     try {
-      const response = await fetch("http://localhost:3000/api/club/add-club-expense", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-  
+      const response = await fetch(
+        "http://localhost:3000/api/club/add-club-expense",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to add club expense");
       }
-  
+
       return await response.json();
     } catch (err) {
       console.error("Add Club Expense Error:", err);
       throw err;
     }
   };
-  
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+
+  const filteredMembers = members.filter((member) => {
+    const statusText =
+      member.is_finalized === null
+        ? "ยังไม่ส่งข้อมูล"
+        : member.is_finalized === false
+        ? "รอการจ่ายเงิน"
+        : "จ่ายแล้ว";
+
+    return (
+      (searchTerm === "" ||
+        member.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.member_id.toString().includes(searchTerm)) &&
+      (categoryFilter === "" || categoryFilter === statusText)
+    );
+  });
+
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
@@ -89,7 +112,10 @@ function DeathMemberList() {
 
         <div class="mb-8 overflow-hidden">
           <div class="grid gap-6 md:grid-cols-3">
-            <form className="col-span-2 w-full" onSubmit={(e) => e.preventDefault()}>
+            <form
+              className="col-span-2 w-full"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className="relative">
                 <input
                   type="search"
@@ -105,7 +131,8 @@ function DeathMemberList() {
             <select
               className="col-span-1 w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}>
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
               <option value="">สถานะการจ่ายเงินสงเคราะห์ทั้งหมด</option>
               <option value="ยังไม่ส่งข้อมูล">ยังไม่ส่งข้อมูล</option>
               <option value="รอการจ่ายเงิน">รอการจ่ายเงิน</option>
@@ -123,10 +150,10 @@ function DeathMemberList() {
                   รหัสผู้เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
-                  รายชื่อผู้เสียชีวิต
+                  ชื่อผู้เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
-                  วันที่สิ้นสุดการเป็นสมาชิก
+                  วัน/เดือน/ปี ที่เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
                   วัน/เดือน/ปี ที่เสียชีวิต
@@ -135,17 +162,16 @@ function DeathMemberList() {
                   สาเหตุที่เสียชีวิต
                 </th>
                 <th className="text-center align-middle py-4 px-4">
-                  สถานะการส่งฟอร์มคำร้องของทายาท
+                  ชื่อทายาทผู้รับเงิน
                 </th>
                 <th className="text-center align-middle py-4 px-4">
                   สถานะการจ่ายเงินสงเคราะห์
                 </th>
-                <th className="text-center align-middle py-4 px-4">ปุ่ม</th>
+                <th className="text-center align-middle py-4 px-4"></th>
               </tr>
             </thead>
 
             <tbody>
-            
               {filteredMembers.map((member, index) => (
                 <tr
                   key={member.member_id}
@@ -194,7 +220,7 @@ function DeathMemberList() {
                       }`}
                       onClick={async (e) => {
                         e.stopPropagation();
-                    
+
                         try {
                           await addClubExpense({
                             amount: 15000,
@@ -206,7 +232,7 @@ function DeathMemberList() {
                             note: null,
                             paid_at: null,
                           });
-                    
+
                           alert("เพิ่มรายการสำเร็จ");
                           // navigate(`/submitPayment/${member.report_id}`);
                         } catch (error) {

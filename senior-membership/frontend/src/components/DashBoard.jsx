@@ -5,9 +5,6 @@ import {
   Line,
   BarChart,
   Bar,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -15,8 +12,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
-const COLORS = ["#16a34a", "#dc2626", "#f59e0b", "#3b82f6", "#6366f1"];
 
 const monthOptions = [
   "มกราคม",
@@ -40,87 +35,51 @@ function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [latestYear, setLatestYear] = useState(null);
 
-  const [range, setRange] = useState("6m");
-  const [selectedMonth, setSelectedMonth] = useState(0);
+  // Year, Range, and Month states
   const [selectedYear, setSelectedYear] = useState("2568");
-  const [chartType, setChartType] = useState("line"); // or "bar"
+  const [range, setRange] = useState("1y"); // "1y" or "custom"
+  const [selectedMonth, setSelectedMonth] = useState(0); // 0 = January, 1 = February, etc.
+
+  // Chart type toggle
+  const [chartType, setChartType] = useState("line");
 
   useEffect(() => {
     fetchDashboard();
   }, [selectedYear, range, selectedMonth]);
 
-  useEffect(() => {
-    console.log("lineChart จาก backend:", lineChart);
-  }, [lineChart]);
-  
-
   const fetchDashboard = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:3000/api/club/dashboard/staff",
-        {
-          params: { year: selectedYear },
-        }
-      );
+      const res = await axios.get("http://localhost:3000/api/club/dashboard/staff", {
+        params: {
+          year: selectedYear,
+          range,
+          month: selectedMonth, // only relevant if range === 'custom'
+        },
+      });
       setSummary(res.data.summary);
       setLineChart(res.data.lineChart);
       setBarChart(res.data.barChart);
       setTransactions(res.data.latestTransactions);
-      setLatestYear(res.data.latestYear); // assuming backend returns it
+      setLatestYear(res.data.latestYear);
     } catch (err) {
       console.error("Error fetching dashboard:", err);
     }
   };
-
-  const getFilteredChartData = (data) => {
-    const now = new Date();
-  
-    const selectedYearBE = parseInt(selectedYear);
-    const selectedYearCE = selectedYearBE - 543;
-  
-    const isLatestYear = selectedYearBE === parseInt(latestYear);
-    const systemYear = now.getFullYear();
-  
-    let currentMonthIndex = 11;
-    if (isLatestYear && selectedYearCE === systemYear) {
-      currentMonthIndex = now.getMonth(); // ถ้าเป็นปีล่าสุด → เอาเดือนปัจจุบัน
-    }
-  
-    let startIndex = 0;
-    let endIndex = 11;
-  
-    if (range === "3m") {
-      startIndex = Math.max(0, currentMonthIndex - 2);
-      endIndex = currentMonthIndex;
-    } else if (range === "6m") {
-      startIndex = Math.max(0, currentMonthIndex - 5);
-      endIndex = currentMonthIndex;
-    } else if (range === "custom") {
-      startIndex = selectedMonth;
-      endIndex = selectedMonth;
-    }
-  
-    // ✨ กรองข้อมูลตาม index
-    return data.slice(startIndex, endIndex + 1);
-  };
-  
-  
-  
 
   if (!summary) return <div className="p-12 sm:ml-64">กำลังโหลดข้อมูล...</div>;
 
   return (
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
-        <h1 className="text-2xl font-bold text-gray-800">แดชบอร์ดภาพรวม</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">แดชบอร์ดภาพรวม</h1>
 
+        {/* Example Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2 ">
           <SummaryCard
             title="จำนวนสมาชิกที่ใช้งานอยู่"
             value={summary.memberStatus.active}
             bgColor="green"
           />
-
           <SummaryCard
             title="จำนวนสมาชิกที่เสียชีวิต"
             value={summary.deathReport.committeeApproved}
@@ -135,7 +94,8 @@ function Dashboard() {
             value={summary.heirTransfer.waitingTransfer}
           />
         </div>
-        {/* Summary Cards */}
+
+        {/* Grouped Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
           <GroupedSummaryCard
             title="ข้อมูลผู้สมัคร"
@@ -179,6 +139,7 @@ function Dashboard() {
           />
         </div>
 
+        {/* Year Selector */}
         <div className="flex items-center gap-2 mt-8">
           <label className="text-sm text-gray-700">เลือกปี:</label>
           <select
@@ -189,9 +150,11 @@ function Dashboard() {
             <option value="2568">2568</option>
             <option value="2567">2567</option>
             <option value="2566">2566</option>
+            <option value="ทั้งหมด">ทั้งหมด</option>
           </select>
         </div>
 
+        {/* Income/Expense Totals */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
           <SummaryCard
             title="รายรับรวม"
@@ -209,56 +172,44 @@ function Dashboard() {
           />
         </div>
 
-        {/* Filter */}
-        {/* Filter + Year + Chart Type Switch */}
+        {/* Range (both-year or single-month) & Chart Toggle */}
         <div className="flex flex-wrap justify-between items-center mt-6 gap-4">
-          {/* Year Selector */}
-
           {/* Range Selector */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2">
-              {/* Always show: ทั้งปี */}
-              <button
-                onClick={() => setRange("1y")}
-                className={`px-4 py-1 rounded-full text-sm border ${
-                  range === "1y"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-600"
-                }`}
+            <button
+              onClick={() => setRange("1y")}
+              className={`px-4 py-1 rounded-full text-sm border ${
+                range === "1y"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-600"
+              }`}
+            >
+              ทั้งปี
+            </button>
+            <button
+              onClick={() => setRange("custom")}
+              className={`px-4 py-1 rounded-full text-sm border ${
+                range === "custom"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-600"
+              }`}
+            >
+              เลือกเดือน
+            </button>
+
+            {range === "custom" && (
+              <select
+                className="border rounded px-2 py-1 text-sm"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(Number(e.target.value))}
               >
-                ทั้งปี
-              </button>
-
-             
-             
-
-              {/* Always show: เลือกเดือน */}
-              <button
-                onClick={() => setRange("custom")}
-                className={`px-4 py-1 rounded-full text-sm border ${
-                  range === "custom"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-600"
-                }`}
-              >
-                เลือกเดือน
-              </button>
-
-              {/* Month dropdown only when custom is selected */}
-              {range === "custom" && (
-                <select
-                  className="border rounded px-2 py-1 text-sm"
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                >
-                  {monthOptions.map((month, index) => (
-                    <option key={month} value={index}>
-                      {month}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
+                {monthOptions.map((month, index) => (
+                  <option key={month} value={index}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           {/* Chart Type Toggle */}
@@ -286,14 +237,12 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Line Chart */}
+        {/* Charts */}
         {chartType === "line" ? (
           <div className="bg-white p-6 shadow-sm border rounded-xl mt-5">
-            <h2 className="text-lg font-semibold mb-4">
-              แนวโน้มรายรับ-รายจ่าย
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">แนวโน้มรายรับ-รายจ่าย</h2>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={getFilteredChartData(lineChart)}>
+              <LineChart data={lineChart}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
@@ -316,11 +265,9 @@ function Dashboard() {
           </div>
         ) : (
           <div className="bg-white p-6 shadow-lg rounded-xl mt-5">
-            <h2 className="text-lg font-semibold mb-4">
-              กราฟแท่งรายรับ-รายจ่าย
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">กราฟแท่งรายรับ-รายจ่าย</h2>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={getFilteredChartData(barChart)}>
+              <BarChart data={barChart}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
@@ -409,10 +356,9 @@ function SummaryCard({ title, value, highlight, bgColor }) {
       : bgColor === "red"
       ? "bg-red-100"
       : "bg-gray-100";
+
   return (
-    <div
-      className={`${bg} p-4 shadow-sm rounded-xl flex flex-col justify-between`}
-    >
+    <div className={`${bg} p-4 shadow-sm rounded-xl flex flex-col justify-between`}>
       <p className="text-sm text-gray-500">{title}</p>
       <p className={`text-xl font-bold text-right ${textColor}`}>{value}</p>
     </div>
