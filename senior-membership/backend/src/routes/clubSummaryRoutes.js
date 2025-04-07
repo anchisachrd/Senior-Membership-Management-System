@@ -13,8 +13,8 @@ router.get("/payment-proof/:heirId", clubController.getClubExpensesByHeirId);
 
 
 router.post("/payment/upload-proof", uploadProof, clubController.uploadProof);
-router.post("/add-club-expense", uploadProof, clubController.addClubGeneralExpense);
-
+router.post("/add-club-expense", clubController.addClubExpense);
+router.post("/add-club-general-expense", uploadProof, clubController.addClubGeneralExpense);
 
 
 

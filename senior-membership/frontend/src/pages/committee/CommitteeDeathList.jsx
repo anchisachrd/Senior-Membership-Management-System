@@ -15,7 +15,6 @@ function CommitteDeathList() {
 
   useEffect(() => {
     fetchUserProfile();
-
   }, [userEmail]);
 
   const fetchUserProfile = async () => {
@@ -25,8 +24,14 @@ function CommitteDeathList() {
       setUserEmail(data.email)
       setUserRoleId(data.role_id)
 
+      if (data.role !== "committee") {
+        navigate("/login");
+      }
+
     } catch (error) {
       console.error('Fetch Protected Data Error:', error);
+      navigate("/login");
+      
     }
   };
 

@@ -73,7 +73,6 @@ export const getClubAccountDetail = async (start, end) => {
   return result.rows;
 };
 
-
 export const getDashboardRawData = async () => {
 
   const result = await query(`
@@ -106,7 +105,7 @@ export const getDashboardRawData = async () => {
 
       -- 5. Heir Transfer
       (SELECT COUNT(*) FROM death_reports WHERE is_requested = true) AS heir_requested,
-      (SELECT COUNT(*) FROM death_reports WHERE is_finalized IS NULL AND is_requested = true) AS heir_wait_transfer
+      (SELECT COUNT(*) FROM death_reports WHERE is_finalized = false AND is_requested = true) AS heir_wait_transfer
   `);
 
   

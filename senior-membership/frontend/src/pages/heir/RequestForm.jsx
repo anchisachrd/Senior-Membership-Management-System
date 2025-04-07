@@ -348,7 +348,7 @@ function StatusPage({ isRequested, isFinalized }) {
                 ? "ดำเนินการเสร็จสิ้น โปรดตรวจสอบหลักฐานการโอนเงินสงเคราะห์"
                 : isRequested
                 ? "กำลังดำเนินการ"
-                : "-"}
+                : "กำลังดำเนินการ"}
             </div>
           </div>
         </div>
@@ -392,7 +392,7 @@ function RequestForm() {
       if (data.role !== "heir") {
         navigate("/login");
       }
-
+  
       const response = await fetch(
         `http://localhost:3000/api/auth/get_info_heir?heirId=${data.role_id}`,
         {
@@ -402,14 +402,14 @@ function RequestForm() {
           },
         }
       );
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
           errorData.message || "เกิดข้อผิดพลาดในการดึงข้อมูลส่วนตัว"
         );
       }
-
+  
       const data2 = await response.json();
       setInfoHeir({
         title: data2.title,
@@ -417,7 +417,7 @@ function RequestForm() {
         last_name: data2.last_name,
         national_id: data2.national_id,
       });
-
+  
       const data3 = await getMembersForHeir(data.role_id);
       setInfoMember({
         name: data3.member_name,
@@ -438,6 +438,7 @@ function RequestForm() {
       navigate("/login");
     }
   };
+  
 
   const handleConfirm = async () => {
     try {

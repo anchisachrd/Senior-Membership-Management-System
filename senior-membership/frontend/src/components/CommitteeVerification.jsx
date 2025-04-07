@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   getMyCommitteeApproval,
   updateCommitteeApproval,
@@ -8,14 +9,27 @@ import { verifyUser } from "../api/verifyApi";
 
 // #TODO : ทำ committee verification ต่อ
 function CommitteeVerification({ candidateId }) {
+  const navigate = useNavigate(); 
   const qualification = [
     {
       topic: "1. ใบรับรองแพทย์ยังไม่หมดอายุ",
       failReason: "ใบรับรองแพทย์หมดอายุ",
     },
     {
-      topic: "2. เอกสารบางอย่างไม่ครบ",
-      failReason: "เอกสารขาด",
+      topic: "2. เป็นผู้ที่บรรลุนิติภาวะแล้ว",
+      failReason: "ยังไม่บรรลุนิติภาวะ",
+    },
+    {
+      topic: "3. เป็นผู้ที่อายุไม่เกิน 60 ปีบริบูรณ์",
+      failReason: "อายุเกิน 60 ปีบริบูรณ์",
+    },
+    {
+      topic: "4. เป็นผู้ที่มีสุขภาพร่างกายแข็งแรง",
+      failReason: "สุขภาพร่างกายไม่แข็งแรง",
+    },
+    {
+      topic: "5. ไม่เป็นบุคคลล้มละลาย หรือเป็นคนไร้ความสามารถ",
+      failReason: "เป็นบุคคลล้มละลาย หรือเป็นคนไร้ความสามารถ",
     },
   ];
 
@@ -162,6 +176,7 @@ function CommitteeVerification({ candidateId }) {
       if (updatedRow.approval_id) {
         setApprovalStatus(updatedRow.approval_status);
       }
+      navigate("/committee_candidateList");
     } catch (error) {
       console.error("Error updating approval status:", error);
       alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");

@@ -77,7 +77,6 @@ function SidebarStaff() {
 
       if (data.role === "staff") {
         setUserThaiRole("เจ้าหน้าที่");
-        setActiveMenu("Dashboard");
       }
       if (data.role === "committee") {
         setUserThaiRole("กรรมการ");
@@ -86,7 +85,6 @@ function SidebarStaff() {
           type_payment: data.info.type_payment,
         });
         setCommitteeId(data.role_id);
-        setActiveMenu("Dashboard");
       }
 
 
@@ -94,8 +92,6 @@ function SidebarStaff() {
       console.error("Fetch Protected Data Error:", error);
     }
   };
-
-
 
   const handleLogout = async () => {
     await fetch("http://localhost:3000/api/auth/logout", {

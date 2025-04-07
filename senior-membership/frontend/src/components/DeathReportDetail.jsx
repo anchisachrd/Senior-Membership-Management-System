@@ -263,6 +263,7 @@ function DeathReportDetail() {
         setComment={setRejectComment}
         onCancel={() => setIsModalOpen(false)}
         onConfirm={confirmReject}
+        title="ระบุสาเหตุที่ไม่ผ่านการอนุมัติ"
       />
 
     </div>

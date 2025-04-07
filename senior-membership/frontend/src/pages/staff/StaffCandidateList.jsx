@@ -29,11 +29,12 @@ function StaffCandidateList() {
           setUserEmail(data.email)
 
           if (data.role !== 'staff') {
-                navigate('/login')
+              navigate('/login')
             }
 
       } catch (error) {
           console.error('Fetch Protected Data Error:', error);
+          navigate('/login')
       }
   };
 

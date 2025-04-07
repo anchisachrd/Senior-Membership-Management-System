@@ -32,12 +32,14 @@ function MemberProfile() {
     fetchUserProfile();
   }, [userEmail]);
 
+  
   useEffect(() => {
-    if (context === "deathData") {
+    if (context === 'deathData') {
       setActiveTab("memberDeathReport");
-    } else if (context === "heirPayment") {
-      setActiveTab("heirPaymentDetail");
-    } else {
+    } else if (context === 'heirPayment') {
+      setActiveTab("heirPaymentDetail")
+    }
+    else {
       setActiveTab("personalInfo");
     }
   }, [context]);
@@ -54,7 +56,7 @@ function MemberProfile() {
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
-      navigate("/login");
+      navigate('/login');
     }
   };
 
@@ -71,6 +73,8 @@ function MemberProfile() {
     };
     fetchMemberAndHeirData();
   }, [userRole]);
+
+  
 
   // const toggleModal = () => {
   //   setIsModalOpen(!isModalOpen);

@@ -33,11 +33,12 @@ function CheckPayment() {
       setUserRole(data.role);
       setUserEmail(data.email);
 
-      if (data.role != "staff") {
+      if (data.role !== "staff") {
         navigate("/login");
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
+      navigate('/login')
     }
   };
 

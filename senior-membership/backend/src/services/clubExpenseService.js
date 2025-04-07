@@ -9,7 +9,7 @@ export const addClubExpense = async (data) => {
 export const addIsPayCommittee =  async (data) => {
   const getIsPayCommittee = await employeeModel.findCommitteeIsPay(); 
   await deathReports.updateIsFinalized(data.death_report_id, false)
-  await deathReports.updateFinalApprovalStatus(data.death_report_id, );
+
 
   if (!getIsPayCommittee || getIsPayCommittee.length === 0) {
     throw new Error("No committee with is_pay = true found");

@@ -11,6 +11,16 @@ export const createAccount = async (email, password, role) => {
   return rows[0];
 };
 
+export const createEmployeeAccount = async (email, password, role) => {
+  const { rows } = await query(
+    `INSERT INTO accounts (email, password_hash, role, is_active)
+         VALUES ($1, $2, $3, true) RETURNING *`,
+    [email, password, role]
+  );
+
+  return rows[0];
+};
+
 export const createHeirAccount = async (email, role) => {
   const { rows } = await query(
     `INSERT INTO accounts (email, role, password_hash, is_active)

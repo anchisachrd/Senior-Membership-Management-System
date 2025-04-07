@@ -75,7 +75,7 @@ function ClubExpense() {
       formData.append("paid_by", userRoleId);
 
       const response = await fetch(
-        "http://localhost:3000/api/club/add-club-expense",
+        "http://localhost:3000/api/club/add-club-general-expense",
         {
           method: "POST",
           body: formData, // 👈 Important: use FormData directly here

@@ -11,7 +11,7 @@ import CommitteeVerification from "../../components/CommitteeVerification";
 import MemberPaymentHistory from "../../components/MemberPaymentHistory";
 import HeirInfo from "../../components/HeirInfo";
 import CandidateInfo from "../../components/CandidateInfo";
-// import { verifyUser } from "../../api/verifyApi";
+import  {verifyUser}  from "../../api/verifyApi";
 
 function CandidateProfile() {
   const { id } = useParams();
@@ -42,17 +42,27 @@ function CandidateProfile() {
     fetchUserProfile();
   }, [userEmail]);
 
+  useEffect(() => {
+      if (context === 'committeeCandidateProfile') {
+        setActiveTab("candidateVerification");
+      }
+      else {
+        setActiveTab("personalInfo");
+      }
+    }, [context]);
+
   const fetchUserProfile = async () => {
     try {
       const data = await verifyUser();
       setUserRole(data.role);
       setUserEmail(data.email);
 
-      if (data.role != "staff" || data.role != "committee") {
+      if (data.role !== "staff" && data.role !== "committee") {
         navigate("/login");
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
+      navigate('/login')
     }
   };
 
@@ -218,8 +228,6 @@ function CandidateProfile() {
             context === "committeeCandidateProfile" && (
               <CommitteeVerification candidateId={id} />
             )}
-          {activeTab === "memberPaymentHistory" &&
-            context === "committeeCandidateProfile" && <MemberPaymentHistory />}
         </div>
 
         {/* condition ว่าถ้าเจออันไหนให้เรนเดอร์ปุ่มนั้น โดยค่าจะส่งมากจากแต่ละไฟล์ที่ใช้ */}

@@ -20,7 +20,7 @@ export const registerEmployee = async (employeeData) => {
     let employeePassword = generateRandomPassword();
     const hashedPassword = await hashPassword(employeePassword);
   
-    const employeeAccount = await accountModel.createAccount(
+    const employeeAccount = await accountModel.createEmployeeAccount(
         employeeData.email,
         hashedPassword,
         employeeData.position

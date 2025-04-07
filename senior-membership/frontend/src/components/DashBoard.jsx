@@ -13,6 +13,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import  {verifyUser}  from "../api/verifyApi";
+
 const monthOptions = [
   "มกราคม",
   "กุมภาพันธ์",
@@ -42,6 +44,30 @@ function Dashboard() {
 
   // Chart type toggle
   const [chartType, setChartType] = useState("line");
+
+  // สำหรับเช็ค role
+    const [userRole, setUserRole] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+  
+    useEffect(() => {
+      fetchUserProfile();
+    }, [userEmail]);
+
+  const fetchUserProfile = async () => {
+      try {
+        const data = await verifyUser();
+        setUserRole(data.role);
+        setUserEmail(data.email);
+  
+        if (data.role !== "staff" && data.role !== "committee") {
+          navigate("/login");
+        }
+      } catch (error) {
+        console.error("Fetch Protected Data Error:", error);
+        navigate('/login')
+      }
+    };
+  
 
   useEffect(() => {
     fetchDashboard();
@@ -96,48 +122,52 @@ function Dashboard() {
         </div>
 
         {/* Grouped Summary Cards */}
+        {userRole === 'staff' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
-          <GroupedSummaryCard
-            title="ข้อมูลผู้สมัคร"
-            items={[
-              {
-                label: "รอการตรวจสอบ",
-                value: summary.verification.waiting,
-                color: "yellow",
-              },
-              {
-                label: "รอกรรมการพิจารณา/แก้ไข",
-                value: summary.candidateApproval.waiting,
-                color: "orange",
-              },
-              {
-                label: "กรรมการไม่อนุมัติ",
-                value: summary.candidateApproval.rejected,
-                color: "red",
-              },
-            ]}
-          />
-          <GroupedSummaryCard
-            title="ข้อมูลการแจ้งเสียชีวิต"
-            items={[
-              {
-                label: "รอการตรวจสอบ",
-                value: summary.deathReport.staffWaiting,
-                color: "yellow",
-              },
-              {
-                label: "รอกรรมการพิจารณา/แก้ไข",
-                value: summary.deathReport.committeeWaiting,
-                color: "orange",
-              },
-              {
-                label: "กรรมการไม่อนุมัติ",
-                value: summary.deathReport.committeeRejected,
-                color: "red",
-              },
-            ]}
-          />
-        </div>
+        <GroupedSummaryCard
+          title="ข้อมูลผู้สมัคร"
+          items={[
+            {
+              label: "รอการตรวจสอบ",
+              value: summary.verification.waiting,
+              color: "yellow",
+            },
+            {
+              label: "รอกรรมการพิจารณา/แก้ไข",
+              value: summary.candidateApproval.waiting,
+              color: "orange",
+            },
+            {
+              label: "กรรมการไม่อนุมัติ",
+              value: summary.candidateApproval.rejected,
+              color: "red",
+            },
+          ]}
+        />
+        <GroupedSummaryCard
+          title="ข้อมูลการแจ้งเสียชีวิต"
+          items={[
+            {
+              label: "รอการตรวจสอบ",
+              value: summary.deathReport.staffWaiting,
+              color: "yellow",
+            },
+            {
+              label: "รอกรรมการพิจารณา/แก้ไข",
+              value: summary.deathReport.committeeWaiting,
+              color: "orange",
+            },
+            {
+              label: "กรรมการไม่อนุมัติ",
+              value: summary.deathReport.committeeRejected,
+              color: "red",
+            },
+          ]}
+        />
+      </div>
+        )}
+
+        
 
         {/* Year Selector */}
         <div className="flex items-center gap-2 mt-8">

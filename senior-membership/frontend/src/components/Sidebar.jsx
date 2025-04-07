@@ -55,12 +55,12 @@ function Sidebar() {
       if (data.role === 'member') {
         setUserThaiRole('สมาชิก');
         setMemberId(data.role_id);
-        setActiveMenu("ประวัติการชำระเงิน")
+  
       }
       if (data.role === 'heir') {
         setUserThaiRole('ทายาท');
         setHeirId(data.role_id);
-        setActiveMenu("ฟอร์มแจ้งเสียชีวิต")
+      
       }
 
     } catch (error) {

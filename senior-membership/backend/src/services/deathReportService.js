@@ -12,7 +12,10 @@ export const creatDeathReport = async (deathReport) => {
   const { member_id, heir_id, death_date, documents } = deathReport;
 
   // 🔍 1. Check if report already exists
-  const existing = await deathReportModel.findByHeirAndMember(heir_id, member_id);
+  const existing = await deathReportModel.findByHeirAndMember(
+    heir_id,
+    member_id
+  );
 
   let reportId;
 
@@ -60,38 +63,50 @@ export const creatDeathReport = async (deathReport) => {
   return { report_id: reportId };
 };
 
-
 export const updateReviewDeathReport = async (
   reportId,
   employeeId,
   status,
   comment
 ) => {
-  // Always update the report status first
-  await deathReportModel.updateDeathReportStatus(
-    reportId,
-    employeeId,
-    status,
-    comment
-  );
-
   if (status === "ผ่าน") {
+    // 1. สร้าง approval สำหรับกรรมการ
     const committeeMembers = await employeeModel.findAllByPosition("committee");
 
-    const promises = committeeMembers.map((report) => {
-      return deathReportModel.createDeathApproval(
+    const promises = committeeMembers.map((member) =>
+      deathReportModel.createDeathApproval(
         reportId,
-        report.employee_id,
+        member.employee_id,
         "รอการพิจารณา"
-      );
-    });
+      )
+    );
 
+    // 2. อัปเดตสถานะรายงานการเสียชีวิต
+    await deathReportModel.updateDeathReportStatus(
+      reportId,
+      employeeId,
+      status,
+      comment,
+      "รอการพิจารณา"
+    );
+
+    // 3. รอให้สร้าง approval ทั้งหมดเสร็จ แล้วคืนผลลัพธ์
     const results = await Promise.all(promises);
     return results;
   } else {
-    return { message: "Updated without creating committee approvals" };
+    // กรณีไม่ผ่าน แค่เปลี่ยนสถานะ ไม่ต้องสร้าง approval
+    await deathReportModel.updateDeathReportStatus(
+      reportId,
+      employeeId,
+      status,
+      comment,
+      "ยังไม่ส่งพิจารณา"
+    );
+
+    return { message: "Updated status without approval creation" }; // ✅ แนะนำให้ return อะไรบางอย่าง
   }
 };
+
 
 export const listPendingDeathApprovals = async (committeeId) => {
   return deathReportModel.getPendingDeathApprovalsByCommittee(committeeId);
@@ -109,7 +124,6 @@ export const createSlipsForActiveMembers = async (
   // await candidateModel.updateIsMemberbyMemberId(memberId);
 
   const payment = activeMembers.map((payment) => {
-
     return slipModel.createSlipHistory(payment.member_id, reportId, "unpaid");
   });
 
