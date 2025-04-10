@@ -74,7 +74,7 @@ function History() {
                   สถานะการชำระเงิน
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  ปุ่ม
+                  
                 </th>
               </tr>
             </thead>

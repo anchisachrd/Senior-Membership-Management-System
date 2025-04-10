@@ -13,61 +13,70 @@ function ClubAccount() {
     currentBalance: 0,
     records: [],
   });
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
 
   useEffect(() => {
-      fetchUserProfile();
-    }, [userEmail]);
-  
-    const fetchUserProfile = async () => {
-      try {
-        const data = await verifyUser();
-        setUserEmail(data.email);
-  
-        if (data.role !== "staff") {
-          navigate("/login");
-        }
-      } catch (error) {
-        console.error("Fetch Protected Data Error:", error);
-        navigate('/login')
+    fetchUserProfile();
+  }, [userEmail]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const data = await verifyUser();
+      setUserEmail(data.email);
+
+      if (data.role !== "staff") {
+        navigate("/login");
       }
-    };
-  
+    } catch (error) {
+      console.error("Fetch Protected Data Error:", error);
+      navigate('/login')
+    }
+  };
+
+  const fetchClubLedger = async (start = "", end = "") => {
+    try {
+      let url = "http://localhost:3000/api/club/account-balance";
+      if (start && end) {
+        url += `?start=${start}&end=${end}`;
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch ledger data");
+
+      const data = await response.json();
+      setLedger({
+        records: data.records,
+        totalIncome: data.totals.totalIncome,
+        totalExpense: data.totals.totalExpense,
+        currentBalance: data.totals.currentBalance,
+      });
+    } catch (error) {
+      console.error("Error fetching ledger data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchClubLedger = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/club/account-balance");
-        if (!response.ok) throw new Error("Failed to fetch ledger data");
-  
-        const data = await response.json(); // data = { records: [...], totals: {...} }
-        setLedger({
-          records: data.records,
-          totalIncome: data.totals.totalIncome,
-          totalExpense: data.totals.totalExpense,
-          currentBalance: data.totals.currentBalance,
-        });
-      } catch (error) {
-        console.error("Error fetching ledger data:", error);
-      }
-    };
-  
     fetchClubLedger();
   }, []);
 
   function formatDateTime(isoString) {
     const date = new Date(isoString);
-    return date.toLocaleString("th-TH", {
-      day: "numeric",
-      month: "short",
-      year: "numeric", // พ.ศ.
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",  // ✅ วินาที
-      hour12: false,
-    }).replace(",", " เวลา") + " น.";
+    return (
+      date
+        .toLocaleString("th-TH", {
+          day: "numeric",
+          month: "short",
+          year: "numeric", // พ.ศ.
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit", // ✅ วินาที
+          hour12: false,
+        })
+        .replace(",", " เวลา") + " น."
+    );
   }
-  
-  
-  
 
   return (
     <div className="ibm-plex-sans-thai-medium">
@@ -80,11 +89,16 @@ function ClubAccount() {
             {/* รายรับ/รายจ่าย */}
             <div className="flex justify-between text-lg text-gray-800 mb-2">
               <span className="text-green-600 font-semibold">รายรับรวม</span>
-              <span className="text-green-600 font-bold"> {ledger.totalIncome.toLocaleString()} บาท</span>
+              <span className="text-green-600 font-bold">
+                {" "}
+                {ledger.totalIncome.toLocaleString()} บาท
+              </span>
             </div>
             <div className="flex justify-between text-lg text-gray-800 mb-4">
               <span className="text-red-500 font-semibold">รายจ่ายรวม</span>
-              <span className="text-red-500 font-bold">{ledger.totalExpense.toLocaleString()} บาท</span>
+              <span className="text-red-500 font-bold">
+                {ledger.totalExpense.toLocaleString()} บาท
+              </span>
             </div>
 
             {/* เส้นคั่น */}
@@ -92,10 +106,55 @@ function ClubAccount() {
 
             {/* ยอดเงินปัจจุบัน */}
             <div className="flex justify-between text-lg text-gray-700">
-              <span className="font-semibold">ยอดเงินปัจจุบันในชมรม</span>
-              <span className="font-bold text-gray-800"> {ledger.currentBalance.toLocaleString()} บาท</span>
+              <span className="font-semibold">ยอดเงินในชมรม</span>
+              <span className="font-bold text-gray-800">
+                {" "}
+                {ledger.currentBalance.toLocaleString()} บาท
+              </span>
             </div>
           </div>
+        </div>
+        <div className="flex flex-wrap gap-4 items-center justify-start mb-6 mx-3">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">
+              เริ่มวันที่:
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg text-sm"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">
+              ถึงวันที่:
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg text-sm"
+            />
+          </div>
+
+          <button
+            onClick={() => fetchClubLedger(startDate, endDate)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          >
+            ค้นหา
+          </button>
+          <button
+            onClick={() => {
+              setStartDate("");
+              setEndDate("");
+              fetchClubLedger(); // reload all
+            }}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium"
+          >
+            ล้างการค้นหา
+          </button>
         </div>
 
         <div className="relative overflow-hidden shadow-xl sm:rounded-lg">
@@ -127,7 +186,9 @@ function ClubAccount() {
                     item.type === "รายรับ" ? "text-green-500" : "text-red-500"
                   }`}
                 >
-                  <td className="text-center py-4 px-4 font-medium">{formatDateTime(item.datetime)}</td>
+                  <td className="text-center py-4 px-4 font-medium">
+                    {formatDateTime(item.datetime)}
+                  </td>
                   <td className="text-center py-4 px-4">{item.type}</td>
                   <td className="text-center py-4 px-4">{item.name}</td>
                   <td className="text-center py-4 px-4">{item.detail}</td>

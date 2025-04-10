@@ -26,7 +26,7 @@ export const getPendingCandidates = async () => {
        JOIN people p ON c.person_id = p.person_id
        JOIN document_verification dv ON c.candidate_id = dv.candidate_id
        WHERE dv.verification_status IN ('รอตรวจเอกสาร', 'ไม่ผ่าน')
-       ORDER BY dv.verified_at DESC
+       ORDER BY dv.verified_at ASC
   `);
   return rows;
 };

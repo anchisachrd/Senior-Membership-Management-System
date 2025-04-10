@@ -50,7 +50,8 @@ export const updateDeathReportStatus = async (
   reportId,
   employeeId,
   staffStatus,
-  staffComment
+  staffComment,
+  final_approval
 ) => {
   const result = await query(
     `UPDATE death_reports
@@ -58,11 +59,11 @@ export const updateDeathReportStatus = async (
     staff_status = $1,
     reviewed_by = $2,
     staff_comment = $3,
-    final_approval = 'รอการพิจารณา',
+    final_approval = $4,
     reviewed_at = NOW()
-    WHERE report_id = $4
+    WHERE report_id = $5
     RETURNING*;`,
-    [staffStatus, employeeId, staffComment, reportId]
+    [staffStatus, employeeId, staffComment, final_approval, reportId]
   );
   return result.rows[0];
 };
@@ -187,6 +188,21 @@ export const updateIsFinalized = async (reportId, status) => {
   return result.rows[0];
 };
 
+export const updateSentToHeir = async ({
+  reportId,status
+}) => {
+  const values = [status,reportId];
+
+  await query(
+    `
+    UPDATE death_reports
+    SET
+      sent_to_heir = $1
+    WHERE report_id = $2
+    `,
+    values
+  );
+};
 
 
 

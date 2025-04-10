@@ -11,6 +11,8 @@ function DeathMemberList() {
   const [userEmail, setUserEmail] = useState("");
   const [userRoleId, setUserRoleId] = useState("");
   const [amountStaff, SetAmountStaff] = useState("")
+  const [selectedMember, setSelectedMember] = useState([]);
+
 
   useEffect(() => {
     fetchUserProfile();
@@ -56,8 +58,10 @@ function DeathMemberList() {
     return filterDob;
   };
 
-  const handleRowClick = (memberId) => {
-    navigate(`/member/${memberId}`);
+  const handleRowClick = (memberId, heirId) => {
+    navigate(`/member/${memberId}`, {
+      state: { context: "heirProof" , heirId: heirId },
+    });
   };
 
   const addClubExpense = async (payload) => {
@@ -107,8 +111,9 @@ function DeathMemberList() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const toggleModal = () => {
+  const toggleModal = (member) => {
     setIsModalOpen(!isModalOpen);
+    setSelectedMember(member);
   };
 
 
@@ -185,7 +190,7 @@ function DeathMemberList() {
               {filteredMembers.map((member, index) => (
                 <tr
                   key={member.member_id}
-                  onClick={() => handleRowClick(member.member_id)}
+                  onClick={() => handleRowClick(member.member_id, member.heir_id)}
                   className="bg-white border-b hover:bg-gray-50 text-gray-900 cursor-pointer"
                 >
                   <td className="text-center py-4 px-4 font-medium">
@@ -225,23 +230,25 @@ function DeathMemberList() {
                       }
                       className={`px-3 py-1 rounded-lg shadow text-white font-medium 
                         ${!member.is_requested || member.is_finalized !== null
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : 
-                        "bg-blue-600 hover:bg-blue-800"
+                          ? "bg-gray-400 cursor-not-allowed"
+                          :
+                          "bg-blue-600 hover:bg-blue-800"
                         }`}
                       onClick={(e) => {
-                        e.stopPropagation();  
-                        toggleModal() }}
+                        e.stopPropagation();
+                        toggleModal(member)
+                      }}
                     >
                       ส่งข้อมูล
                     </button>
 
-                    {isModalOpen && (
+                    {isModalOpen && selectedMember && (
                       <div
                         id="popup-modal"
                         onClick={(e) => {
-                          e.stopPropagation(); }}      
-                      
+                          e.stopPropagation();
+                        }}
+
                         className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-full bg-black bg-opacity-50"
                       >
                         <div className="relative p-1 w-full max-w-md max-h-full">
@@ -290,8 +297,8 @@ function DeathMemberList() {
 
                             <div className="px-5 pb-5">
                               <input
-                              type="text"
-                              value={amountStaff}
+                                type="text"
+                                value={amountStaff}
                                 onChange={(e) => SetAmountStaff(e.target.value)}
                                 name="amount"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-grey-500 focus:border-grey-500 block w-full p-2"
@@ -309,8 +316,8 @@ function DeathMemberList() {
                                       amount: amountStaff,
                                       paid_by: null,
                                       proof_path: null,
-                                      death_report_id: member.report_id,
-                                      paid_to_heir_id: member.heir_id,
+                                      death_report_id: selectedMember.report_id, // ใช้ selectedMember
+                                      paid_to_heir_id: selectedMember.heir_id, // ใช้ selectedMember
                                       expense_type: "โอนเงินสงเคราะห์",
                                       note: null,
                                       paid_at: null,
@@ -324,8 +331,8 @@ function DeathMemberList() {
                                 }}
                                 disabled={isNaN(amountStaff) || amountStaff === ""}
                                 className={`text-white rounded-lg px-5 py-2.5 text-sm mb-5 ${(isNaN(amountStaff) || amountStaff === "")
-                                    ? "disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                    : "bg-lime-800 hover:bg-lime-700"
+                                  ? "disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                  : "bg-lime-800 hover:bg-lime-700"
                                   }`}
                               >
                                 เสร็จสิ้น

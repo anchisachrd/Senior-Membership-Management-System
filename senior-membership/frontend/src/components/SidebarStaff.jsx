@@ -73,9 +73,10 @@ function SidebarStaff() {
       setUserFirstName(data.info.first_name);
       setUserLastName(data.info.last_name);
    
+
+
       if (data.role === "staff") {
         setUserThaiRole("เจ้าหน้าที่");
-        setActiveMenu("Dashboard");
       }
       if (data.role === "committee") {
         setUserThaiRole("กรรมการ");
@@ -84,7 +85,6 @@ function SidebarStaff() {
           type_payment: data.info.type_payment,
         });
         setCommitteeId(data.role_id);
-        setActiveMenu("Dashboard");
       }
 
 

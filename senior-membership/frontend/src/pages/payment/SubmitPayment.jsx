@@ -109,7 +109,7 @@ function SubmitPayment() {
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="relative mt-8">
-              <img src="qrcode.png" class="w-90 h-auto mx-auto" />
+              <img src="/qr.png" class="w-90 h-auto mx-auto" />
               <div class="flex justify-center mt-6 text-xl text-black font-lg">
                 สแกน QR Code ด้านบน
               </div>

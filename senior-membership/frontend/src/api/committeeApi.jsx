@@ -35,7 +35,7 @@ export const  getFinalApprovalList= async (committeeId) => {
   };
 
   export const sendBackForRevision = async (candidateId) => {
-    return await axios.put(`${apiUrl}/committee/${candidateId}/send-back`, { reason });
+    return await axios.put(`${apiUrl}/committee/${candidateId}/send-back`);
 };
 
 

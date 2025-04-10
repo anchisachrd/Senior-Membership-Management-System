@@ -21,7 +21,7 @@ function StatusPage({ deathReport, onResubmit }) {
     comment =
       deathReport.staff_status === "ไม่ผ่าน"
         ? deathReport.staff_comment
-        : deathReport.final_comment;
+        : "กรรมการอนุมัติให้ไม่ผ่าน"
     showResubmit = true;
   } else if (
     deathReport.final_approval === "อนุมัติ" &&

@@ -81,7 +81,7 @@ function NotifyHeirPayment() {
     <div className="ibm-plex-sans-thai-medium">
       <div className="p-12 sm:ml-64">
         <div className="text-xl text-black mx-3 mt-5 mb-8 font-bold">
-          รายละเอียดผู้เสียชีวิต
+          แจ้งโอนเงินสงเคราะห์
         </div>
 
         <div className="relative overflow-hidden shadow-xl sm:rounded-lg">

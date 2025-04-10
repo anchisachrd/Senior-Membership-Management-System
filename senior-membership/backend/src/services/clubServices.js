@@ -10,11 +10,9 @@ dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
-export async function getClubAccount() {
-  // 1) Fetch the raw rows
-  const rows = await clubModel.getClubAccountDetail();
+export async function getClubAccount(start, end) {
+  const rows = await clubModel.getClubAccountDetail(start, end);
 
-  // 2) Calculate totals
   let totalIncome = 0;
   let totalExpense = 0;
 
@@ -26,7 +24,6 @@ export async function getClubAccount() {
     }
   }
 
-  // 3) Return data
   return {
     records: rows,
     totals: {
@@ -36,6 +33,7 @@ export async function getClubAccount() {
     },
   };
 }
+
 
 export const getDashboardFilteredData = async ({ year, range, month }) => {
   try {

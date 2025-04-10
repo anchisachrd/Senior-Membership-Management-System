@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   getMyCommitteeApproval,
   updateCommitteeApproval,
@@ -8,6 +9,7 @@ import { verifyUser } from "../api/verifyApi";
 
 // #TODO : ทำ committee verification ต่อ
 function CommitteeVerification({ candidateId }) {
+  const navigate = useNavigate(); 
   const qualification = [
     {
       topic: "1. ใบรับรองแพทย์ยังไม่หมดอายุ",
@@ -174,6 +176,7 @@ function CommitteeVerification({ candidateId }) {
       if (updatedRow.approval_id) {
         setApprovalStatus(updatedRow.approval_status);
       }
+      navigate("/committee_candidateList");
     } catch (error) {
       console.error("Error updating approval status:", error);
       alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");

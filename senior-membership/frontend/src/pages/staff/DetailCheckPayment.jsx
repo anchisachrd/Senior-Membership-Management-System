@@ -34,7 +34,7 @@ function DetailCheckPayment() {
       }
     } catch (error) {
       console.error("Fetch Protected Data Error:", error);
-      navigate('/login')
+      navigate("/login");
     }
   };
 
@@ -62,14 +62,16 @@ function DetailCheckPayment() {
           <div class="bg-gray-50 overflow-hidden rounded-xl shadow-xl mt-12 relative">
             <div class="p-12">
               {/* ✅ ปุ่มชำระเงินใหม่ */}
-              {paymentDetail?.status === "fail" && !isFromDeath && (
-                <button
-                  onClick={() => navigate(`/submitPayment/${reportId}`)}
-                  className="absolute top-5 right-5 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow"
-                >
-                  ชำระเงินใหม่
-                </button>
-              )}
+              {paymentDetail?.status === "fail" &&
+                !isFromDeath &&
+                userRole === "member" && (
+                  <button
+                    onClick={() => navigate(`/submitPayment/${reportId}`)}
+                    className="absolute top-5 right-5 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow"
+                  >
+                    ชำระเงินใหม่
+                  </button>
+                )}
 
               <img
                 src={`http://localhost:3000${paymentDetail?.slip_path}`}

@@ -8,15 +8,16 @@ import CandidateInfo from "../../components/CandidateInfo";
 import DeathReportDetail from "../../components/DeathReportDetail";
 import { verifyUser } from "../../api/verifyApi";
 import HeirPaymentDetail from "../committee/HeirPaymentDetail";
+import PaymentProof from "../../components/PaymentProof";
 
 function MemberProfile() {
   const { memberId } = useParams();
   const location = useLocation();
-  const { context } = location.state || { context: null };
+  const { context, heirId } = location.state || { context: null };
   const [activeTab, setActiveTab] = useState("personalInfo");
   const [member, setMember] = useState(null);
   const [heir, setHeir] = useState(null);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
@@ -176,6 +177,21 @@ function MemberProfile() {
               </button>
             </li>
           )}
+
+          {context === "heirProof" && (
+            <li className="me-2">
+              <button
+                onClick={() => setActiveTab("heirProofDeatil")}
+                className={`inline-block p-4 rounded-t-lg ${
+                  activeTab === "heirProofDeatil"
+                    ? "text-white bg-gray-600"
+                    : "text-gray-500 bg-gray-300"
+                }`}
+              >
+                หลักฐานการโอนเงินสงเคราะห์
+              </button>
+            </li>
+          )}
         </ul>
 
         {/* Tab Content */}
@@ -189,7 +205,10 @@ function MemberProfile() {
             <DeathReportDetail />
           )}
           {activeTab === "heirPaymentDetail" && context === "heirPayment" && (
-            <HeirPaymentDetail/>
+            <HeirPaymentDetail />
+          )}
+          {activeTab === "heirProofDeatil" && context === "heirProof" && (
+            <PaymentProof userRoleId={heirId}/>
           )}
         </div>
       </div>
